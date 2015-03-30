@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?include Includes.wxi?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  <Product Id="*" Name="MiniPie" Language="1033" Version="0.0.1.1" Manufacturer="Dzmitry Safarau" UpgradeCode="dbc14073-d8d4-48ec-95c9-ec61b7ca54ae">
+    
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"/>
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate  EmbedCab="yes"/>
+
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="MiniPie" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="MiniPie">
+        </Directory>
+        <Directory Id="DesktopFolder" Name="Desktop"></Directory>
+      </Directory>
+    </Directory>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <Icon Id="icon.ico" SourceFile="$(var.CodePath)\App.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    <UIRef Id="WixUI_InstallDir" />
+    
+    <Feature Id="ProductFeature" Title="MiniPie" Level="1">
+      <ComponentGroupRef Id="MiniPie" Primary="yes"/>
+      <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="E7ED4E7B-545C-4898-8FA8-4F94B7D2DD0D">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="MiniPie" Description="Spotify Miniplayer"
+                  Target="[INSTALLFOLDER]MiniPie.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\MiniPie" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+      <Component Id="ApplicationShortcutDesktop" Directory="DesktopFolder" Guid="0C784641-194A-44AF-BCF7-8A6DEF226AF6">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="MiniPie" Description="Spotify Miniplayer"
+                  Target="[INSTALLFOLDER]MiniPie.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\MiniPie" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </Feature>
+    <UI />
+  </Product>
+
+  <Fragment>
+    
+  </Fragment>
+</Wix>

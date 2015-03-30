@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPie", "MiniPie\MiniPie.csproj", "{2D02C8B6-4A11-493F-8DF5-8441618A002F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPie.Core", "MiniPie.Core\MiniPie.Core.csproj", "{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C56684FB-8000-46BA-8981-B56C6E6F87E0}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MiniPie.Setup", "MiniPie.Setup\MiniPie.Setup.wixproj", "{4B0E8B03-1707-4199-8C3C-1B06A57C4318}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|x86.ActiveCfg = Debug|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|x86.Build.0 = Debug|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|x86.ActiveCfg = Release|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|x86.Build.0 = Release|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|x86.ActiveCfg = Debug|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|x86.Build.0 = Debug|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|x86.ActiveCfg = Release|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|x86.Build.0 = Release|x86
+		{4B0E8B03-1707-4199-8C3C-1B06A57C4318}.Debug|x86.ActiveCfg = Debug|x86
+		{4B0E8B03-1707-4199-8C3C-1B06A57C4318}.Release|x86.ActiveCfg = Release|x86
+		{4B0E8B03-1707-4199-8C3C-1B06A57C4318}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

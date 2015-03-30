@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="MiniPie.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:Properties="clr-namespace:MiniPie.Properties"
+             mc:Ignorable="d">
+    <Grid Margin="40 20">
+        <Grid.Resources>
+            <Style x:Key="LeftColumn" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="10 5" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+            <Style x:Key="RightColumn" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="10 5" />
+            </Style>
+            <Style x:Key="HyperlinkButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Image Grid.Row="0" Grid.ColumnSpan="2" Source="/Images/Logo.png" Stretch="None" HorizontalAlignment="Center" />
+        
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontSize="20" FontWeight="Light" Name="ApplicationName" TextAlignment="Center" />
+        
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static Properties:Resources.About_Version}" Style="{StaticResource LeftColumn}" />
+        <TextBlock Grid.Row="2" Grid.Column="1" Name="ApplicationVersion" Style="{StaticResource RightColumn}" />
+        
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static Properties:Resources.About_BasedOn}" Style="{StaticResource LeftColumn}" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="" Style="{StaticResource RightColumn}">
+            <Hyperlink NavigateUri="http://krauss.io/projects/Winfy" RequestNavigate="Hyperlink_OnRequestNavigate">
+                Winfy by Maximilian Krauss (CPOL 1.02)
+            </Hyperlink>
+        </TextBlock>
+
+        <GroupBox Grid.Row="5" Grid.ColumnSpan="2" Header="{x:Static Properties:Resources.About_UsedThirdParty}" Padding="3" Margin="0 10">
+            <ListBox Name="UsedComponents" HorizontalContentAlignment="Center" Margin="0" BorderBrush="{x:Null}" BorderThickness="0"
+                     SelectedItem="{Binding SelectedComponent}"
+                     cal:Message.Attach="[Event MouseDoubleClick] = [Action OpenComponentUrl]">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="2">
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                            <TextBlock Padding="5 0">-</TextBlock>
+                            <TextBlock Text="{Binding License}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
+    </Grid>
+</UserControl>

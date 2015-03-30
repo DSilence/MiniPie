@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?include Includes.wxi?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <Fragment>
+        <ComponentGroup Id="MiniPie">
+            <Component Id="cmp9E430AB018B9D0026373EC7EBEA238F8" Directory="INSTALLFOLDER" Guid="99EF6F0E-0829-4D86-B67E-140D0986E6F3">
+                <Class Id="{25257E77-B998-3F0D-AB04-91FD14A1623F}" Context="InprocServer32" Description="Caliburn.Micro.Screen" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.Screen" Description="Caliburn.Micro.Screen" />
+                </Class>
+                <Class Id="{539FF878-2FF4-3CF1-89E3-9A4B7100E991}" Context="InprocServer32" Description="Caliburn.Micro.DeactivationEventArgs" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.DeactivationEventArgs" Description="Caliburn.Micro.DeactivationEventArgs" />
+                </Class>
+                <Class Id="{58C36B28-0FD3-304B-9701-E477B68753B8}" Context="InprocServer32" Description="Caliburn.Micro.DefaultPlatformProvider" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.DefaultPlatformProvider" Description="Caliburn.Micro.DefaultPlatformProvider" />
+                </Class>
+                <Class Id="{686F9481-3279-36C1-A216-DB02E1A39BEE}" Context="InprocServer32" Description="Caliburn.Micro.CoroutineExecutionContext" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.CoroutineExecutionContext" Description="Caliburn.Micro.CoroutineExecutionContext" />
+                </Class>
+                <Class Id="{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}" Context="InprocServer32" Description="Caliburn.Micro.ActivationProcessedEventArgs" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.ActivationProcessedEventArgs" Description="Caliburn.Micro.ActivationProcessedEventArgs" />
+                </Class>
+                <Class Id="{8F81822C-AF10-336E-8259-0860673202B9}" Context="InprocServer32" Description="Caliburn.Micro.EventAggregator" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.EventAggregator" Description="Caliburn.Micro.EventAggregator" />
+                </Class>
+                <Class Id="{924008E8-F70E-3A41-BEAA-1C85CC36B897}" Context="InprocServer32" Description="Caliburn.Micro.ActivationEventArgs" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.ActivationEventArgs" Description="Caliburn.Micro.ActivationEventArgs" />
+                </Class>
+                <Class Id="{965CE42F-767E-3965-83A3-1A5C67BE95E8}" Context="InprocServer32" Description="Caliburn.Micro.ViewAttachedEventArgs" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.ViewAttachedEventArgs" Description="Caliburn.Micro.ViewAttachedEventArgs" />
+                </Class>
+                <Class Id="{B610A026-DB2D-337D-B5B3-C033102D8B07}" Context="InprocServer32" Description="Caliburn.Micro.ViewAware" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.ViewAware" Description="Caliburn.Micro.ViewAware" />
+                </Class>
+                <Class Id="{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}" Context="InprocServer32" Description="Caliburn.Micro.PropertyChangedBase" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.PropertyChangedBase" Description="Caliburn.Micro.PropertyChangedBase" />
+                </Class>
+                <Class Id="{E9CBB25B-9F61-386F-BCCA-53DE2440B122}" Context="InprocServer32" Description="Caliburn.Micro.ResultCompletionEventArgs" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.ResultCompletionEventArgs" Description="Caliburn.Micro.ResultCompletionEventArgs" />
+                </Class>
+                <Class Id="{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}" Context="InprocServer32" Description="Caliburn.Micro.SimpleContainer" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Caliburn.Micro.SimpleContainer" Description="Caliburn.Micro.SimpleContainer" />
+                </Class>
+                <File Id="fil949FD229DE65EAA7FE1CA78811E99DBD" KeyPath="yes" Source="$(var.SourcesPath)\Caliburn.Micro.dll" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.Screen" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32" Name="Class" Value="Caliburn.Micro.Screen" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{25257E77-B998-3F0D-AB04-91FD14A1623F}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.DeactivationEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32" Name="Class" Value="Caliburn.Micro.DeactivationEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{539FF878-2FF4-3CF1-89E3-9A4B7100E991}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.DefaultPlatformProvider" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32" Name="Class" Value="Caliburn.Micro.DefaultPlatformProvider" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{58C36B28-0FD3-304B-9701-E477B68753B8}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.CoroutineExecutionContext" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32" Name="Class" Value="Caliburn.Micro.CoroutineExecutionContext" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{686F9481-3279-36C1-A216-DB02E1A39BEE}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.ActivationProcessedEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32" Name="Class" Value="Caliburn.Micro.ActivationProcessedEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{6E7F157C-CF80-35DE-8442-DB8EC8A9C153}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.EventAggregator" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32" Name="Class" Value="Caliburn.Micro.EventAggregator" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8F81822C-AF10-336E-8259-0860673202B9}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.ActivationEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32" Name="Class" Value="Caliburn.Micro.ActivationEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{924008E8-F70E-3A41-BEAA-1C85CC36B897}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.ViewAttachedEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32" Name="Class" Value="Caliburn.Micro.ViewAttachedEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{965CE42F-767E-3965-83A3-1A5C67BE95E8}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.ViewAware" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32" Name="Class" Value="Caliburn.Micro.ViewAware" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{B610A026-DB2D-337D-B5B3-C033102D8B07}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.PropertyChangedBase" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32" Name="Class" Value="Caliburn.Micro.PropertyChangedBase" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E41E6578-4FDB-3779-89AA-35B0BD64EFB9}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.ResultCompletionEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32" Name="Class" Value="Caliburn.Micro.ResultCompletionEventArgs" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{E9CBB25B-9F61-386F-BCCA-53DE2440B122}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32\2.0.2.0" Name="Class" Value="Caliburn.Micro.SimpleContainer" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32\2.0.2.0" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32\2.0.2.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32\2.0.2.0" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32" Name="Class" Value="Caliburn.Micro.SimpleContainer" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32" Name="Assembly" Value="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{F9E6BEEB-C4F4-306C-8244-778127D9B0BA}\InprocServer32" Name="CodeBase" Value="file:///[#fil949FD229DE65EAA7FE1CA78811E99DBD]" Type="string" Action="write" />
+            </Component>
+            <Component Id="cmpE91312E493D340E03A0285FB340D96FD" Directory="INSTALLFOLDER" Guid="C5C47839-DB5B-4597-B8D9-B862E0B3B58C">
+                <File Id="fil45CEA42A7023A8F1CDAA02276E14368D" KeyPath="yes" Source="$(var.SourcesPath)\Caliburn.Micro.Platform.dll" />
+            </Component>
+            <Component Id="cmp4820161E77E50BFD74EF5E14E20C5AA1" Directory="INSTALLFOLDER" Guid="9178F4DB-6B8D-4BBC-815B-A1751CB7BB9E">
+                <File Id="fil57B470E649AD338DC7E7C1692341B1B4" KeyPath="yes" Source="$(var.SourcesPath)\Microsoft.Expression.Interactions.dll" />
+            </Component>
+            <Component Id="cmp1F628E6E1F2340F1B045287895BA90F8" Directory="INSTALLFOLDER" Guid="F1C163D8-75AC-4C08-93C4-7DA26CEE2865">
+                <File Id="fil94F47DD4629D87B8878BF727BE5F7853" KeyPath="yes" Source="$(var.SourcesPath)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="cmp5364E17B0A9F1F4CE0F66A3F314DFB85" Directory="INSTALLFOLDER" Guid="2DBC0DFB-D6ED-4980-9440-C507533D1177">
+                <File Id="fil282118653205562AB2E88A80D15A43E7" KeyPath="yes" Source="$(var.SourcesPath)\NLog.config" />
+            </Component>
+            <Component Id="cmpDE96C7E808BF365A6281EE503EB87965" Directory="INSTALLFOLDER" Guid="2E17378B-F0A4-4C6C-A6A8-DF4A00AA9B3F">
+                <File Id="filEE301C86AA37E17EFB6CA8E162670F2F" KeyPath="yes" Source="$(var.SourcesPath)\NLog.dll" />
+            </Component>
+            <Component Id="cmpB544F9E7F6F59537D20E1B3F7022A681" Directory="INSTALLFOLDER" Guid="C1900E58-1082-4097-B856-2749B97DF3EF">
+                <File Id="fil647D1BB034622E84B376058F922A85F6" KeyPath="yes" Source="$(var.SourcesPath)\System.Windows.Interactivity.dll" />
+            </Component>
+            <Component Id="cmp5C1A405C8BD45602E197717C80271AF1" Directory="INSTALLFOLDER" Guid="7AE5D8FD-EB08-42B9-9CAB-E6A8E71C4B59">
+                <File Id="fil120FC74E3B6254306724B7445A115984" KeyPath="yes" Source="$(var.SourcesPath)\MiniPie.Core.dll" />
+            </Component>
+          <Component Id="cmp5C1A405C8SDGWEGWETR137717C80271A" Directory="INSTALLFOLDER" Guid="B8EAC481-7C68-4497-90D2-722BD8680B73">
+                <File Id="fil120FC74E3B62543051064345A1159845" KeyPath="yes" Source="$(var.SourcesPath)\Hardcodet.Wpf.TaskbarNotification.dll" />  
+          </Component>
+            <Component Id="cmp15EA774B38AA6ECA8E3828D0602B5E84" Directory="INSTALLFOLDER" Guid="1C7D7A85-379B-4DBD-B29A-1CD23E395AF9">
+                <File Id="filD19EDBAFC370AE55C7D57EDE05C13990" KeyPath="yes" Source="$(var.SourcesPath)\MiniPie.exe.config" />
+            </Component>
+            <Component Id="cmp26AF6D513CFD844FE5807A27C2218742" Directory="dir4363DE378851F291347AA3A104724837" Guid="09972494-35F5-4BC5-B3C7-4C8E650A4DA4">
+                <File Id="fil7D8AC99A4E3C6B4E74018212C4180B94" KeyPath="yes" Source="$(var.SourcesPath)\de\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp7A3D38B52B0F50FE6B6F63434328574E" Directory="dir4363DE378851F291347AA3A104724837" Guid="F6E3ACB3-89DA-4A33-9A08-69DC4A14CDBD">
+                <File Id="fil1634C38F529491C49F379E3A0B94249D" KeyPath="yes" Source="$(var.SourcesPath)\de\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmpEB5314F02DEBB7E78E7D640FA6971B6E" Directory="dir1AC7FF1D4B09DAFFBB3A4CC07512737A" Guid="EC1F9EB0-04EA-4086-B8C8-405CDB1737D9">
+                <File Id="fil4AE9A35BB4915A99830C83C4FF38E7CA" KeyPath="yes" Source="$(var.SourcesPath)\en\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp8F5B8B0F6A3A57716E177D5B0222C2D8" Directory="dir1AC7FF1D4B09DAFFBB3A4CC07512737A" Guid="448EED49-AACA-4523-9387-2B00A7E9ED7F">
+                <File Id="fil017E0881001BBEA6303848F5C1A70128" KeyPath="yes" Source="$(var.SourcesPath)\en\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmp09F7C35682545102F63AC20B9C477329" Directory="dirBCEA558910470A615A32F59177491DD9" Guid="38024C3F-8620-4F8B-A2EF-11B12DA869E5">
+                <File Id="fil79C96A404596C41EDFF7A2A34D05E815" KeyPath="yes" Source="$(var.SourcesPath)\es\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp0C25C93CCD84087193D937DA65E61B05" Directory="dirBCEA558910470A615A32F59177491DD9" Guid="B0BECBB1-4643-439A-A08D-0A79172E37F4">
+                <File Id="filB327A94B799E1AB61CF1887FD921BAE0" KeyPath="yes" Source="$(var.SourcesPath)\es\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmp3BE76CB06177365E68CF407C7A0B872A" Directory="dirFD38E27812D3A1247DA368114606FAF1" Guid="2C977706-6181-4399-86FD-0C6F0ED329FF">
+                <File Id="filEDA62460F0D802035C5CBA5DEC1FD93B" KeyPath="yes" Source="$(var.SourcesPath)\fr\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmpE5AF639C08A04D3D57A387929994B1A7" Directory="dirFD38E27812D3A1247DA368114606FAF1" Guid="22742727-D486-4AC2-9274-345AED79EE63">
+                <File Id="filA4DCEE1572D9C5F46DDA8A2B8B0EF3A7" KeyPath="yes" Source="$(var.SourcesPath)\fr\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmpE44B788A80EB8950FCC2F42A9624A9BA" Directory="dir0BCD569F84A0FA7A28D5889852B5D7F1" Guid="A1E5316F-2207-449C-AC76-CCB5C6381961">
+                <File Id="filACF31C044E8178E682FF12CD1E01F9DB" KeyPath="yes" Source="$(var.SourcesPath)\it\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp353CE58A9D8D3091713E2A0DEB616F74" Directory="dir0BCD569F84A0FA7A28D5889852B5D7F1" Guid="DE436FD9-FACF-443C-A258-889012C16A25">
+                <File Id="fil150FD840857E3928235AB5CF1178CDEC" KeyPath="yes" Source="$(var.SourcesPath)\it\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmp7ABC4DF0A1052F37FA339003DB1F58C9" Directory="dirD93ADBD9A0F95EB27B55B7DFC95FD976" Guid="5B3D3B63-79C8-402C-866E-065BB8A40D04">
+                <File Id="fil27D20E5C782652402BAB05968AFD60E5" KeyPath="yes" Source="$(var.SourcesPath)\ja\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmpAD02F535859508819B53A05828DE30DB" Directory="dirD93ADBD9A0F95EB27B55B7DFC95FD976" Guid="FF837ADE-7A76-4706-9815-199948245A33">
+                <File Id="filF5FB31D4F4C84728BA0FE917125C251C" KeyPath="yes" Source="$(var.SourcesPath)\ja\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmp18CCF8A1419A53413BF0A96FE9D77BBE" Directory="dir679DFE0B9503F384FDCAF954855C3713" Guid="274611BF-CC49-4EC8-8C4B-B89609660592">
+                <File Id="filBDD15889F59270B39E7C611DABA9B81E" KeyPath="yes" Source="$(var.SourcesPath)\ko\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmpD6F76DEC77985E9B6610CCED8A514955" Directory="dir679DFE0B9503F384FDCAF954855C3713" Guid="AB7C36D6-BF7B-46F0-8618-9AFD792BF6D4">
+                <File Id="filE3FF94761DA5F224E3580D8056800D87" KeyPath="yes" Source="$(var.SourcesPath)\ko\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmp2D70B99B5A7CC665BBACC95E0B87340C" Directory="dir810C8674584168D88AFAED00B717BB7B" Guid="4849C950-DC0C-4D25-BA87-59AA60D61594">
+                <File Id="fil15E412D19D5201D156B3237C94DC2CD0" KeyPath="yes" Source="$(var.SourcesPath)\ru\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmpC59EE5842DF7905AE1AD1B7035343D65" Directory="dir3B531D66026FD5C4F86F6B9E2581EBB2" Guid="2A7B3A35-FE9C-47E4-BA8E-C66E541AD008">
+                <File Id="fil3E953853E8EC0EE311C2F0E45C535465" KeyPath="yes" Source="$(var.SourcesPath)\zh-Hans\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp6DF55DF2146C338DB58D1C735A75FA20" Directory="dir3B531D66026FD5C4F86F6B9E2581EBB2" Guid="DBE98057-A103-40D3-8B42-6B7522B58710">
+                <File Id="fil3F71CD8EE23ADAE2F846AF6354D97572" KeyPath="yes" Source="$(var.SourcesPath)\zh-Hans\System.Windows.Interactivity.resources.dll" />
+            </Component>
+            <Component Id="cmpBA211C0FC8C3E005BA7C248CC81E3F89" Directory="dir24C6D495C38F89A860F93EC9BB463F74" Guid="07B2BB00-26CA-454C-B9C7-8A788B0D311C">
+                <File Id="fil09C63A14564A2970CEC791EAE3A93E0E" KeyPath="yes" Source="$(var.SourcesPath)\zh-Hant\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp2E849AAFBEC7B3EDBA13030ECE677745" Directory="dir24C6D495C38F89A860F93EC9BB463F74" Guid="A984F26D-4B01-47D0-A626-6B15525D8FB4">
+                <File Id="filDFCFF53ACCEC233D9F147EAF5113038C" KeyPath="yes" Source="$(var.SourcesPath)\zh-Hant\System.Windows.Interactivity.resources.dll" />
+            </Component>
+          <Component Id="cmpE4861038CD8BE019B97CE1827FEBAC24" Directory="INSTALLFOLDER" Guid="61D4BCB8-CED4-4314-80D4-5214E543F18B">
+            <File Id="fil0A5BF2C90898CAD811BA62DBF0AC0983" KeyPath="yes" Source="$(var.SourcesPath)\MiniPie.exe">
+              <netfx:NativeImage Id="ngen_MiniPie.exe" Dependencies="yes" Platform="32bit" Priority="0"/>
+            </File>
+          </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir0BCD569F84A0FA7A28D5889852B5D7F1" Name="it" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir1AC7FF1D4B09DAFFBB3A4CC07512737A" Name="en" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir24C6D495C38F89A860F93EC9BB463F74" Name="zh-Hant" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir3B531D66026FD5C4F86F6B9E2581EBB2" Name="zh-Hans" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir4363DE378851F291347AA3A104724837" Name="de" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir679DFE0B9503F384FDCAF954855C3713" Name="ko" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir810C8674584168D88AFAED00B717BB7B" Name="ru" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dirBCEA558910470A615A32F59177491DD9" Name="es" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dirD93ADBD9A0F95EB27B55B7DFC95FD976" Name="ja" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dirFD38E27812D3A1247DA368114606FAF1" Name="fr" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>
