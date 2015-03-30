@@ -169,7 +169,7 @@ namespace MiniPie.Core {
                     }
                     if (previousTrackUri != currentTrackUri)
                         OnTrackChanged();
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                 }
 //                if (_SpotifyProcess == null) //Spotify is not running :-(
 //                    return;
