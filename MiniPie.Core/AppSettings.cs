@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using Caliburn.Micro;
 using MiniPie.Core.Enums;
+using MiniPie.Core.Extensions;
+using Newtonsoft.Json;
 
 namespace MiniPie.Core {
+	[JsonObject]
 	public sealed class AppSettings : PropertyChangedBase {
 
 		public AppSettings() {
@@ -14,32 +17,36 @@ namespace MiniPie.Core {
 		}
 
 		private bool _AlwaysOnTop;
+		[JsonProperty]
 		public bool AlwaysOnTop {
 			get { return _AlwaysOnTop; }
 			set { _AlwaysOnTop = value; NotifyOfPropertyChange(); }
 		}
 
 		private bool _StartWithWindows;
+		[JsonProperty]
 		public bool StartWithWindows {
 			get { return _StartWithWindows; }
 			set { _StartWithWindows = value; NotifyOfPropertyChange(); }
 		}
 
 		private bool _HideIfSpotifyClosed;
+		[JsonProperty]
 		public bool HideIfSpotifyClosed {
 			get { return _HideIfSpotifyClosed; }
 			set { _HideIfSpotifyClosed = value; NotifyOfPropertyChange(); }
 		}
 
 		private bool _DisableAnimations;
+		[JsonProperty]
 		public bool DisableAnimations {
 			get { return _DisableAnimations; }
 			set { _DisableAnimations = value; NotifyOfPropertyChange(); }
 		}
 
-	    private Language _language;
-
-	    public Language Language
+	    private Language _language = Language.English;
+		[JsonProperty]
+		public Language Language
 	    {
 	        get { return _language; }
 	        set
@@ -54,22 +61,23 @@ namespace MiniPie.Core {
 		public string UniqueApplicationIdentifier { get; set; }
 
 		private ApplicationSize _ApplicationSize;
+		[JsonProperty]
 		public ApplicationSize ApplicationSize {
 			get { return _ApplicationSize; }
 			set { _ApplicationSize = value; NotifyOfPropertyChange(); }
 		}
 
 	    private bool _HotKeysEnabled;
-
-	    public bool HotKeysEnabled
+		[JsonProperty]
+		public bool HotKeysEnabled
 	    {
             get { return _HotKeysEnabled; }
             set { _HotKeysEnabled = value; NotifyOfPropertyChange(); }
 	    }
 
 	    private HotKeys _HotKeys;
-
-	    public HotKeys HotKeys
+		[JsonProperty]
+		public HotKeys HotKeys
 	    {
             get { return _HotKeys; }
 	        set

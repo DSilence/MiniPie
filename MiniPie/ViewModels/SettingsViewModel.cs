@@ -56,7 +56,6 @@ namespace MiniPie.ViewModels {
                     Thread.CurrentThread.CurrentUICulture = value.CultureInfo;
                 }
                 NotifyOfPropertyChange();
-                
             }
 	    }
 

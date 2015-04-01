@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Timers;
+using Newtonsoft.Json;
 
 namespace MiniPie.Core {
     public sealed class JsonPersister<T> : IDisposable where T : class {
@@ -22,7 +23,7 @@ namespace MiniPie.Core {
             get {
                 try {
                     return _Instance ?? (_Instance = File.Exists(Path)
-                                                         ? Serializer.DeserializeFromJson<T>(Path)
+                                                         ? JsonConvert.DeserializeObject<T>(File.ReadAllText(Path))
                                                          : Activator.CreateInstance<T>());
                 }
                 catch {
@@ -32,8 +33,9 @@ namespace MiniPie.Core {
         }
 
         public void Persist() {
-            lock (_SyncLock) {
-                Serializer.SerializeToJson(_Instance, Path);
+            lock (_SyncLock)
+            {
+				File.WriteAllText(Path, JsonConvert.SerializeObject(_Instance));
             }
         }
 
