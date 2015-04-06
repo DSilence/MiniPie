@@ -65,6 +65,10 @@ namespace MiniPie.ViewModels {
             {
                 taskbarIcon = (TaskbarIcon)viewElement.FindResource("NotifyIcon");
                 taskbarIcon.DataContext = this;
+                taskbarIcon.LostFocus += (sender, args) =>
+                {
+                    int t = 2;
+                };
                 taskbarIcon.TrayLeftMouseDown += OnTaskbarIconOnTrayLeftMouseDown;
                 taskbarIcon.TrayMouseDoubleClick += OnTaskbarIconOnTrayLeftMouseDown;
                 base.OnActivate();
@@ -161,6 +165,7 @@ namespace MiniPie.ViewModels {
         private void OnTaskbarIconOnTrayLeftMouseDown(
             object sender, RoutedEventArgs args)
         {
+            var window = Application.Current.MainWindow;
             MaximizeMiniplayer();
         }
 

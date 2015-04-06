@@ -49,19 +49,6 @@
                         <Setter Property="Opacity" Value="0.85" />
                         <Setter Property="FontWeight" Value="Normal" />
                     </Style>
-                    <ContextMenu x:Key="MiniPieContextMenu">
-                        <MenuItem Header="{x:Static properties:Resources.App_AboutMiniPie}" cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
-                        <MenuItem Header="{x:Static properties:Resources.App_Settings}" cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
-                        <Separator/>
-                        <MenuItem Header="{x:Static properties:Resources.App_PlayPause}" cal:Message.Attach="[Event Click] = [Action PlayPause]" />
-                        <MenuItem Header="{x:Static properties:Resources.App_Previous}" cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
-                        <MenuItem Header="{x:Static properties:Resources.App_Next}" cal:Message.Attach="[Event Click] = [Action PlayNext]" />
-                        <Separator/>
-                        <MenuItem Header="{x:Static properties:Resources.App_VolumeUp}" cal:Message.Attach="[Event Click] = [Action VolumeUp]" />
-                        <MenuItem Header="{x:Static properties:Resources.App_VolumeDown}" cal:Message.Attach="[Event Click] = [Action VolumeDown]" />
-                        <Separator />
-                        <MenuItem Header="{x:Static properties:Resources.App_Exit}" cal:Message.Attach="[Event Click] = [Action Close]" />
-                    </ContextMenu>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

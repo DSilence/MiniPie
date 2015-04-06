@@ -47,10 +47,12 @@
         </Storyboard>
         <tb:TaskbarIcon x:Key="NotifyIcon"
                     Visibility="Visible"
-                    ContextMenu="{StaticResource MiniPieContextMenu}"
                     MenuActivation="RightClick"
-                    IconSource="..\App.ico"
-                    />
+                    IconSource="..\App.ico">
+            <tb:TaskbarIcon.ContextMenu>
+                <controls:MiniPieContextMenu/>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.MouseEnter">
@@ -68,7 +70,10 @@
             <im:ControlStoryboardAction Storyboard="{StaticResource StbFadein}" ControlStoryboardOption="Play" />
         </interactivity:DataEventTrigger>
     </i:Interaction.Triggers>
-    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000" ContextMenu="{StaticResource MiniPieContextMenu}">
+    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
+        <Border.ContextMenu>
+            <controls:MiniPieContextMenu/>
+        </Border.ContextMenu>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}" />
