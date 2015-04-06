@@ -44,7 +44,7 @@ namespace MiniPie.Core {
 			set { _DisableAnimations = value; NotifyOfPropertyChange(); }
 		}
 
-	    private Language _language = Language.English;
+	    private Language _language;
 		[JsonProperty]
 		public Language Language
 	    {

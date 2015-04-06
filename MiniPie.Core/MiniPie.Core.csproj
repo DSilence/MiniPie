@@ -88,6 +88,7 @@
     <Compile Include="ISpotifyController.cs" />
     <Compile Include="JsonPersister.cs" />
     <Compile Include="Language.cs" />
+    <Compile Include="LanguageHelper.cs" />
     <Compile Include="LastFmPOCOs.cs" />
     <Compile Include="ProductionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

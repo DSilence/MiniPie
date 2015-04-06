@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using MiniPie.Core.Extensions;
 using Newtonsoft.Json;
 
 namespace MiniPie.Core
 {
+	[JsonObject(MemberSerialization.OptIn)]
 	public class Language
     {
         public Language(CultureInfo cultureInfo, string uiName)
@@ -13,39 +13,35 @@ namespace MiniPie.Core
             CultureInfo = cultureInfo;
             UiName = uiName;
         }
-        public CultureInfo CultureInfo { get; set; }
-        public string UiName { get; set; }
 
-        public static Language Russian = new Language(new CultureInfo("RU"), "Русский");
-        public static Language English = new Language(new CultureInfo("EN"), "English");
-
-        public static List<Language> Languages = new List<Language>
-        {
-            English, Russian
-        }; 
+		[JsonProperty]
+		public CultureInfo CultureInfo { get; set; }
+		[JsonProperty]
+		public string UiName { get; set; }
 
         public override string ToString()
         {
             return UiName;
         }
 
-		private sealed class CultureInfoUiNameEqualityComparer : IEqualityComparer<Language>
+		protected bool Equals(Language other)
 		{
-			public bool Equals(Language x, Language y)
-			{
-				if (ReferenceEquals(x, y)) return true;
-				if (ReferenceEquals(x, null)) return false;
-				if (ReferenceEquals(y, null)) return false;
-				if (x.GetType() != y.GetType()) return false;
-				return Equals(x.CultureInfo, y.CultureInfo) && string.Equals(x.UiName, y.UiName);
-			}
+			return Equals(CultureInfo, other.CultureInfo) && string.Equals(UiName, other.UiName);
+		}
 
-			public int GetHashCode(Language obj)
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((Language) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
 			{
-				unchecked
-				{
-					return ((obj.CultureInfo != null ? obj.CultureInfo.GetHashCode() : 0)*397) ^ (obj.UiName != null ? obj.UiName.GetHashCode() : 0);
-				}
+				return ((CultureInfo != null ? CultureInfo.GetHashCode() : 0)*397) ^ (UiName != null ? UiName.GetHashCode() : 0);
 			}
 		}
     }

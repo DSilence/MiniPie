@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using Caliburn.Micro;
 using MiniPie.Core;
@@ -46,8 +47,8 @@ namespace MiniPie.ViewModels {
 
         public Language Language
 	    {
-            get { return _Settings.Language; }
-            set
+	        get { return _Settings.Language ?? (_Settings.Language = LanguageHelper.English); }
+	        set
             {
                 _Settings.Language = value;
                 if (value != null)
@@ -58,6 +59,14 @@ namespace MiniPie.ViewModels {
                 NotifyOfPropertyChange();
             }
 	    }
+
+		public ObservableCollection<Language> Languages
+		{
+			get
+			{
+				return new ObservableCollection<Language>(LanguageHelper.Languages);
+			}
+		} 
 
 		private bool _CanClearCache = true;
 		public bool CanClearCache {
