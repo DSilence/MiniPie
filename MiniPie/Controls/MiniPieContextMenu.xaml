@@ -4,24 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
-             xmlns:properties="clr-namespace:MiniPie.Properties"
+             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
+			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d">
-        <MenuItem Header="{x:Static properties:Resources.App_AboutMiniPie}"
+        <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
                   cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
-        <MenuItem Header="{x:Static properties:Resources.App_Settings}"
+        <MenuItem Header="{wpf:Resx App_Settings}"
                   cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
         <Separator />
-        <MenuItem Header="{x:Static properties:Resources.App_PlayPause}"
+        <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />
-        <MenuItem Header="{x:Static properties:Resources.App_Previous}"
+        <MenuItem Header="{wpf:Resx App_Previous}"
                   cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
-        <MenuItem Header="{x:Static properties:Resources.App_Next}"
+        <MenuItem Header="{wpf:Resx App_Next}"
                   cal:Message.Attach="[Event Click] = [Action PlayNext]" />
         <Separator />
-        <MenuItem Header="{x:Static properties:Resources.App_VolumeUp}"
+        <MenuItem Header="{wpf:Resx App_VolumeUp}"
                   cal:Message.Attach="[Event Click] = [Action VolumeUp]" />
-        <MenuItem Header="{x:Static properties:Resources.App_VolumeDown}"
+        <MenuItem Header="{wpf:Resx App_VolumeDown}"
                   cal:Message.Attach="[Event Click] = [Action VolumeDown]" />
         <Separator />
-        <MenuItem Header="{x:Static properties:Resources.App_Exit}" cal:Message.Attach="[Event Click] = [Action Close]" />
+        <MenuItem Header="{wpf:Resx App_Exit}" cal:Message.Attach="[Event Click] = [Action Close]" />
 </ContextMenu>

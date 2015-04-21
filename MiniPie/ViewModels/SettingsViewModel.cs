@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Windows;
 using Caliburn.Micro;
+using Infralution.Localization.Wpf;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using ILog = MiniPie.Core.ILog;
@@ -55,6 +57,7 @@ namespace MiniPie.ViewModels {
                 {
                     Thread.CurrentThread.CurrentCulture = value.CultureInfo;
                     Thread.CurrentThread.CurrentUICulture = value.CultureInfo;
+					ResxExtension.UpdateAllTargets();
                 }
                 NotifyOfPropertyChange();
             }

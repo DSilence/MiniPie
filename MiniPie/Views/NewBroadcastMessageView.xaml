@@ -2,10 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              mc:Ignorable="d"
              MinWidth="350"
-             MaxWidth="450">
+             MaxWidth="450"
+			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources">
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="4 3" />

@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
-             xmlns:Properties="clr-namespace:MiniPie.Properties"
-             mc:Ignorable="d">
+             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
+             mc:Ignorable="d"
+			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources">
     <Grid Margin="40 20">
         <Grid.Resources>
             <Style x:Key="LeftColumn" TargetType="{x:Type TextBlock}">
@@ -43,17 +44,17 @@
         
         <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontSize="20" FontWeight="Light" Name="ApplicationName" TextAlignment="Center" />
         
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static Properties:Resources.About_Version}" Style="{StaticResource LeftColumn}" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="{wpf:Resx About_Version}" Style="{StaticResource LeftColumn}" />
         <TextBlock Grid.Row="2" Grid.Column="1" Name="ApplicationVersion" Style="{StaticResource RightColumn}" />
         
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static Properties:Resources.About_BasedOn}" Style="{StaticResource LeftColumn}" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="{wpf:Resx About_BasedOn}" Style="{StaticResource LeftColumn}" />
         <TextBlock Grid.Row="3" Grid.Column="1" Text="" Style="{StaticResource RightColumn}">
             <Hyperlink NavigateUri="http://krauss.io/projects/Winfy" RequestNavigate="Hyperlink_OnRequestNavigate">
                 Winfy by Maximilian Krauss (CPOL 1.02)
             </Hyperlink>
         </TextBlock>
 
-        <GroupBox Grid.Row="5" Grid.ColumnSpan="2" Header="{x:Static Properties:Resources.About_UsedThirdParty}" Padding="3" Margin="0 10">
+        <GroupBox Grid.Row="5" Grid.ColumnSpan="2" Header="{wpf:Resx About_UsedThirdParty}" Padding="3" Margin="0 10">
             <ListBox Name="UsedComponents" HorizontalContentAlignment="Center" Margin="0" BorderBrush="{x:Null}" BorderThickness="0"
                      SelectedItem="{Binding SelectedComponent}"
                      cal:Message.Attach="[Event MouseDoubleClick] = [Action OpenComponentUrl]">
