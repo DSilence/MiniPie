@@ -237,7 +237,7 @@
             </Component>
           <Component Id="cmpE4861038CD8BE019B97CE1827FEBAC24" Directory="INSTALLFOLDER" Guid="61D4BCB8-CED4-4314-80D4-5214E543F18B">
             <File Id="fil0A5BF2C90898CAD811BA62DBF0AC0983" KeyPath="yes" Source="$(var.SourcesPath)\MiniPie.exe">
-              <netfx:NativeImage Id="ngen_MiniPie.exe" Dependencies="yes" Platform="32bit" Priority="0"/>
+<!--              <netfx:NativeImage Id="ngen_MiniPie.exe" Dependencies="yes" Platform="32bit" Priority="0"/>-->
             </File>
           </Component>
         </ComponentGroup>
