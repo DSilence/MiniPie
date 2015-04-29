@@ -55,7 +55,12 @@ namespace MiniPie {
             Container.Register<ICoverService>(new CoverService(_Contracts, Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
             
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
-            Container.Register<KeyManager>(new KeyManager(Container.Resolve<ISpotifyController>()));
+            var keyManager = new KeyManager(Container.Resolve<ISpotifyController>());
+            Container.Register<KeyManager>(keyManager);
+            if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
+            {
+                keyManager.RegisterHotKeys(_Settings.HotKeys);
+            }
         }
 
         protected override void OnExit(object sender, EventArgs e) {
