@@ -195,7 +195,7 @@
     <Resource Include="Images\Player\play-pause-pressed.png" />
     <Resource Include="Images\Player\prev-normal.png" />
     <Resource Include="Images\Player\prev-pressed.png" />
-    <Resource Include="Images\Cup-Cake.png" />
+    <Resource Include="Images\Logo.png" />
     <Resource Include="App.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -301,9 +301,6 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\LogoWhite.png" />
