@@ -49,7 +49,7 @@
         <tb:TaskbarIcon x:Key="NotifyIcon"
                     Visibility="Visible"
                     MenuActivation="RightClick"
-                    IconSource="..\Images\Tray\Cup-Cake.ico">
+                    IconSource="..\App.ico">
             <tb:TaskbarIcon.ContextMenu>
                 <controls:MiniPieContextMenu/>
             </tb:TaskbarIcon.ContextMenu>
