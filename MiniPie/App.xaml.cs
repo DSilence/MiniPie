@@ -7,5 +7,6 @@ namespace MiniPie {
     /// </summary>
     public partial class App : Application
     {
+
     }
 }

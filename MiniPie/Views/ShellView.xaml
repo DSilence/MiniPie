@@ -16,7 +16,7 @@
              MaxWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              Padding="0"
              Background="#000000" FontFamily="Segoe UI"
-             Foreground="#FFFFFF" BorderBrush="#000000">
+             Foreground="#FFFFFF" BorderBrush="#000000" Unloaded="ShellView_OnUnloaded">
     <UserControl.Resources>
         <Storyboard x:Key="StbFadeout">
             <DoubleAnimation AutoReverse="False"
@@ -49,7 +49,7 @@
         <tb:TaskbarIcon x:Key="NotifyIcon"
                     Visibility="Visible"
                     MenuActivation="RightClick"
-                    IconSource="..\App.ico">
+                    IconSource="..\Images\Tray\Cup-Cake.ico">
             <tb:TaskbarIcon.ContextMenu>
                 <controls:MiniPieContextMenu/>
             </tb:TaskbarIcon.ContextMenu>
