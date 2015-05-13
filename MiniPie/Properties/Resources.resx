@@ -195,4 +195,16 @@
   <data name="Settings_Hotkeys" xml:space="preserve">
     <value>Hotkeys</value>
   </data>
+  <data name="Enum_KeyModifiers_Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Enum_KeyModifiers_Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Enum_KeyModifiers_Shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="Enum_KeyModifiers_None" xml:space="preserve">
+    <value>(None)</value>
+  </data>
 </root>

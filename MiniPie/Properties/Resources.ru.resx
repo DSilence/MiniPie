@@ -159,6 +159,18 @@
   <data name="Enum_ApplicationSize_Small" xml:space="preserve">
     <value>Малый</value>
   </data>
+  <data name="Enum_KeyModifiers_Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Enum_KeyModifiers_Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Enum_KeyModifiers_None" xml:space="preserve">
+    <value>(Нет)</value>
+  </data>
+  <data name="Enum_KeyModifiers_Shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
   <data name="Settings_AlwaysOnTop" xml:space="preserve">
     <value>Показывать MiniPie поверх других окон</value>
   </data>

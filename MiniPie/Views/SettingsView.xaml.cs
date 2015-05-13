@@ -112,5 +112,9 @@ namespace MiniPie.Views {
             get { return DataContext as SettingsViewModel; }
         }
 
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

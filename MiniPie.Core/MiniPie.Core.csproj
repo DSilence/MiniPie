@@ -85,6 +85,7 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="AutorunService.cs" />
     <Compile Include="CoverService.cs" />
+    <Compile Include="Enums\KeyModifiers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="HotKeyManager\HotKey.cs" />
