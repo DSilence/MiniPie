@@ -62,12 +62,14 @@ namespace MiniPie.Core {
         private Thread _BackgroundChangeTracker;
         private Timer _ProcessWatcher;
         private Status _CurrentTrackInfo;
+        private WinEventDelegate _ProcDelegate;
 
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         public SpotifyController(ILog logger, SpotifyLocalApi localApi) {
             _Logger = logger;
             _LocalApi = localApi;
+            _CurrentTrackInfo = localApi.Status;
             AttachToProcess();
             JoinBackgroundProcess();
 
@@ -139,26 +141,14 @@ namespace MiniPie.Core {
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
-        private void BackgroundChangeTrackerWork() {
-            try {
-                while (true)
+        private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+        {
+            if ((idObject == 0) && (idChild == 0))
+                if (hwnd.ToInt32() == _SpotifyProcess.MainWindowHandle.ToInt32())
                 {
-                    string previousTrackUri = null;
-                    string currentTrackUri = null;
                     try
                     {
-
-                        if (_CurrentTrackInfo != null)
-                        {
-                            previousTrackUri =
-                            _CurrentTrackInfo.Track.TrackResource.Uri;
-                        }
-
                         _CurrentTrackInfo = _LocalApi.Status;
-                        if (_CurrentTrackInfo != null)
-                        {
-                            currentTrackUri = _CurrentTrackInfo.Track.TrackResource.Uri;
-                        }
                         if (_CurrentTrackInfo != null && _CurrentTrackInfo.Error != null)
                             throw new Exception(string.Format("Spotify API error: {0}", _CurrentTrackInfo.Error.Message));
                     }
@@ -167,26 +157,27 @@ namespace MiniPie.Core {
                         _Logger.WarnException("Failed to retrieve trackinfo", exc);
                         _CurrentTrackInfo = null;
                     }
-                    if (previousTrackUri != currentTrackUri)
-                        OnTrackChanged();
-                    Thread.Sleep(1000);
+                    OnTrackChanged();
                 }
-//                if (_SpotifyProcess == null) //Spotify is not running :-(
-//                    return;
-//
-//				//TODO this doesn't seem to work properly
-//
-//                _ProcDelegate = new WinEventDelegate(WinEventProc);
-//
-//                if (_SpotifyProcess != null) {
-//                    var hwndSpotify = _SpotifyProcess.MainWindowHandle;
-//                    var pidSpotify = _SpotifyProcess.Id;
-//
-//                    var hWinEventHook = SetWinEventHook(uint.MinValue, uint.MaxValue, IntPtr.Zero, _ProcDelegate, Convert.ToUInt32(pidSpotify), 0, 0);
-//                    var msg = new Message();
-//                    while (GetMessage(ref msg, hwndSpotify, 0, 0))
-//                        UnhookWinEvent(hWinEventHook);
-//                }
+        }
+
+        private void BackgroundChangeTrackerWork() {
+            try {
+                if (_SpotifyProcess == null) //Spotify is not running :-(
+                return;
+
+                _ProcDelegate = new WinEventDelegate(WinEventProc);
+
+                if (_SpotifyProcess != null)
+                {
+                    var hwndSpotify = _SpotifyProcess.MainWindowHandle;
+                    var pidSpotify = _SpotifyProcess.Id;
+
+                    var hWinEventHook = SetWinEventHook(0x0800c, 0x800c, IntPtr.Zero, _ProcDelegate, Convert.ToUInt32(pidSpotify), 0, 0);
+                    var msg = new Message();
+                    while (GetMessage(ref msg, hwndSpotify, 0, 0))
+                        UnhookWinEvent(hWinEventHook);
+                }
             }
             catch (ThreadAbortException) { /* Thread was aborted, accept it */ }
             catch (Exception exc) {
