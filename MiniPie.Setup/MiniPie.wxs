@@ -223,6 +223,9 @@
             <Component Id="cmp2D70B99B5A7CC665BBACC95E0B87340C" Directory="dir810C8674584168D88AFAED00B717BB7B" Guid="4849C950-DC0C-4D25-BA87-59AA60D61594">
                 <File Id="fil15E412D19D5201D156B3237C94DC2CD0" KeyPath="yes" Source="$(var.SourcesPath)\ru\System.Windows.Interactivity.resources.dll" />
             </Component>
+            <Component Id="cmpC59EE5842DF7901241124ad7035343Dtr" Directory="dir810C8674584168D88AFAED00B717BB7B" Guid="493F5DFB-A49C-4E28-AF53-A9B95CEB5EDB">
+              <File Id="fil235853E8457GGEE311C2F0E45C342YH1" KeyPath="yes" Source="$(var.SourcesPath)\ru\MiniPie.resources.dll" />
+            </Component>
             <Component Id="cmpC59EE5842DF7905AE1AD1B7035343D65" Directory="dir3B531D66026FD5C4F86F6B9E2581EBB2" Guid="2A7B3A35-FE9C-47E4-BA8E-C66E541AD008">
                 <File Id="fil3E953853E8EC0EE311C2F0E45C535465" KeyPath="yes" Source="$(var.SourcesPath)\zh-Hans\Microsoft.Expression.Interactions.resources.dll" />
             </Component>
@@ -237,7 +240,7 @@
             </Component>
           <Component Id="cmpE4861038CD8BE019B97CE1827FEBAC24" Directory="INSTALLFOLDER" Guid="61D4BCB8-CED4-4314-80D4-5214E543F18B">
             <File Id="fil0A5BF2C90898CAD811BA62DBF0AC0983" KeyPath="yes" Source="$(var.SourcesPath)\MiniPie.exe">
-<!--              <netfx:NativeImage Id="ngen_MiniPie.exe" Dependencies="yes" Platform="32bit" Priority="0"/>-->
+              <!--<netfx:NativeImage Id="ngen_MiniPie.exe" Dependencies="yes" Platform="32bit" Priority="0"/>-->
             </File>
           </Component>
         </ComponentGroup>

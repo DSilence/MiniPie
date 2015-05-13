@@ -8,7 +8,7 @@
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"/>
     <Upgrade Id="dbc14073-d8d4-48ec-95c9-ec61b7ca54ae">
       <UpgradeVersion Minimum="$(var.Version)" IncludeMinimum="no" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
-      <UpgradeVersion Minimum="0.0.0" Maximum="$(var.Version)" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+      <UpgradeVersion Minimum="0.0.0.0" Maximum="$(var.Version)" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
     </Upgrade>
 
    <!-- <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />-->
