@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?include Includes.wxi?>
+<?define Version = "0.0.1.2" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-  <Product Id="*" Name="MiniPie" Language="1033" Version="0.0.1.1" Manufacturer="Dzmitry Safarau" UpgradeCode="dbc14073-d8d4-48ec-95c9-ec61b7ca54ae">
+  <Product Id="*" Name="MiniPie" Language="1033" Version="$(var.Version)" Manufacturer="Dzmitry Safarau" UpgradeCode="dbc14073-d8d4-48ec-95c9-ec61b7ca54ae">
     
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"/>
+    <Upgrade Id="dbc14073-d8d4-48ec-95c9-ec61b7ca54ae">
+      <UpgradeVersion Minimum="$(var.Version)" IncludeMinimum="no" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+      <UpgradeVersion Minimum="0.0.0" Maximum="$(var.Version)" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade>
 
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+   <!-- <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />-->
     <MediaTemplate  EmbedCab="yes"/>
 
 
@@ -21,6 +26,13 @@
       </Directory>
     </Directory>
 
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize" />
+      <Custom Action="NewerVersion" After="FindRelatedProducts">NEWERVERSIONDETECTED</Custom>
+    </InstallExecuteSequence>
+
+    <CustomAction Id="NewerVersion" Error="A later version of [ProductName] is already installed." />
+    
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
     <Icon Id="icon.ico" SourceFile="$(var.CodePath)\App.ico"/>
     <Property Id="ARPPRODUCTICON" Value="icon.ico" />
