@@ -16,15 +16,8 @@ namespace MiniPie.Converter
             if (!(value is KeyValuePair<Key, KeyModifier>))
                 return null;
             var keyValuePairValue = (KeyValuePair<Key, KeyModifier>) value;
-            if (keyValuePairValue.Value == KeyModifier.None)
-            {
                 //TODO probably could localize it, but nobody cares for now
-                return keyValuePairValue.Key.ToString();
-            }
-            else
-            {
-                return string.Format(FormatString, keyValuePairValue.Value, keyValuePairValue.Key);
-            }
+            return keyValuePairValue.Key.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

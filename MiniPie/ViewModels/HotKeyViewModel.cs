@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Caliburn.Micro;
 using MiniPie.Core;
+using MiniPie.Core.Enums;
 using MiniPie.Core.HotKeyManager;
 
 namespace MiniPie.ViewModels
@@ -127,6 +128,107 @@ namespace MiniPie.ViewModels
             {
                 HotKeys.VolumeDown = value;
                 NotifyOfPropertyChange();
+            }
+        }
+
+        public SupportedKeyModifiers PlayPauseModifier
+        {
+            get { return GetFrameworkKeyModifier(PlayPause.Value); }
+            set
+            {
+                PlayPause = new KeyValuePair<Key, KeyModifier>(PlayPause.Key,
+                    GetKeyModifier(value));
+                PerformHotKeyUpdate();
+            }
+        }
+        public SupportedKeyModifiers PreviousModifier
+        {
+            get { return GetFrameworkKeyModifier(Previous.Value); }
+            set
+            {
+                Previous = new KeyValuePair<Key, KeyModifier>(Previous.Key,
+                    GetKeyModifier(value));
+                PerformHotKeyUpdate();
+            }
+        }
+
+        public SupportedKeyModifiers NextModifier
+        {
+            get { return GetFrameworkKeyModifier(Next.Value); }
+            set
+            {
+                Next = new KeyValuePair<Key, KeyModifier>(Next.Key, 
+                    GetKeyModifier(value));
+                PerformHotKeyUpdate();
+            }
+        }
+
+        public SupportedKeyModifiers VolumeDownModifier
+        {
+            get { return GetFrameworkKeyModifier(VolumeDown.Value); }
+            set
+            {
+                VolumeDown = new KeyValuePair<Key, KeyModifier>(VolumeDown.Key, 
+                    GetKeyModifier(value));
+                PerformHotKeyUpdate();
+            }
+        }
+
+        public SupportedKeyModifiers VolumeUpModifier
+        {
+            get { return GetFrameworkKeyModifier(VolumeUp.Value); }
+            set
+            {
+                VolumeUp = new KeyValuePair<Key, KeyModifier>(VolumeUp.Key,
+                    GetKeyModifier(value));
+                PerformHotKeyUpdate();
+            }
+        }
+
+        private SupportedKeyModifiers GetFrameworkKeyModifier(
+            KeyModifier keyModifier)
+        {
+            switch (keyModifier)
+            {
+                case KeyModifier.Alt:
+                {
+                    return SupportedKeyModifiers.Alt;
+                }
+                case KeyModifier.Ctrl:
+                {
+                    return SupportedKeyModifiers.Ctrl;
+                }
+                case KeyModifier.Shift:
+                {
+                    return SupportedKeyModifiers.Shift;
+                }
+                default:
+                {
+                    return SupportedKeyModifiers.None;
+                }
+            }
+        }
+
+        private KeyModifier GetKeyModifier(SupportedKeyModifiers keyModifiers)
+        {
+            switch (keyModifiers)
+            {
+                case SupportedKeyModifiers.Alt:
+                {
+                    return KeyModifier.Alt;
+                }
+                case SupportedKeyModifiers.Ctrl:
+                {
+                    return KeyModifier.Ctrl;
+                }
+                case SupportedKeyModifiers.Shift:
+                {
+                    return KeyModifier.Shift;
+                }
+                default:
+                {
+                    return KeyModifier.None;
+                }
             }
         }
         #endregion

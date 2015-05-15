@@ -189,36 +189,36 @@ namespace MiniPie.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Alt.
         /// </summary>
-        public static string Enum_KeyModifiers_Alt {
+        public static string Enum_SupportedKeyModifiers_Alt {
             get {
-                return ResourceManager.GetString("Enum_KeyModifiers_Alt", resourceCulture);
+                return ResourceManager.GetString("Enum_SupportedKeyModifiers_Alt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Ctrl.
         /// </summary>
-        public static string Enum_KeyModifiers_Ctrl {
+        public static string Enum_SupportedKeyModifiers_Ctrl {
             get {
-                return ResourceManager.GetString("Enum_KeyModifiers_Ctrl", resourceCulture);
+                return ResourceManager.GetString("Enum_SupportedKeyModifiers_Ctrl", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to (None).
         /// </summary>
-        public static string Enum_KeyModifiers_None {
+        public static string Enum_SupportedKeyModifiers_None {
             get {
-                return ResourceManager.GetString("Enum_KeyModifiers_None", resourceCulture);
+                return ResourceManager.GetString("Enum_SupportedKeyModifiers_None", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Shift.
         /// </summary>
-        public static string Enum_KeyModifiers_Shift {
+        public static string Enum_SupportedKeyModifiers_Shift {
             get {
-                return ResourceManager.GetString("Enum_KeyModifiers_Shift", resourceCulture);
+                return ResourceManager.GetString("Enum_SupportedKeyModifiers_Shift", resourceCulture);
             }
         }
         

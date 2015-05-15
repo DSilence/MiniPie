@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MiniPie.Core.Enums;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.ViewModels;
 
@@ -15,106 +17,91 @@ namespace MiniPie.Views {
 
         private void HotKey_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
+            //TODO the processing should be moved to view model
             e.Handled = true;
 
-            var key = e.Key;
+            if (sender != null)
+            {
+                var key = e.Key;
 
-            if (key == Key.LeftCtrl || key == Key.RightCtrl || key == Key.LeftAlt || key == Key.RightAlt ||
-                key == Key.LeftShift || key == Key.RightShift || key == Key.LWin || key == Key.RWin)
-            {
-                return;
-            }
+                if (key == Key.LeftCtrl || key == Key.RightCtrl || key == Key.LeftAlt || key == Key.RightAlt ||
+                    key == Key.LeftShift || key == Key.RightShift || key == Key.LWin || key == Key.RWin)
+                {
+                    return;
+                }
 
-            if (key == Key.System)
-            {
-                key = e.SystemKey;
-            }
+                if (key == Key.System)
+                {
+                    key = e.SystemKey;
+                }
 
-            var modifier = e.KeyboardDevice.Modifiers;
-            KeyModifier internalModifier = KeyModifier.None;
-            switch (modifier)
-            {
-                case ModifierKeys.Control:
+                var viewModel = ViewModel;
+                if (viewModel == null)
                 {
-                    internalModifier = KeyModifier.Ctrl;
-                    break;
+                    return;
                 }
-                case ModifierKeys.Alt:
-                {
-                    internalModifier = KeyModifier.Alt;
-                    break;
-                }
-                case ModifierKeys.Shift:
-                {
-                    internalModifier = KeyModifier.Shift;
-                    break;
-                }
-                case ModifierKeys.Windows:
-                {
-                    internalModifier = KeyModifier.Win;
-                    break;
-                }
-            }
 
-
-            var viewModel = ViewModel;
-            if (viewModel == null)
-            {
-                return;
-            }
-
-            KeyValuePair<Key, KeyModifier> newValue = new KeyValuePair<Key, KeyModifier>(key, internalModifier);
-            if (ReferenceEquals(sender, PlayPause))
-            {
-                viewModel.HotKeyViewModel.PlayPause 
-                    = newValue;
-                if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                if (ReferenceEquals(sender, PlayPause))
                 {
-                    viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    KeyValuePair<Key, KeyModifier> newValue = 
+                        new KeyValuePair<Key, KeyModifier>(key, 
+                            viewModel.HotKeyViewModel.PlayPause.Value);
+                    viewModel.HotKeyViewModel.PlayPause
+                        = newValue;
+                    if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                    {
+                        viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    }
                 }
-            }
-            else if (ReferenceEquals(sender, Previous))
-            {
-                viewModel.HotKeyViewModel.Previous = newValue;
-                if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                else if (ReferenceEquals(sender, Previous))
                 {
-                    viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    KeyValuePair<Key, KeyModifier> newValue =
+                        new KeyValuePair<Key, KeyModifier>(key,
+                            viewModel.HotKeyViewModel.Previous.Value);
+                    viewModel.HotKeyViewModel.Previous = newValue;
+                    if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                    {
+                        viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    }
                 }
-            }
-            else if (ReferenceEquals(sender, Next))
-            {
-                viewModel.HotKeyViewModel.Next = newValue;
-                if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                else if (ReferenceEquals(sender, Next))
                 {
-                    viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    KeyValuePair<Key, KeyModifier> newValue =
+                        new KeyValuePair<Key, KeyModifier>(key,
+                            viewModel.HotKeyViewModel.Next.Value);
+                    viewModel.HotKeyViewModel.Next = newValue;
+                    if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                    {
+                        viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    }
                 }
-            }
-            else if (ReferenceEquals(sender, VolumeDown))
-            {
-                viewModel.HotKeyViewModel.VolumeDown = newValue;
-                if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                else if (ReferenceEquals(sender, VolumeDown))
                 {
-                    viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    KeyValuePair<Key, KeyModifier> newValue =
+                       new KeyValuePair<Key, KeyModifier>(key,
+                           viewModel.HotKeyViewModel.VolumeDown.Value);
+                    viewModel.HotKeyViewModel.VolumeDown = newValue;
+                    if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                    {
+                        viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    }
                 }
-            }
-            else if (ReferenceEquals(sender, VolumeUp))
-            {
-                viewModel.HotKeyViewModel.VolumeUp = newValue;
-                if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                else if (ReferenceEquals(sender, VolumeUp))
                 {
-                    viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    KeyValuePair<Key, KeyModifier> newValue =
+                      new KeyValuePair<Key, KeyModifier>(key,
+                          viewModel.HotKeyViewModel.VolumeUp.Value);
+                    viewModel.HotKeyViewModel.VolumeUp = newValue;
+                    if (viewModel.HotKeyViewModel.HotKeysEnabled)
+                    {
+                        viewModel.HotKeyViewModel.PerformHotKeyUpdate();
+                    }
                 }
             }
         }
-
         private SettingsViewModel ViewModel
         {
             get { return DataContext as SettingsViewModel; }
-        }
-
-        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

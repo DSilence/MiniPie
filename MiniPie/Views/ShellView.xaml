@@ -37,14 +37,14 @@
                              To="0.0"
                              Storyboard.TargetName="PlayerButtons"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.5"/>
+                             Duration="0:0:.3"/>
         </Storyboard>
         <Storyboard x:Key="StbFadeinPlayer">
             <DoubleAnimation AutoReverse="False"
                              From="0.0" To="1"
                              Storyboard.TargetName="PlayerButtons"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.5"/>
+                             Duration="0:0:.3"/>
         </Storyboard>
         <tb:TaskbarIcon x:Key="NotifyIcon"
                     Visibility="Visible"
@@ -99,7 +99,8 @@
                                <RowDefinition Height="*" /> 
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Name="PlayerButtons" Opacity="0">
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
+                                        Name="PlayerButtons" Background="Transparent" Opacity="0">
                                 <controls:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
                                                   ImageSourceNormal="/Images/Player/prev-normal.png"
                                                   ImageSource="/Images/Player/prev-normal.png"
