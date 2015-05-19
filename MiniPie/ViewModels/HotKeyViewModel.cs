@@ -6,13 +6,16 @@ using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.HotKeyManager;
+using MiniPie.Models;
+using HotKey = MiniPie.Models.HotKey;
 
 namespace MiniPie.ViewModels
 {
     public class HotKeyViewModel: PropertyChangedBase
     {
         private readonly KeyManager _manager;
-        private AppSettings _settings;
+        private readonly AppSettings _settings;
+
         private readonly object _lockObject = new object();
 
         public HotKeyViewModel(KeyManager manager, AppSettings settings)

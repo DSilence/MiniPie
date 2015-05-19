@@ -142,6 +142,8 @@
     <Compile Include="Localization\ResourceEnumConverter.cs" />
     <Compile Include="Localization\ResxExtension.cs" />
     <Compile Include="Localization\UICultureExtension.cs" />
+    <Compile Include="Models\HotKey.cs" />
+    <Compile Include="Models\HotKeyOperations.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
