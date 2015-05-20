@@ -65,16 +65,16 @@ namespace MiniPie.ViewModels {
             {
                 taskbarIcon = (TaskbarIcon)viewElement.FindResource("NotifyIcon");
                 taskbarIcon.DataContext = this;
-                taskbarIcon.TrayLeftMouseDown += OnTaskbarIconOnTrayLeftMouseDown;
-                taskbarIcon.TrayMouseDoubleClick += OnTaskbarIconOnTrayLeftMouseDown;
+                taskbarIcon.TrayLeftMouseUp += MaximizeMiniplayer;
+                taskbarIcon.TrayMouseDoubleClick += MinimizeMiniplayer;
                 base.OnActivate();
             }
         }
 
         protected override void OnDeactivate(bool close)
         {
-            taskbarIcon.TrayLeftMouseDown -= OnTaskbarIconOnTrayLeftMouseDown;
-            taskbarIcon.TrayMouseDoubleClick -= OnTaskbarIconOnTrayLeftMouseDown;
+            taskbarIcon.TrayLeftMouseUp -= MaximizeMiniplayer;
+            taskbarIcon.TrayMouseDoubleClick -= MinimizeMiniplayer;
             base.OnDeactivate(close);
         }
 
@@ -158,16 +158,18 @@ namespace MiniPie.ViewModels {
             _SpotifyController.VolumeDown();
         }
 
-        private void OnTaskbarIconOnTrayLeftMouseDown(
-            object sender, RoutedEventArgs args)
+
+
+        private void MinimizeMiniplayer(object sender, RoutedEventArgs e)
         {
             var window = Application.Current.MainWindow;
-            MaximizeMiniplayer();
+            window.Visibility = Visibility.Collapsed;
         }
 
-        public void MaximizeMiniplayer()
+        public void MaximizeMiniplayer(object sender, RoutedEventArgs args)
         {
             var window = Application.Current.MainWindow;
+            window.Visibility = Visibility.Visible;
             window.Activate();
         }
 
