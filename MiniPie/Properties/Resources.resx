@@ -207,4 +207,7 @@
   <data name="Enum_SupportedKeyModifiers_None" xml:space="preserve">
     <value>(None)</value>
   </data>
+  <data name="Settings_InvalidHotkeys" xml:space="preserve">
+    <value>Invalid hotkey selected. Make sure that hotkeys are different.</value>
+  </data>
 </root>

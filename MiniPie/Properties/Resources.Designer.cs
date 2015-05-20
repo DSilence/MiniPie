@@ -313,6 +313,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid hotkey selected. Make sure that hotkeys are different..
+        /// </summary>
+        public static string Settings_InvalidHotkeys {
+            get {
+                return ResourceManager.GetString("Settings_InvalidHotkeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string Settings_Language {

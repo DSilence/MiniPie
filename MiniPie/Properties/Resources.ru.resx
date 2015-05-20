@@ -195,6 +195,9 @@
   <data name="Settings_HideIfSpotifyClosed" xml:space="preserve">
     <value>Спрятать MiniPie когда Spotify не запущен</value>
   </data>
+  <data name="Settings_InvalidHotkeys" xml:space="preserve">
+    <value>Непрвильное сочетание клавиш. Убедитесь что клавиши не повторяются.</value>
+  </data>
   <data name="Settings_Language" xml:space="preserve">
     <value>Язык</value>
   </data>

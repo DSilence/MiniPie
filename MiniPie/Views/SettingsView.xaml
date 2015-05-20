@@ -97,7 +97,7 @@
                     Grid.Row="1" Name="PlayPauseModifier" Grid.Column="1"
                     ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
                     Converter={StaticResource EnumToLocalizedStringConverter}}"
-                    SelectedItem="{Binding PlayPauseModifier}">
+                    SelectedItem="{Binding PlayPauseModifier, Converter={StaticResource EnumToLocalizedStringConverter}}">
                 </ComboBox>
                 <TextBox Margin="5,0,0,5" Name="PlayPause" Grid.Row="1" 
                          Grid.Column="2"
@@ -108,7 +108,7 @@
                 <ComboBox Grid.Row="2" Name="PreviousModifier" Grid.Column="1" 
                     ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
                     Converter={StaticResource EnumToLocalizedStringConverter}}"
-                    SelectedItem="{Binding PreviousModifier}"/>
+                    SelectedItem="{Binding PreviousModifier, Converter={StaticResource EnumToLocalizedStringConverter}}"/>
                 <TextBox Margin="5,0,0,5" Name="Previous" Grid.Row="2" 
                          Grid.Column="2" 
                            Text="{Binding Previous, Converter={StaticResource CodeConverter}, Mode=OneWay}"
@@ -118,7 +118,7 @@
                 <ComboBox Grid.Row="3" Name="NextModifier" Grid.Column="1" 
                     ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
                     Converter={StaticResource EnumToLocalizedStringConverter}}"
-                    SelectedItem="{Binding NextModifier}"/>
+                    SelectedItem="{Binding NextModifier, Converter={StaticResource EnumToLocalizedStringConverter}}"/>
                 <TextBox Margin="5,0,0,5" Name="Next" Grid.Row="3" 
                          Grid.Column="2"
                            Text="{Binding Next, Converter={StaticResource CodeConverter}, Mode=OneWay}" 
@@ -126,7 +126,7 @@
 
                 <Label Grid.Row="4" Grid.Column="0" Content="{wpf:Resx App_VolumeDown}"/>
                 <ComboBox Grid.Row="4" Name="VolumeDownModifier" Grid.Column="1" 
-                    SelectedItem="{Binding VolumeDownModifier}"
+                    SelectedItem="{Binding VolumeDownModifier, Converter={StaticResource EnumToLocalizedStringConverter}}"
                     ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
                     Converter={StaticResource EnumToLocalizedStringConverter}}"/>
                 <TextBox Margin="5,0,0,5" Name="VolumeDown" Grid.Row="4" 
@@ -136,7 +136,7 @@
                 
                 <Label Grid.Row="5" Grid.Column="0" Content="{wpf:Resx App_VolumeUp}"/>
                 <ComboBox Grid.Row="5" Name="VolumeUpModifier" Grid.Column="1" 
-                    SelectedItem="{Binding VolumeUpModifier}"
+                    SelectedItem="{Binding VolumeUpModifier, Converter={StaticResource EnumToLocalizedStringConverter}}"
                     ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
                     Converter={StaticResource EnumToLocalizedStringConverter}}"/>
                 <TextBox Margin="5,0,0,5" Name="VolumeUp" Grid.Row="5" 

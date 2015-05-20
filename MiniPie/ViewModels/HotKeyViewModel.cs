@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
 using MiniPie.Core;
@@ -15,13 +15,14 @@ namespace MiniPie.ViewModels
     {
         private readonly KeyManager _manager;
         private readonly AppSettings _settings;
-
+        private HotKeys _lastValidHotkeys;
         private readonly object _lockObject = new object();
 
         public HotKeyViewModel(KeyManager manager, AppSettings settings)
         {
             this._manager = manager;
             this._settings = settings;
+            this._lastValidHotkeys = (HotKeys)HotKeys.Clone();
         }
 
         public HotKeys HotKeys
@@ -38,14 +39,28 @@ namespace MiniPie.ViewModels
             {
                 _settings.HotKeys = value;
                 NotifyOfPropertyChange();
-                PerformHotKeyUpdate();
+                NotifyOfPropertyChange("PlayPause");
+                NotifyOfPropertyChange("Previous");
+                NotifyOfPropertyChange("Next");
+                NotifyOfPropertyChange("VolumeUp");
+                NotifyOfPropertyChange("VolumeDown");
             }
         }
 
         public void PerformHotKeyUpdate()
         {
-            UnregisterHotKeys();
-            RegisterHotKeys();
+            try
+            {
+                UnregisterHotKeys();
+                RegisterHotKeys();
+                _lastValidHotkeys = (HotKeys) HotKeys.Clone();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(Properties.Resources.Settings_InvalidHotkeys);
+                UnregisterHotKeys();
+                HotKeys = _lastValidHotkeys;
+            }
         }
 
         private void UnregisterHotKeys()
