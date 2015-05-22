@@ -21,6 +21,8 @@ namespace MiniPie.Core {
         public event EventHandler TrackChanged;
         public event EventHandler SpotifyOpened;
 
+        private const int SW_RESTORE = 9;
+
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
 
@@ -45,6 +47,9 @@ namespace MiniPie.Core {
 
         [DllImport("user32.dll")]
         private static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
         const int KeyMessage = 0x319;
         const int ControlKey = 0x11;
@@ -80,7 +85,7 @@ namespace MiniPie.Core {
         private void JoinBackgroundProcess() {
             if (_BackgroundChangeTracker != null && _BackgroundChangeTracker.IsAlive)
                 return;
-			
+            
             _BackgroundChangeTracker = new Thread(BackgroundChangeTrackerWork) { IsBackground = true };
             _BackgroundChangeTracker.Start();
         }
@@ -267,6 +272,14 @@ namespace MiniPie.Core {
             PostMessage(_SpotifyProcess.MainWindowHandle, 0x100, new IntPtr(0x28), IntPtr.Zero);
             Thread.Sleep(100);
             keybd_event(ControlKey, 0x1D, 0x2, 0);
+        }
+
+        public void MaximizeSpotify()
+        {
+            if (_SpotifyProcess != null)
+            {
+                ShowWindowAsync(_SpotifyProcess.MainWindowHandle, 9);
+            }
         }
 
         public void Dispose() {

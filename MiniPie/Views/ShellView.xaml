@@ -85,11 +85,11 @@
             <Border Grid.Row="0" Background="#000000">
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding CoverImage}"/>
+                        <ImageBrush ImageSource="{Binding CoverImage}" />
                     </Border.Background>
                     <Border>
                         <Border.Background><ImageBrush ImageSource="/Images/cover.png"></ImageBrush></Border.Background>
-                        <Grid>
+                        <Grid Background="Transparent" MouseUp="UIElement_OnMouseUp" Cursor="Hand">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
@@ -99,7 +99,7 @@
                                <RowDefinition Height="*" /> 
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
+                            <StackPanel Cursor="Arrow" Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
                                         Name="PlayerButtons" Background="Transparent" Opacity="0">
                                 <controls:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
                                                   ImageSourceNormal="/Images/Player/prev-normal.png"

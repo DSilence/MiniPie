@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
+using MiniPie.ViewModels;
 
 namespace MiniPie.Views {
     /// <summary>
@@ -17,6 +19,26 @@ namespace MiniPie.Views {
             if (notifyIcon != null)
             {
                 notifyIcon.Dispose();
+            }
+        }
+
+        private void UIElement_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                var viewModel = ShellViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.OpenSpotifyWindow();
+                }
+            }
+        }
+
+        private ShellViewModel ShellViewModel
+        {
+            get
+            {
+                return DataContext as ShellViewModel;
             }
         }
     }
