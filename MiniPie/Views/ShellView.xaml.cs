@@ -22,9 +22,9 @@ namespace MiniPie.Views {
             }
         }
 
-        private void UIElement_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void AlbumArt_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
             {
                 var viewModel = ShellViewModel;
                 if (viewModel != null)

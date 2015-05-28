@@ -89,7 +89,7 @@
                     </Border.Background>
                     <Border>
                         <Border.Background><ImageBrush ImageSource="/Images/cover.png"></ImageBrush></Border.Background>
-                        <Grid Background="Transparent" MouseUp="UIElement_OnMouseUp" Cursor="Hand">
+                        <Grid Background="Transparent" MouseDown="AlbumArt_OnMouseDown">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />

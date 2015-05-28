@@ -274,7 +274,7 @@ namespace MiniPie.Core {
             keybd_event(ControlKey, 0x1D, 0x2, 0);
         }
 
-        public void MaximizeSpotify()
+        public void OpenSpotify()
         {
             if (_SpotifyProcess != null)
             {

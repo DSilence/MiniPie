@@ -160,10 +160,8 @@ namespace MiniPie.ViewModels {
 
         public void OpenSpotifyWindow()
         {
-            _SpotifyController.MaximizeSpotify();
+            _SpotifyController.OpenSpotify();
         }
-
-
 
         private void MinimizeMiniplayer(object sender, RoutedEventArgs e)
         {

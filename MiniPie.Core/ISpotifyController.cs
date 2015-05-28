@@ -16,6 +16,6 @@ namespace MiniPie.Core {
         void PreviousTrack();
         void VolumeUp();
         void VolumeDown();
-        void MaximizeSpotify();
+        void OpenSpotify();
     }
 }
