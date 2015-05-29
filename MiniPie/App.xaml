@@ -7,7 +7,8 @@
              xmlns:tb="http://www.hardcodet.net/taskbar"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:properties="clr-namespace:MiniPie.Properties"
-             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf">
+             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
+             xmlns:system="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -50,6 +51,9 @@
                         <Setter Property="Opacity" Value="0.85" />
                         <Setter Property="FontWeight" Value="Normal" />
                     </Style>
+
+                    <system:Boolean x:Key="True">True</system:Boolean>
+                    <system:Boolean x:Key="False">False</system:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

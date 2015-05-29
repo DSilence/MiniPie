@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Windows;
-using System.Windows.Input;
 using Caliburn.Micro;
 using Hardcodet.Wpf.TaskbarNotification;
-using Microsoft.Expression.Interactivity.Core;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using TinyIoC;
@@ -128,6 +125,21 @@ namespace MiniPie.ViewModels {
             set { _ApplicationSize = value; NotifyOfPropertyChange(() => ApplicationSize); }
         }
 
+        private bool _isPlaying;
+
+        public bool IsPlaying
+        {
+            get { return _isPlaying; }
+            set
+            {
+                if (_isPlaying != value)
+                {
+                    _isPlaying = value;
+                    NotifyOfPropertyChange();
+                }
+            }
+        }
+
         #endregion
 
         public void ShowSettings() {
@@ -139,7 +151,10 @@ namespace MiniPie.ViewModels {
         }
 
         public void PlayPause() {
-            _SpotifyController.PausePlay();
+            if (CanPlayPause)
+            {
+                _SpotifyController.PausePlay();
+            }
         }
 
         public void PlayPrevious() {
@@ -200,9 +215,9 @@ namespace MiniPie.ViewModels {
                 var status = _SpotifyController.GetStatus();
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
-                var fade = (status != null && status.Playing);
+                IsPlaying = (status != null && status.Playing);
 
-                if(fade)
+                if (IsPlaying)
                     OnCoverDisplayFadeOut();
 
                 HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
@@ -222,14 +237,14 @@ namespace MiniPie.ViewModels {
                                                            if (string.IsNullOrEmpty(coverUri))
                                                                coverUri = UnknownCoverUri;
                                                            CoverImage = coverUri;
-                                                           if (fade)
+                                                           if (IsPlaying)
                                                                OnCoverDisplayFadeIn();
                                                        });
                     updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
                 }
                 else {
                     CoverImage = NoCoverUri;
-                    if(fade)
+                    if (IsPlaying)
                         OnCoverDisplayFadeIn();
                 }
             }
