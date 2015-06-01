@@ -26,6 +26,7 @@ namespace MiniPie.Core {
 
         private const int SW_RESTORE = 9;
         private const int MINIMIZED_STATE = 2;
+        
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
@@ -74,10 +75,13 @@ namespace MiniPie.Core {
 
         const int KeyMessage = 0x319;
         const int ControlKey = 0x11;
+        private const uint WM_COMMAND = 0x0111;
 
-        const long PlaypauseKey = 0xE0000L;
-        const long NexttrackKey = 0xB0000L;
-        const long PreviousKey = 0xC0000L;
+        private const long PlaypauseKey = 0xE0000L;
+        private const long NexttrackKey = 0xB0000L;
+        private const long PreviousKey = 0xC0000L;
+        private const long VolumeUpKey = 0x10079L;
+        private const long VolumeDownKey = 0x1007AL;
 
         private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
@@ -288,17 +292,11 @@ namespace MiniPie.Core {
         }
 
         public void VolumeUp() {
-            keybd_event(ControlKey, 0x1D, 0, 0);
-            PostMessage(_SpotifyProcess.MainWindowHandle, 0x100, new IntPtr(0x26), IntPtr.Zero);
-            Thread.Sleep(100);
-            keybd_event(ControlKey, 0x1D, 0x2, 0);
+            PostMessage(_SpotifyProcess.MainWindowHandle, WM_COMMAND, new IntPtr(VolumeUpKey), IntPtr.Zero);
         }
 
         public void VolumeDown() {
-            keybd_event(ControlKey, 0x1D, 0, 0);
-            PostMessage(_SpotifyProcess.MainWindowHandle, 0x100, new IntPtr(0x28), IntPtr.Zero);
-            Thread.Sleep(100);
-            keybd_event(ControlKey, 0x1D, 0x2, 0);
+            PostMessage(_SpotifyProcess.MainWindowHandle, WM_COMMAND, new IntPtr(VolumeDownKey), IntPtr.Zero);
         }
 
         public void OpenSpotify()
