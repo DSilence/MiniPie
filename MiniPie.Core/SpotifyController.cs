@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -21,7 +22,10 @@ namespace MiniPie.Core {
         public event EventHandler TrackChanged;
         public event EventHandler SpotifyOpened;
 
+        #region Win32Imports
+
         private const int SW_RESTORE = 9;
+        private const int MINIMIZED_STATE = 2;
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
@@ -50,6 +54,23 @@ namespace MiniPie.Core {
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")]
+        static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        private struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public int showCmd;
+            public Point ptMinPosition;
+            public Point ptMaxPosition;
+            public Point rcNormalPosition;
+        }
+        #endregion
 
         const int KeyMessage = 0x319;
         const int ControlKey = 0x11;
@@ -284,7 +305,17 @@ namespace MiniPie.Core {
         {
             if (_SpotifyProcess != null)
             {
-                ShowWindowAsync(_SpotifyProcess.MainWindowHandle, 9);
+                WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+                IntPtr handle = _SpotifyProcess.MainWindowHandle;
+                GetWindowPlacement(handle, ref placement);
+                if (placement.showCmd == MINIMIZED_STATE)
+                {
+                    ShowWindowAsync(handle, SW_RESTORE);
+                }
+                else
+                {
+                    SetForegroundWindow(handle);
+                }
             }
         }
 
