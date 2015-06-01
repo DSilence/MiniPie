@@ -68,6 +68,7 @@ namespace MiniPie.Core {
         private Timer _ProcessWatcher;
         private Status _CurrentTrackInfo;
         private WinEventDelegate _ProcDelegate;
+        private object _syncObject = new object();
 
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
@@ -94,18 +95,23 @@ namespace MiniPie.Core {
             _SpotifyProcess = null;
             _SpotifyProcess = Process.GetProcessesByName("spotify")
                 .FirstOrDefault(p => p.MainWindowHandle.ToInt32() > 0);
-            if (_SpotifyProcess != null) {
-                //Renew token for Spotify local api
-                _LocalApi.RenewToken();
+            lock (_syncObject)
+            {
+                if (_SpotifyProcess != null)
+                {
+                    //Renew token for Spotify local api
+                    _LocalApi.RenewToken();
 
-                _SpotifyProcess.EnableRaisingEvents = true;
-                _SpotifyProcess.Exited += (o, e) => {
-                                              _SpotifyProcess = null;
-                                              _BackgroundChangeTracker.Abort();
-                                              _BackgroundChangeTracker = null;
-                                              WaitForSpotify();
-                                              OnSpotifyExited();
-                                          };
+                    _SpotifyProcess.EnableRaisingEvents = true;
+                    _SpotifyProcess.Exited += (o, e) =>
+                    {
+                        _SpotifyProcess = null;
+                        _BackgroundChangeTracker.Abort();
+                        _BackgroundChangeTracker = null;
+                        WaitForSpotify();
+                        OnSpotifyExited();
+                    };
+                }
             }
         }
 
