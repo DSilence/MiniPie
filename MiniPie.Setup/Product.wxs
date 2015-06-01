@@ -17,7 +17,9 @@
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="MiniPie" />
+        <Directory Id="INSTALLFOLDER" Name="MiniPie">
+          <Directory Id="COVERCACHE" Name="CoverCache"/>
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="MiniPie">
@@ -52,6 +54,9 @@
                   Target="[INSTALLFOLDER]MiniPie.exe" WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\MiniPie" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+      <Component Id="CoverCache" Directory="COVERCACHE" Guid="C8D7E67B-3DF5-463B-B8A3-8227425CB279">
+        <RemoveFolder Id="RemoveCoverCache" Directory="COVERCACHE" On="uninstall"/>
       </Component>
     </Feature>
     <UI />

@@ -11,14 +11,18 @@ namespace MiniPie.Core {
     public class CoverService : ICoverService {
 
         private const string CacheFileNameTemplate = "{0}.jpg";
-        private readonly AppContracts _Contracts;
+        private readonly string _lastFmApiKey;
+        private readonly string _cacheRootDirectory;
         private readonly string _CacheDirectory;
         private readonly SpotifyLocalApi _LocalApi;
         private readonly ILog _Logger;
 
-        public CoverService(AppContracts contracts, ILog logger, SpotifyLocalApi localApi) {
-            _Contracts = contracts;
-            _CacheDirectory = Path.Combine(contracts.SettingsLocation, "CoverCache");
+        public CoverService(string lastFmApiKey, string cacheRootDirectory,
+            ILog logger, SpotifyLocalApi localApi)
+        {
+
+            _lastFmApiKey = lastFmApiKey;
+            _CacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
             _Logger = logger;
             _LocalApi = localApi;
             if (!Directory.Exists(_CacheDirectory))
@@ -81,7 +85,7 @@ namespace MiniPie.Core {
 
         private string FetchLastFmCover(string artist, string track, string cachedFileName) {
             var requestUrl = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={0}&track={1}&artist={2}",
-                    _Contracts.LastFmApiKey,
+                    _lastFmApiKey,
                     HttpUtility.UrlEncode(CleanTrackName(track)),
                     HttpUtility.UrlEncode(artist));
             try {
