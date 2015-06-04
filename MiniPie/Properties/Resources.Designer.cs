@@ -331,6 +331,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start MiniPie minimized.
+        /// </summary>
+        public static string Settings_StartMinimized {
+            get {
+                return ResourceManager.GetString("Settings_StartMinimized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start MiniPie after I log into my computer.
         /// </summary>
         public static string Settings_StartWithWindows {

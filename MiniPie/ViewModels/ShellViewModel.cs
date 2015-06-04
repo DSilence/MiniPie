@@ -53,8 +53,15 @@ namespace MiniPie.ViewModels {
             if (!_SpotifyController.IsSpotifyInstalled())
                 _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
 
-            if(_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
+            if (_Settings.StartMinimized)
+            {
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
+            }
+            else
+            {
+                if (_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
+                    OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
+            }
 
 
             var viewElement = view as FrameworkElement;
@@ -181,7 +188,7 @@ namespace MiniPie.ViewModels {
         private void MinimizeMiniplayer(object sender, RoutedEventArgs e)
         {
             var window = Application.Current.MainWindow;
-            window.Visibility = Visibility.Collapsed;
+            window.Visibility = Visibility.Hidden;
         }
 
         public void MaximizeMiniplayer(object sender, RoutedEventArgs args)

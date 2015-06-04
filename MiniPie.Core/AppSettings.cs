@@ -86,5 +86,18 @@ namespace MiniPie.Core {
                 NotifyOfPropertyChange();
             }
         }
+
+        private bool _startMinimized;
+
+        [JsonProperty]
+        public bool StartMinimized
+        {
+            get { return _startMinimized; }
+            set
+            {
+                _startMinimized = value;
+                NotifyOfPropertyChange();
+            }
+        }
     }
 }

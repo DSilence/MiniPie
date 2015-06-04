@@ -210,4 +210,7 @@
   <data name="Settings_InvalidHotkeys" xml:space="preserve">
     <value>Invalid hotkey selected. Make sure that hotkeys are different.</value>
   </data>
+  <data name="Settings_StartMinimized" xml:space="preserve">
+    <value>Start MiniPie minimized</value>
+  </data>
 </root>

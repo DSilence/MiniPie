@@ -47,6 +47,12 @@ namespace MiniPie.ViewModels {
             set { _Settings.DisableAnimations = value; NotifyOfPropertyChange(); }
         }
 
+        public bool StartMinimized
+        {
+            get { return _Settings.StartMinimized; }
+            set { _Settings.StartMinimized = value; NotifyOfPropertyChange(); }
+        }
+
         public Language Language
         {
             get { return _Settings.Language ?? (_Settings.Language = LanguageHelper.English); }

@@ -201,6 +201,9 @@
   <data name="Settings_Language" xml:space="preserve">
     <value>Язык</value>
   </data>
+  <data name="Settings_StartMinimized" xml:space="preserve">
+    <value>Запускать MiniPie свернутым</value>
+  </data>
   <data name="Settings_StartWithWindows" xml:space="preserve">
     <value>Запускать MiniPie после того, как я захожу на компьютер</value>
   </data>
