@@ -67,6 +67,8 @@ namespace MiniPie.Core.SpotifyLocal {
         private string _Cfid;
         private string _OAuth;
 
+        private const string playPositionJsonIndex = "playing_position\":";
+
         private const string CoverSize = "300"; //valid sizes: 300, 640
 
         /// <summary>Initializes a new SpotifyAPI object which can be used to recieve</summary>
@@ -189,8 +191,9 @@ namespace MiniPie.Core.SpotifyLocal {
         public Status Status {
             get {
                 try {
+
                     var a = SendLocalRequest("remote/status.json", true, true, _Wait);
-                    var d = fastJSON.JSON.ToObject<List<Status>>(a);
+                    var d = JsonConvert.DeserializeObject<List<Status>>(a);
 
                     var result = d.FirstOrDefault();
                     if (result != null && result.error != null &&
@@ -209,6 +212,21 @@ namespace MiniPie.Core.SpotifyLocal {
                     _Log.WarnException("Failed to get track status", exc);
                     return null;
                 }
+            }
+        }
+
+        public double CurrentTrackProgress
+        {
+            get
+            {
+                //this implementation greatly improved the performance
+                var a = SendLocalRequest("remote/status.json", true, true, _Wait);
+                int playingPositionIndex = a.IndexOf(playPositionJsonIndex, 
+                    StringComparison.Ordinal) + playPositionJsonIndex.Length;
+                int finishLineIndex = a.IndexOf(",", playingPositionIndex, 
+                    StringComparison.Ordinal);
+                var progress = a.Substring(playingPositionIndex, finishLineIndex - playingPositionIndex);
+                return Convert.ToDouble(progress);
             }
         }
 

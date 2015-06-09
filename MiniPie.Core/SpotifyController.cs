@@ -113,8 +113,11 @@ namespace MiniPie.Core {
 
         private void SongTimerChanging(object state)
         {
-            _CurrentTrackInfo = _LocalApi.Status;
-            OnTrackTimerChanged();
+            if (_CurrentTrackInfo.playing)
+            {
+                _CurrentTrackInfo.playing_position = _LocalApi.CurrentTrackProgress;
+                OnTrackTimerChanged();
+            }
         }
 
         private void JoinBackgroundProcess() {
