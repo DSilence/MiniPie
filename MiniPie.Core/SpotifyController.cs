@@ -20,6 +20,7 @@ namespace MiniPie.Core {
 
         public event EventHandler SpotifyExited;
         public event EventHandler TrackChanged;
+        public event EventHandler TrackTimerChanged;
         public event EventHandler SpotifyOpened;
 
         #region Win32Imports
@@ -91,6 +92,7 @@ namespace MiniPie.Core {
         private Process _SpotifyProcess;
         private Thread _BackgroundChangeTracker;
         private Timer _ProcessWatcher;
+        private Timer _songStatusWatcher;
         private Status _CurrentTrackInfo;
         private WinEventDelegate _ProcDelegate;
         private object _syncObject = new object();
@@ -103,9 +105,16 @@ namespace MiniPie.Core {
             _CurrentTrackInfo = localApi.Status;
             AttachToProcess();
             JoinBackgroundProcess();
+            _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
 
             if(_SpotifyProcess == null)
                 WaitForSpotify();
+        }
+
+        private void SongTimerChanging(object state)
+        {
+            _CurrentTrackInfo = _LocalApi.Status;
+            OnTrackTimerChanged();
         }
 
         private void JoinBackgroundProcess() {
@@ -172,6 +181,12 @@ namespace MiniPie.Core {
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
+        protected virtual void OnTrackTimerChanged()
+        {
+            var handler = TrackTimerChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
         protected virtual void OnSpotifyOpenend() {
             var handler = SpotifyOpened;
             if (handler != null) handler(this, EventArgs.Empty);
@@ -185,15 +200,17 @@ namespace MiniPie.Core {
                     try
                     {
                         _CurrentTrackInfo = _LocalApi.Status;
-                        if (_CurrentTrackInfo != null && _CurrentTrackInfo.Error != null)
-                            throw new Exception(string.Format("Spotify API error: {0}", _CurrentTrackInfo.Error.Message));
+                        if (_CurrentTrackInfo != null && _CurrentTrackInfo.error != null)
+                            throw new Exception(string.Format("Spotify API error: {0}", _CurrentTrackInfo.error.message));
                     }
                     catch (Exception exc)
                     {
                         _Logger.WarnException("Failed to retrieve trackinfo", exc);
                         _CurrentTrackInfo = null;
                     }
+                    BackgroundChangeTrackerWork();
                     OnTrackChanged();
+                    _songStatusWatcher.Change(1000, 1000);
                 }
         }
 
@@ -260,16 +277,16 @@ namespace MiniPie.Core {
         }
 
         public string GetSongName() {
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.Track != null && _CurrentTrackInfo.Track.TrackResource != null)
-                return _CurrentTrackInfo.Track.TrackResource.Name;
+            if (_CurrentTrackInfo != null && _CurrentTrackInfo.track != null && _CurrentTrackInfo.track.track_resource != null)
+                return _CurrentTrackInfo.track.track_resource.name;
 
             var title = GetSpotifyWindowTitle().Split('–');
             return title.Count() > 1 ? title[1].Trim() : string.Empty;
         }
 
         public string GetArtistName() {
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.Track != null && _CurrentTrackInfo.Track.ArtistResource != null)
-                return _CurrentTrackInfo.Track.ArtistResource.Name;
+            if (_CurrentTrackInfo != null && _CurrentTrackInfo.track != null && _CurrentTrackInfo.track.artist_resource != null)
+                return _CurrentTrackInfo.track.artist_resource.name;
 
             var title = GetSpotifyWindowTitle().Split('–');
             return title.Count() > 1 ? title[0].Split('-')[1].Trim() : string.Empty;
@@ -317,7 +334,9 @@ namespace MiniPie.Core {
             }
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
+            _songStatusWatcher.Dispose();
             if(_BackgroundChangeTracker.IsAlive)
                 _BackgroundChangeTracker.Abort();
         }

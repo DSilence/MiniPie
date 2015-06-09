@@ -94,7 +94,7 @@ namespace MiniPie.Core.SpotifyLocal {
                 _Cfid = string.Empty;
 
                 _OAuth = GetOAuth();
-                _Cfid = Cfid.Token;
+                _Cfid = Cfid.token;
             }
             catch (Exception exc) {
                 _Log.WarnException("Failed to renew Spotify token", exc);
@@ -138,7 +138,7 @@ namespace MiniPie.Core.SpotifyLocal {
             get {
                 var a = SendLocalRequest("simplecsrf/token.json");
                 var d = (List<Cfid>)JsonConvert.DeserializeObject(a, typeof(List<Cfid>));
-                _Cfid = d[0].Token;
+                _Cfid = d[0].token;
                 return d[0];
             }
         }
@@ -190,12 +190,12 @@ namespace MiniPie.Core.SpotifyLocal {
             get {
                 try {
                     var a = SendLocalRequest("remote/status.json", true, true, _Wait);
-                    var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+                    var d = fastJSON.JSON.ToObject<List<Status>>(a);
 
                     var result = d.FirstOrDefault();
-                    if (result != null && result.Error != null &&
-                        (result.Error.Message.Contains("Invalid Csrf token") ||
-                         result.Error.Message.Contains("Expired OAuth token"))) {
+                    if (result != null && result.error != null &&
+                        (result.error.message.Contains("Invalid Csrf token") ||
+                         result.error.message.Contains("Expired OAuth token"))) {
                         RenewToken();
 
                         a = SendLocalRequest("remote/status.json", true, true, _Wait);

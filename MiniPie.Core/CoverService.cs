@@ -62,12 +62,12 @@ namespace MiniPie.Core {
             try {
                 var trackStatus = _LocalApi.Status;
                 if (trackStatus != null) {
-                    if (trackStatus.Error != null)
-                        throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.Error.Message,
-                                                          trackStatus.Error.Type));
+                    if (trackStatus.error != null)
+                        throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.error.message,
+                                                          trackStatus.error.type));
 
-                    if (trackStatus.Track != null && trackStatus.Track.AlbumResource != null) {
-                        var coverUrl = _LocalApi.GetArt(trackStatus.Track.AlbumResource.Uri);
+                    if (trackStatus.track != null && trackStatus.track.album_resource != null) {
+                        var coverUrl = _LocalApi.GetArt(trackStatus.track.album_resource.uri);
                         if (!string.IsNullOrEmpty(coverUrl))
                             return DownloadAndSaveImage(coverUrl, cachedFileName);
                     }

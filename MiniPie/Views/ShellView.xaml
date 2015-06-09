@@ -11,6 +11,8 @@
              xmlns:tb="http://www.hardcodet.net/taskbar"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
+             xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
              mc:Ignorable="d" 
              MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
@@ -19,6 +21,7 @@
              Background="#000000" FontFamily="Segoe UI"
              Foreground="#FFFFFF" BorderBrush="#000000" Unloaded="ShellView_OnUnloaded">
     <UserControl.Resources>
+        <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter"/>
         <Storyboard x:Key="StbFadeout">
             <DoubleAnimation AutoReverse="False"
                              From="1" To="0.0"
@@ -55,6 +58,36 @@
                 <controls:MiniPieContextMenu/>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
+        <Style TargetType="circularProgressButton1:PropgressButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type circularProgressButton1:PropgressButton}">
+                        <Grid>
+                            <Ellipse Stroke="Black" Fill="{TemplateBinding Background}"/>
+                            <Ellipse Stroke="Black" Margin="0" Fill="White"/>
+                            <circularProgressButton1:Arc StrokeThickness="2" Stroke="{TemplateBinding BorderBrush}" Margin="0">
+                                <circularProgressButton1:Arc.StartAngle>
+                                    <MultiBinding Converter="{StaticResource ProgressConverter}">
+                                        <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}"/>
+                                    </MultiBinding>
+                                </circularProgressButton1:Arc.StartAngle>
+                                <circularProgressButton1:Arc.EndAngle>
+                                    <MultiBinding Converter="{StaticResource ProgressConverter}">
+                                        <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}"/>
+                                    </MultiBinding>
+                                </circularProgressButton1:Arc.EndAngle>
+                            </circularProgressButton1:Arc>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--
+        <Style x:Key="ProgressBarStyle" TargetType="{x:Type circularProgressButton1:PropgressButton}">
+            
+        </Style>-->
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.MouseEnter">
@@ -108,6 +141,7 @@
                                                   ImageSourcePressed="/Images/Player/prev-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
                                                   ToolTip="plays the previous track" />
+                                <circularProgressButton1:PropgressButton Width="33" Height="33" Maximum="{Binding MaxProgress}" Value="{Binding Progress}"/>
                                 <controls:ImageButton Width="33" Height="33" x:Name="Play"
                                                       cal:Message.Attach="[Event Click] = [Action PlayPause]"
                                                       Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"

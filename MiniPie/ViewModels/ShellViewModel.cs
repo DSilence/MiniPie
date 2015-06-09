@@ -40,6 +40,7 @@ namespace MiniPie.ViewModels {
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
             _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
             _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
+            _SpotifyController.TrackTimerChanged += SpotifyControllerOnTrackTimerChanged;
 
             _Settings.PropertyChanged += (o, e) => {
                                              if (e.PropertyName == ApplicationSize.GetType().Name)
@@ -185,6 +186,28 @@ namespace MiniPie.ViewModels {
             _SpotifyController.OpenSpotify();
         }
 
+        private double _maxProgress;
+        public double MaxProgress
+        {
+            get { return _maxProgress; }
+            set
+            {
+                _maxProgress = value; 
+                NotifyOfPropertyChange();
+            }
+        }
+
+        private double _progress;
+        public double Progress
+        {
+            get { return _progress; }
+            set
+            {
+                _progress = value; 
+                NotifyOfPropertyChange();
+            }
+        }
+
         private void MinimizeMiniplayer(object sender, RoutedEventArgs e)
         {
             var window = Application.Current.MainWindow;
@@ -217,12 +240,21 @@ namespace MiniPie.ViewModels {
             UpdateView();
         }
 
+        private void SpotifyControllerOnTrackTimerChanged(object sender, EventArgs eventArgs)
+        {
+            var status = _SpotifyController.GetStatus();
+            MaxProgress = status.track.length;
+            Progress = status.playing_position;
+        }
+
         private void UpdateView() {
             try {
                 var status = _SpotifyController.GetStatus();
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
-                IsPlaying = (status != null && status.Playing);
+                MaxProgress = status.track.length;
+                Progress = status.playing_position;
+                IsPlaying = (status != null && status.playing);
 
                 if (IsPlaying)
                     OnCoverDisplayFadeOut();

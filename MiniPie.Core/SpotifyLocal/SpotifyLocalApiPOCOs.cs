@@ -3,125 +3,122 @@
 namespace MiniPie.Core.SpotifyLocal {
     public class ClientVersion {
         [JsonProperty("error")]
-        public Error Error { get; set; }
+        public Error error { get; set; }
 
         [JsonProperty("version")]
-        public int Version { get; set; }
+        public int version { get; set; }
 
         [JsonProperty("client_version")]
-        public string ClientVersionString { get; set; }
+        public string client_version { get; set; }
 
-        [JsonProperty("running")]
-        public bool Running { get; set; }
+        public bool running { get; set; }
     }
 
     public class Cfid {
-        [JsonProperty("error")]
-        public Error Error { get; set; }
+        public Error error { get; set; }
 
-        [JsonProperty("token")]
-        public string Token { get; set; }
+        public string token { get; set; }
     }
 
     public class Status {
 
         [JsonProperty("error")]
-        public Error Error { get; set; }
+        public Error error { get; set; }
 
         [JsonProperty("version")]
-        public int Version { get; set; }
+        public int version { get; set; }
 
         [JsonProperty("client_version")]
-        public string ClientVersion { get; set; }
+        public string client_version { get; set; }
 
         [JsonProperty("playing")]
-        public bool Playing { get; set; }
+        public bool playing { get; set; }
 
         [JsonProperty("shuffle")]
-        public bool Shuffle { get; set; }
+        public bool shuffle { get; set; }
 
         [JsonProperty("repeat")]
-        public bool Repeat { get; set; }
+        public bool repeat { get; set; }
 
         [JsonProperty("play_enabled")]
-        public bool PlayEnabled { get; set; }
+        public bool play_enabled { get; set; }
 
         [JsonProperty("prev_enabled")]
-        public bool PrevEnabled { get; set; }
+        public bool prev_enabled { get; set; }
 
         [JsonProperty("track")]
-        public Track Track { get; set; }
+        public Track track { get; set; }
 
         [JsonProperty("playing_position")]
-        public double PlayingPosition { get; set; }
+        public double playing_position { get; set; }
 
         [JsonProperty("server_time")]
-        public int ServerTime { get; set; }
+        public int server_time { get; set; }
 
         [JsonProperty("volume")]
-        public double Volume { get; set; }
+        public double volume { get; set; }
 
         [JsonProperty("online")]
-        public bool Online { get; set; }
+        public bool online { get; set; }
 
         [JsonProperty("open_graph_state")]
-        public OpenGraphState OpenGraphState { get; set; }
+        public OpenGraphState open_graph_state { get; set; }
 
         [JsonProperty("running")]
-        public bool Running { get; set; }
+        public bool running { get; set; }
     }
 
 
     public class Error {
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public string type { get; set; }
 
         [JsonProperty("message")]
-        public string Message { get; set; }
+        public string message { get; set; }
     }
 
 
     public class OpenGraphState {
 
         [JsonProperty("private_session")]
-        public bool PrivateSession { get; set; }
+        public bool private_session { get; set; }
 
         [JsonProperty("posting_disabled")]
-        public bool PostingDisabled { get; set; }
+        public bool posting_disabled { get; set; }
     }
 
     public class Track {
         [JsonProperty("track_resource")]
-        public Resource TrackResource { get; set; }
+        public Resource track_resource { get; set; }
 
         [JsonProperty("artist_resource")]
-        public Resource ArtistResource { get; set; }
+        public Resource artist_resource { get; set; }
 
         [JsonProperty("album_resource")]
-        public Resource AlbumResource { get; set; }
+        public Resource album_resource { get; set; }
 
         [JsonProperty("length")]
-        public int Length { get; set; }
+        public int length { get; set; }
 
         [JsonProperty("track_type")]
-        public string TrackType { get; set; }
+        public string track_type { get; set; }
     }
 
     public class Resource {
 
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [JsonProperty("uri")]
-        public string Uri { get; set; }
+        public string uri { get; set; }
 
         [JsonProperty("location")]
-        public Location Location { get; set; }
+        public Location location { get; set; }
     }
 
     public class Location {
         [JsonProperty("og")]
-        public string Og { get; set; }
+        public string og { get; set; }
     }
 
 }
