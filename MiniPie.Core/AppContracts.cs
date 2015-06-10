@@ -39,7 +39,7 @@ namespace MiniPie.Core {
         }
 
         public string SpotifyLocalHost {
-            get { return "minipie.spotilocal.com"; }
+            get { return "http://minipie.spotilocal.com:4380/"; }
         }
 
         public string BroadcastUrl { get { return "http://deploy.krausshq.com/winfy/broadcast.json"; } }

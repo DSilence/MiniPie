@@ -40,7 +40,7 @@ namespace MiniPie.ViewModels {
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
             _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
             _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
-            _SpotifyController.TrackTimerChanged += SpotifyControllerOnTrackTimerChanged;
+            _SpotifyController.TrackStatusChanged += SpotifyControllerOnTrackStatusChanged;
 
             _Settings.PropertyChanged += (o, e) => {
                                              if (e.PropertyName == ApplicationSize.GetType().Name)
@@ -240,11 +240,12 @@ namespace MiniPie.ViewModels {
             UpdateView();
         }
 
-        private void SpotifyControllerOnTrackTimerChanged(object sender, EventArgs eventArgs)
+        private void SpotifyControllerOnTrackStatusChanged(object sender, EventArgs eventArgs)
         {
             var status = _SpotifyController.GetStatus();
             MaxProgress = status.track.length;
             Progress = status.playing_position;
+            IsPlaying = status.playing;
         }
 
         private void UpdateView() {
@@ -254,7 +255,7 @@ namespace MiniPie.ViewModels {
                 var artist = _SpotifyController.GetArtistName();
                 MaxProgress = status.track.length;
                 Progress = status.playing_position;
-                IsPlaying = (status != null && status.playing);
+                IsPlaying = status.playing;
 
                 if (IsPlaying)
                     OnCoverDisplayFadeOut();

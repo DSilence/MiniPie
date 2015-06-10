@@ -60,7 +60,7 @@ namespace MiniPie.Core {
                 return string.Empty;
 
             try {
-                var trackStatus = _LocalApi.Status;
+                var trackStatus = _LocalApi.LastStatus;
                 if (trackStatus != null) {
                     if (trackStatus.error != null)
                         throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.error.message,

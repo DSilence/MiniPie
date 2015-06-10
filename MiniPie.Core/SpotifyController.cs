@@ -20,7 +20,7 @@ namespace MiniPie.Core {
 
         public event EventHandler SpotifyExited;
         public event EventHandler TrackChanged;
-        public event EventHandler TrackTimerChanged;
+        public event EventHandler TrackStatusChanged;
         public event EventHandler SpotifyOpened;
 
         #region Win32Imports
@@ -75,7 +75,6 @@ namespace MiniPie.Core {
         #endregion
 
         const int KeyMessage = 0x319;
-        const int ControlKey = 0x11;
         private const uint WM_COMMAND = 0x0111;
 
         private const long PlaypauseKey = 0xE0000L;
@@ -102,7 +101,7 @@ namespace MiniPie.Core {
         public SpotifyController(ILog logger, SpotifyLocalApi localApi) {
             _Logger = logger;
             _LocalApi = localApi;
-            _CurrentTrackInfo = localApi.Status;
+            _CurrentTrackInfo = localApi.LastStatus;
             AttachToProcess();
             JoinBackgroundProcess();
             _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
@@ -113,9 +112,10 @@ namespace MiniPie.Core {
 
         private void SongTimerChanging(object state)
         {
+            //every second increase the track time by 1
             if (_CurrentTrackInfo != null && _CurrentTrackInfo.playing)
             {
-                _CurrentTrackInfo.playing_position = _LocalApi.CurrentTrackProgress;
+                _CurrentTrackInfo.playing_position += 1;
                 OnTrackTimerChanged();
             }
         }
@@ -186,7 +186,7 @@ namespace MiniPie.Core {
 
         protected virtual void OnTrackTimerChanged()
         {
-            var handler = TrackTimerChanged;
+            var handler = TrackStatusChanged;
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
@@ -195,43 +195,53 @@ namespace MiniPie.Core {
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
-        private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
-        {
-            if ((idObject == 0) && (idChild == 0))
-                if (hwnd.ToInt32() == _SpotifyProcess.MainWindowHandle.ToInt32())
-                {
-                    try
-                    {
-                        _CurrentTrackInfo = _LocalApi.Status;
-                        if (_CurrentTrackInfo != null && _CurrentTrackInfo.error != null)
-                            throw new Exception(string.Format("Spotify API error: {0}", _CurrentTrackInfo.error.message));
-                    }
-                    catch (Exception exc)
-                    {
-                        _Logger.WarnException("Failed to retrieve trackinfo", exc);
-                        _CurrentTrackInfo = null;
-                    }
-                    OnTrackChanged();
-                    _songStatusWatcher.Change(1000, 1000);
-                }
-        }
-
-        private void BackgroundChangeTrackerWork() {
+        private async void BackgroundChangeTrackerWork() {
             try {
                 if (_SpotifyProcess == null) //Spotify is not running :-(
                 return;
+                //get immediate status as soon as possible
+                _CurrentTrackInfo = await _LocalApi.SendLocalStatusRequest(true, true, -1);
+                OnTrackChanged();
 
-                _ProcDelegate = new WinEventDelegate(WinEventProc);
-
-                if (_SpotifyProcess != null)
+                while (true)
                 {
-                    var hwndSpotify = _SpotifyProcess.MainWindowHandle;
-                    var pidSpotify = _SpotifyProcess.Id;
+                    if (_SpotifyProcess != null)
+                    {
+                        var newTrackInfo = await _LocalApi.SendLocalStatusRequest(true, true, 60);
+                        if (newTrackInfo == null)
+                        {
+                            continue;
+                        }
+                        try
+                        {
+                            
+                            if (newTrackInfo.error != null)
+                            {
+                                throw new Exception(string.Format("Spotify API error: {0}", newTrackInfo.error.message));
+                            }
+                        }
+                        catch (Exception exc)
+                        {
+                            _Logger.WarnException("Failed to retrieve trackinfo", exc);
+                            _CurrentTrackInfo = null;
+                        }
 
-                    var hWinEventHook = SetWinEventHook(0x0800c, 0x800c, IntPtr.Zero, _ProcDelegate, Convert.ToUInt32(pidSpotify), 0, 0);
-                    var msg = new Message();
-                    while (GetMessage(ref msg, hwndSpotify, 0, 0))
-                        UnhookWinEvent(hWinEventHook);
+                        
+                        if (_CurrentTrackInfo == null ||
+                            _CurrentTrackInfo.track.track_resource.uri
+                            != newTrackInfo.track.track_resource.uri)
+                        {
+                            _CurrentTrackInfo = newTrackInfo;
+                            OnTrackChanged();
+                            _songStatusWatcher.Change(1000, 1000);
+                        }
+                        else
+                        {
+                            _CurrentTrackInfo = newTrackInfo;
+                            OnTrackTimerChanged();
+                            _songStatusWatcher.Change(1000, 1000);
+                        }
+                    }
                 }
             }
             catch (ThreadAbortException) { /* Thread was aborted, accept it */ }

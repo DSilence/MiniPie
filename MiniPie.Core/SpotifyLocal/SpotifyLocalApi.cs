@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 
 namespace MiniPie.Core.SpotifyLocal {
     public class SpotifyLocalApi {
@@ -183,35 +188,54 @@ namespace MiniPie.Core.SpotifyLocal {
             }
         }
 
+        private Status _lastStatus;
         /// <summary>Returns the current track info.
         /// Change <seealso cref="Wait"/> into the amount of waiting time before it will return
         /// When the current track info changes it will return before elapsing the amount of seconds in <seealso cref="Wait"/>
         /// (look at the project site for more information if you do not understand this)
         /// </summary>
-        public Status Status {
-            get {
-                try {
+        public Status LastStatus 
+        {
+            get
+            {
+                return _lastStatus;
+            }
+        }
 
-                    var a = SendLocalRequest("remote/status.json", true, true, _Wait);
-                    var d = JsonConvert.DeserializeObject<List<Status>>(a);
+        public async Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, int wait = -1)
+        {
+            var uriBuilder = new UriBuilder(_Contracts.SpotifyLocalHost +"remote/status.json");
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
-                    var result = d.FirstOrDefault();
-                    if (result != null && result.error != null &&
-                        (result.error.message.Contains("Invalid Csrf token") ||
-                         result.error.message.Contains("Expired OAuth token"))) {
-                        RenewToken();
+            PopilateParameters(query, oauth, cfid, wait);
 
-                        a = SendLocalRequest("remote/status.json", true, true, _Wait);
-                        d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
-                        result = d.FirstOrDefault();
-                    }
+            uriBuilder.Query = query.ToString();
+            var requestUri = uriBuilder.ToString();
 
-                    return result;
-                }
-                catch (Exception exc) {
-                    _Log.WarnException("Failed to get track status", exc);
-                    return null;
-                }
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            var response = await _Client.SendAsync(message);
+            var stringResponse = await response.Content.ReadAsStringAsync();
+
+            var status = JsonConvert.DeserializeObject<Status>(stringResponse);
+            _lastStatus = status;
+            return status;
+        }
+
+        private void PopilateParameters(NameValueCollection query, 
+            bool oauth, bool cfid, int wait = -1)
+        {
+            query["_"] = TimeStamp.ToString();
+
+            //var parameters = "?&ref=&cors=&_=" + TimeStamp;
+            if (oauth)
+                query["oauth"] = _OAuth;
+            if (cfid)
+                query["csrf"] = _Cfid;
+
+            if (wait != -1)
+            {
+                query["returnafter"] = wait.ToString();
+                query["returnon"] = "login,logout,play,pause,error,ap";
             }
         }
 
@@ -232,7 +256,7 @@ namespace MiniPie.Core.SpotifyLocal {
 
         int _Wait = -1;
         /// <summary>
-        /// Please see <seealso cref="Status"/> for more information
+        /// Please see <seealso cref="LastStatus"/> for more information
         /// </summary>
         public int Wait {
             get {
@@ -283,7 +307,7 @@ namespace MiniPie.Core.SpotifyLocal {
                 parameters += "&returnon=login%2Clogout%2Cplay%2Cpause%2Cerror%2Cap";
             }
 
-            var requestUri = "http://" + _Contracts.SpotifyLocalHost + ":4380/" + request + parameters;
+            var requestUri = _Contracts.SpotifyLocalHost + request + parameters;
             var response = string.Empty;
             try {
                 response = _Client.GetStringAsync(requestUri).Result;

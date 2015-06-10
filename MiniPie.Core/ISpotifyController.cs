@@ -6,7 +6,7 @@ namespace MiniPie.Core {
         event EventHandler TrackChanged;
         event EventHandler SpotifyOpened;
         event EventHandler SpotifyExited;
-        event EventHandler TrackTimerChanged;
+        event EventHandler TrackStatusChanged;
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
         string GetSongName();
