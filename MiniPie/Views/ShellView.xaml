@@ -63,26 +63,45 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type circularProgressButton1:PropgressButton}">
                         <Grid>
-                            <Ellipse Stroke="Black" Fill="{TemplateBinding Background}"/>
-                            <Ellipse Stroke="Black" Margin="0" Fill="White"/>
-                            <circularProgressButton1:Arc StrokeThickness="2" Stroke="{TemplateBinding BorderBrush}" Margin="0">
+                            <!--TODO Someone should fix this awful markup-->
+                            <!--<Ellipse SnapsToDevicePixels="False" Stroke="#6B6870" StrokeThickness="2" Fill="{TemplateBinding Background}"/>-->
+                            <Ellipse UseLayoutRounding="True" Name="BorderEllipse"  Stroke="#6B6870" StrokeThickness="2" Margin="0"
+                                     Fill="#222326" Opacity="0.95" />
+                            <circularProgressButton1:Arc UseLayoutRounding="True" StrokeThickness="2"
+                                                         Stroke="{TemplateBinding BorderBrush}" Margin="0">
                                 <circularProgressButton1:Arc.StartAngle>
                                     <MultiBinding Converter="{StaticResource ProgressConverter}">
-                                        <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}"/>
-                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}"/>
+                                        <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}" />
                                     </MultiBinding>
                                 </circularProgressButton1:Arc.StartAngle>
                                 <circularProgressButton1:Arc.EndAngle>
                                     <MultiBinding Converter="{StaticResource ProgressConverter}">
-                                        <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}"/>
-                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}"/>
+                                        <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}" />
                                     </MultiBinding>
                                 </circularProgressButton1:Arc.EndAngle>
                             </circularProgressButton1:Arc>
+                            <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
+                                       Margin="7,0,0,0" Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}"/>
+                            <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
+                                           Margin="-7,0,0,0" Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}"/>
+
+                            <Polygon UseLayoutRounding="True" Points="4,2 15,9 4,15" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                     Stroke="#DFE0E6" Fill="#DFE0E6" 
+                                Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, 
+                                ConverterParameter={StaticResource True}}"/>
                         </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BorderEllipse" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="#81C300"></Setter>
         </Style>
         <!--
         <Style x:Key="ProgressBarStyle" TargetType="{x:Type circularProgressButton1:PropgressButton}">
@@ -141,8 +160,11 @@
                                                   ImageSourcePressed="/Images/Player/prev-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
                                                   ToolTip="plays the previous track" />
-                                <circularProgressButton1:PropgressButton Width="33" Height="33" Maximum="{Binding MaxProgress}" Value="{Binding Progress}"/>
-                                <controls:ImageButton Width="33" Height="33" x:Name="Play"
+                                <circularProgressButton1:PropgressButton cal:Message.Attach="[Event Click] = [Action PlayPause]"
+                                                                         Width="33" Height="33" 
+                                                                         Maximum="{Binding MaxProgress}" 
+                                                                         Value="{Binding Progress}"/>
+                                <!--<controls:ImageButton Width="33" Height="33" x:Name="Play"
                                                       cal:Message.Attach="[Event Click] = [Action PlayPause]"
                                                       Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"
                                                       ImageSourceNormal="/Images/Player/play-normal.png"
@@ -157,7 +179,7 @@
                                                       ImageSource="/Images/Player/pause-normal.png"
                                                       ImageSourcePressed="/Images/Player/pause-pressed.png"
                                                       ImageSourceMouseOver="/Images/Player/pause-mouseover.png"
-                                                      ToolTip="Toggle playback" />
+                                                      ToolTip="Toggle playback" />-->
                                 <controls:ImageButton Width="24" Height="25" x:Name="PlayNext"
                                                   ImageSourceNormal="/Images/Player/next-normal.png"
                                                   ImageSource="/Images/Player/next-normal.png"

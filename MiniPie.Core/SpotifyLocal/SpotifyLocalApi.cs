@@ -77,11 +77,11 @@ namespace MiniPie.Core.SpotifyLocal {
             //emulate the embed code [NEEDED]
             _Client = new HttpClient();
             _Client.DefaultRequestHeaders.Add("Origin", "https://embed.spotify.com");
-			_Client.DefaultRequestHeaders.Referrer = new Uri("https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
-	        _Client.DefaultRequestHeaders.Add("User-Agent", "Winfy");
+            _Client.DefaultRequestHeaders.Referrer = new Uri("https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            _Client.DefaultRequestHeaders.Add("User-Agent", "Winfy");
             /*if (_Client.Proxy != null)
                 _Client.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-				*/
+                */
             _Log = log;
             _Settings = settings;
             _Contracts = contracts;
@@ -246,7 +246,7 @@ namespace MiniPie.Core.SpotifyLocal {
         /// <summary>Recieves a OAuth key from the Spotify site</summary>
         private string GetOAuth() {
             var lines = _Client.GetStringAsync("https://embed.spotify.com/openplay/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt")
-									 .Result
+                                     .Result
                                      .Replace(" ", "")
                                      .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
 

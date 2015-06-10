@@ -113,7 +113,7 @@ namespace MiniPie.Core {
 
         private void SongTimerChanging(object state)
         {
-            if (_CurrentTrackInfo.playing)
+            if (_CurrentTrackInfo != null && _CurrentTrackInfo.playing)
             {
                 _CurrentTrackInfo.playing_position = _LocalApi.CurrentTrackProgress;
                 OnTrackTimerChanged();
@@ -211,7 +211,6 @@ namespace MiniPie.Core {
                         _Logger.WarnException("Failed to retrieve trackinfo", exc);
                         _CurrentTrackInfo = null;
                     }
-                    BackgroundChangeTrackerWork();
                     OnTrackChanged();
                     _songStatusWatcher.Change(1000, 1000);
                 }
