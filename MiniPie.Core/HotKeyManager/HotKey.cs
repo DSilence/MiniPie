@@ -55,8 +55,6 @@ namespace MiniPie.Core.HotKeyManager
                 }
 
                 _dictHotKeyToCalBackProc.Add(Id, this);
-
-                Debug.Print(result.ToString() + ", " + Id + ", " + virtualKeyCode);
                 return result;
             }
             return false;

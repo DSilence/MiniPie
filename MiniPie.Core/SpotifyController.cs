@@ -101,7 +101,6 @@ namespace MiniPie.Core {
         public SpotifyController(ILog logger, SpotifyLocalApi localApi) {
             _Logger = logger;
             _LocalApi = localApi;
-            _CurrentTrackInfo = localApi.LastStatus;
             AttachToProcess();
             JoinBackgroundProcess();
             _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
@@ -115,7 +114,7 @@ namespace MiniPie.Core {
             //every second increase the track time by 1
             if (_CurrentTrackInfo != null && _CurrentTrackInfo.playing)
             {
-                _CurrentTrackInfo.playing_position += 1;
+                _CurrentTrackInfo.playing_position = (int)_CurrentTrackInfo.playing_position + 1;
                 OnTrackTimerChanged();
             }
         }
@@ -195,6 +194,7 @@ namespace MiniPie.Core {
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
+        //TODO code dupes
         private async void BackgroundChangeTrackerWork() {
             try {
                 if (_SpotifyProcess == null) //Spotify is not running :-(
@@ -202,6 +202,8 @@ namespace MiniPie.Core {
                 //get immediate status as soon as possible
                 _CurrentTrackInfo = await _LocalApi.SendLocalStatusRequest(true, true, -1);
                 OnTrackChanged();
+                _songStatusWatcher.Change(
+                                GetDelayForPlaybackUpdate(_CurrentTrackInfo.playing_position), 1000);
 
                 while (true)
                 {
@@ -210,20 +212,41 @@ namespace MiniPie.Core {
                         var newTrackInfo = await _LocalApi.SendLocalStatusRequest(true, true, 60);
                         if (newTrackInfo == null)
                         {
-                            continue;
+                            //TODO not sure when it happens, should probably happen never
+                            throw new ApplicationException("Unable to retrieve track info");
                         }
                         try
                         {
-                            
                             if (newTrackInfo.error != null)
                             {
-                                throw new Exception(string.Format("Spotify API error: {0}", newTrackInfo.error.message));
+                                if ((newTrackInfo.error.message.Contains("Invalid Csrf token") ||
+                                     newTrackInfo.error.message.Contains("Expired OAuth token")))
+                                {
+                                    //try to renew token and retrieve status again
+                                    _LocalApi.RenewToken();
+                                    newTrackInfo = await _LocalApi.SendLocalStatusRequest(true, true, 60);
+                                    if (newTrackInfo == null)
+                                    {
+                                        throw new ApplicationException("Unable to retrieve track info");
+                                    }
+                                    if (newTrackInfo.error != null)
+                                    {
+                                        throw new Exception(string.Format("Spotify API error: {0}",
+                                            newTrackInfo.error.message));
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception(string.Format("Spotify API error: {0}",
+                                        newTrackInfo.error.message));
+                                }
                             }
                         }
                         catch (Exception exc)
                         {
                             _Logger.WarnException("Failed to retrieve trackinfo", exc);
                             _CurrentTrackInfo = null;
+                            continue;
                         }
 
                         
@@ -233,13 +256,17 @@ namespace MiniPie.Core {
                         {
                             _CurrentTrackInfo = newTrackInfo;
                             OnTrackChanged();
-                            _songStatusWatcher.Change(1000, 1000);
+                            //need to increase the playback timer every second
+                            //the initial delay depends on 
+                            _songStatusWatcher.Change(
+                                GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
                         }
                         else
                         {
                             _CurrentTrackInfo = newTrackInfo;
                             OnTrackTimerChanged();
-                            _songStatusWatcher.Change(1000, 1000);
+                            _songStatusWatcher.Change(
+                                GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
                         }
                     }
                 }
@@ -249,6 +276,14 @@ namespace MiniPie.Core {
                 _Logger.WarnException("BackgroundChangeTrackerWork failed", exc);
                 Console.WriteLine(exc.ToString());
             }
+        }
+
+        private int GetDelayForPlaybackUpdate(double playPosition)
+        {
+            int i = (int) playPosition;
+            double fract = playPosition - i;
+            int result =  (int) (1000 - fract*1000);
+            return result;
         }
 
         private string GetSpotifyWindowTitle() {

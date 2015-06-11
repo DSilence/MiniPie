@@ -239,21 +239,6 @@ namespace MiniPie.Core.SpotifyLocal {
             }
         }
 
-        public double CurrentTrackProgress
-        {
-            get
-            {
-                //this implementation greatly improved the performance
-                var a = SendLocalRequest("remote/status.json", true, true, _Wait);
-                int playingPositionIndex = a.IndexOf(playPositionJsonIndex, 
-                    StringComparison.Ordinal) + playPositionJsonIndex.Length;
-                int finishLineIndex = a.IndexOf(",", playingPositionIndex, 
-                    StringComparison.Ordinal);
-                var progress = a.Substring(playingPositionIndex, finishLineIndex - playingPositionIndex);
-                return Convert.ToDouble(progress);
-            }
-        }
-
         int _Wait = -1;
         /// <summary>
         /// Please see <seealso cref="LastStatus"/> for more information
