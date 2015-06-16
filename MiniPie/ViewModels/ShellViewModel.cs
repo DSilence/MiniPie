@@ -115,6 +115,20 @@ namespace MiniPie.ViewModels {
             set { _CanPlayPrevious = value; NotifyOfPropertyChange(() => CanPlayPrevious); }
         }
 
+        private bool _canVolumeDown;
+        public bool CanVolumeDown
+        {
+            get { return _canVolumeDown; }
+            set { _canVolumeDown = value; NotifyOfPropertyChange(); }
+        }
+
+        private bool _canVolumeUp;
+        public bool CanVolumeUp
+        {
+            get { return _canVolumeUp; }
+            set { _canVolumeUp = value; NotifyOfPropertyChange(); }
+        }
+
         private bool _CanPlayNext;
         public bool CanPlayNext {
             get { return _CanPlayNext; }
@@ -166,19 +180,23 @@ namespace MiniPie.ViewModels {
         }
 
         public void PlayPrevious() {
-            _SpotifyController.PreviousTrack();
+            if(CanPlayPrevious)
+                _SpotifyController.PreviousTrack();
         }
 
         public void PlayNext() {
-            _SpotifyController.NextTrack();
+            if(CanPlayNext)
+                _SpotifyController.NextTrack();
         }
 
         public void VolumeUp() {
-            _SpotifyController.VolumeUp();
+            if(CanVolumeUp)
+                _SpotifyController.VolumeUp();
         }
 
         public void VolumeDown() {
-            _SpotifyController.VolumeDown();
+            if(CanVolumeDown)
+                _SpotifyController.VolumeDown();
         }
 
         public void OpenSpotifyWindow()
@@ -253,9 +271,9 @@ namespace MiniPie.ViewModels {
                 var status = _SpotifyController.GetStatus();
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
-                MaxProgress = status.track.length;
-                Progress = status.playing_position;
-                IsPlaying = status.playing;
+                MaxProgress = status == null ? 0 : status.track.length;
+                Progress = status == null ? 0 : status.playing_position;
+                IsPlaying = status != null && status.playing;
 
                 if (IsPlaying)
                     OnCoverDisplayFadeOut();
@@ -267,6 +285,8 @@ namespace MiniPie.ViewModels {
                 CanPlayPause = _SpotifyController.IsSpotifyOpen();
                 CanPlayPrevious = _SpotifyController.IsSpotifyOpen();
                 CanPlayNext = _SpotifyController.IsSpotifyOpen();
+                CanVolumeDown = _SpotifyController.IsSpotifyOpen();
+                CanVolumeUp = _SpotifyController.IsSpotifyOpen();
 
                 if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
                     if(_Settings.DisableAnimations)

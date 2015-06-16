@@ -6,8 +6,6 @@ using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.HotKeyManager;
-using MiniPie.Models;
-using HotKey = MiniPie.Models.HotKey;
 
 namespace MiniPie.ViewModels
 {
@@ -55,7 +53,7 @@ namespace MiniPie.ViewModels
                 RegisterHotKeys();
                 _lastValidHotkeys = (HotKeys) HotKeys.Clone();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show(Properties.Resources.Settings_InvalidHotkeys);
                 UnregisterHotKeys();

@@ -202,7 +202,7 @@ namespace MiniPie.Core.SpotifyLocal {
             }
         }
 
-        public async Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, int wait = -1)
+        public async Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, CancellationToken token, int wait = -1)
         {
             var uriBuilder = new UriBuilder(_Contracts.SpotifyLocalHost +"remote/status.json");
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -213,7 +213,7 @@ namespace MiniPie.Core.SpotifyLocal {
             var requestUri = uriBuilder.ToString();
 
             HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, requestUri);
-            var response = await _Client.SendAsync(message);
+            var response = await _Client.SendAsync(message, token);
             var stringResponse = await response.Content.ReadAsStringAsync();
 
             var status = JsonConvert.DeserializeObject<Status>(stringResponse);
