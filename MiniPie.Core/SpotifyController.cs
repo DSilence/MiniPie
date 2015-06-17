@@ -182,12 +182,13 @@ namespace MiniPie.Core {
                         {
                             Debug.Print("Started retrieving information from spotify, timeout is" + timeout);
                             newTrackInfo =
-                                await _LocalApi.SendLocalStatusRequest(true, true, _spotifyClosedTokenSource.Token, timeout);
+                                await _LocalApi.SendLocalStatusRequest(true, true, timeout);
                             Debug.Print("Finished retrieving information from spotify");
                         }
                         catch (TaskCanceledException)
                         {
                             Debug.Print("Retrieving cancelled");
+                            _CurrentTrackInfo = null;
                             //TODO this is bad and dirt
                             //nothing to do here
                             //if task was cancelled (e.g. spotify exited, just move on and wait for further stuff
