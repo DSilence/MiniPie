@@ -215,15 +215,16 @@ namespace MiniPie.Core.SpotifyLocal {
             HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             int timeout = wait == -1 ? 1000 : 62000;
-            var token = new CancellationTokenSource(timeout).Token;
-
-            HttpResponseMessage response = await _Client.SendAsync(message, token);
-            
+            HttpResponseMessage response;
+            using (var cancellationTokenSource = new CancellationTokenSource(timeout))
+            {
+                var token = cancellationTokenSource.Token;
+                response = await _Client.SendAsync(message, token);
+            }
             var stringResponse = await response.Content.ReadAsStringAsync();
-
-            var status = JsonConvert.DeserializeObject<Status>(stringResponse);
-            _lastStatus = status;
-            return status;
+            var resultStatus = JsonConvert.DeserializeObject<Status>(stringResponse);
+            _lastStatus = resultStatus;
+            return resultStatus;
         }
 
         private void PopilateParameters(NameValueCollection query, 
