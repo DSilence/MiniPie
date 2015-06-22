@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?include Includes.wxi?>
-<?define Version = "0.0.1.5" ?>
+<?define Version = "0.0.1.6" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:util="http://schemas.microsoft.com/wix/WixUtilExtension">
