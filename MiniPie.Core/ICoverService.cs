@@ -1,6 +1,8 @@
-﻿namespace MiniPie.Core {
+﻿using System.Threading.Tasks;
+
+namespace MiniPie.Core {
     public interface ICoverService {
-        string FetchCover(string artist, string track);
+        Task<string> FetchCover(string artist, string track);
         double CacheSize();
         void ClearCache();
     }

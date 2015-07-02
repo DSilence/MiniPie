@@ -78,8 +78,6 @@ namespace MiniPie.Core {
         private Timer _songStatusWatcher;
         private Status _CurrentTrackInfo;
         private WinEventDelegate _ProcDelegate;
-        private object _syncObject = new object();
-        private CancellationTokenSource _spotifyClosedTokenSource;
 
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
@@ -88,7 +86,7 @@ namespace MiniPie.Core {
             _LocalApi = localApi;
 
             
-            AttachToProcess();
+            AttachToProcess().Wait();
             _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
             JoinBackgroundProcess();
         }
@@ -115,34 +113,21 @@ namespace MiniPie.Core {
             _BackgroundChangeTracker.Start();
         }
 
-        private void AttachToProcess() {
+        private async Task AttachToProcess() {
             _SpotifyProcess = null;
             _SpotifyProcess = Process.GetProcessesByName("spotify")
                 .FirstOrDefault(p => p.MainWindowHandle.ToInt32() > 0);
-            lock (_syncObject)
+            if (_SpotifyProcess != null)
             {
-                if (_SpotifyProcess != null)
+                //Renew updateToken for Spotify local api
+                await _LocalApi.RenewToken();
+                _SpotifyProcess.EnableRaisingEvents = true;
+                _SpotifyProcess.Exited += (o, e) =>
                 {
-                    //Renew updateToken for Spotify local api
-                    _LocalApi.RenewToken();
-                    if (_spotifyClosedTokenSource != null)
-                    {
-                       // _spotifyClosedTokenSource.Dispose();
-                    }
-                    _spotifyClosedTokenSource = new CancellationTokenSource();
-
-                    _SpotifyProcess.EnableRaisingEvents = true;
-                    _SpotifyProcess.Exited += (o, e) =>
-                    {
-                        _SpotifyProcess = null;
-                        _CurrentTrackInfo = null;
-                        if (_spotifyClosedTokenSource != null)
-                        {
-                            _spotifyClosedTokenSource.Cancel();
-                        }
-                        OnSpotifyExited();
-                    };
-                }
+                    _SpotifyProcess = null;
+                    _CurrentTrackInfo = null;
+                    OnSpotifyExited();
+                };
             }
         }
 
@@ -209,7 +194,7 @@ namespace MiniPie.Core {
                                 {
                                     //try to renew updateToken and retrieve status again
                                     _Logger.Info("Renew updateToken and try again");
-                                    _LocalApi.RenewToken();
+                                    await _LocalApi.RenewToken();
                                     _CurrentTrackInfo = null;
                                     continue;
                                 }
@@ -235,29 +220,13 @@ namespace MiniPie.Core {
                             continue;
                         }
 
-                        if (_CurrentTrackInfo == null || _CurrentTrackInfo.track == null ||
-                            _CurrentTrackInfo.track.track_resource == null ||
-                            _CurrentTrackInfo.track.track_resource.uri
-                            != newTrackInfo.track.track_resource.uri)
-                        {
-                            _CurrentTrackInfo = newTrackInfo;
-                            OnTrackChanged();
-                            _songStatusWatcher.Change(
-                                GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
-                        }
-                        else
-                        {
-                            _CurrentTrackInfo = newTrackInfo;
-                            OnTrackTimerChanged();
-                            _songStatusWatcher.Change(
-                                GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
-                        }
+                        ProcessTrackInfo(newTrackInfo);
                     }
                     else
                     {
                         Thread.Sleep(1000);
                         //wait for spotify to reopen
-                        AttachToProcess();
+                        await AttachToProcess();
                         if (_SpotifyProcess != null)
                         {
                             OnSpotifyOpenend();
@@ -269,6 +238,27 @@ namespace MiniPie.Core {
             catch (Exception exc) {
                 _Logger.WarnException("BackgroundChangeTrackerWork failed", exc);
                 Console.WriteLine(exc.ToString());
+            }
+        }
+
+        private void ProcessTrackInfo(Status newTrackInfo)
+        {
+            if (_CurrentTrackInfo == null || _CurrentTrackInfo.track == null ||
+                            _CurrentTrackInfo.track.track_resource == null ||
+                            _CurrentTrackInfo.track.track_resource.uri
+                            != newTrackInfo.track.track_resource.uri)
+            {
+                _CurrentTrackInfo = newTrackInfo;
+                OnTrackChanged();
+                _songStatusWatcher.Change(
+                    GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
+            }
+            else
+            {
+                _CurrentTrackInfo = newTrackInfo;
+                OnTrackTimerChanged();
+                _songStatusWatcher.Change(
+                    GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
         }
 
@@ -337,7 +327,8 @@ namespace MiniPie.Core {
             return _CurrentTrackInfo;
         }
 
-        public void PausePlay() {
+        public void PausePlay()
+        {
             if(_SpotifyProcess != null)
                 PostMessage(_SpotifyProcess.MainWindowHandle, KeyMessage, IntPtr.Zero, new IntPtr(PlaypauseKey));
         }
@@ -382,10 +373,6 @@ namespace MiniPie.Core {
 
         public void Dispose()
         {
-            if (_spotifyClosedTokenSource != null)
-            {
-                _spotifyClosedTokenSource.Dispose();
-            }
             _songStatusWatcher.Dispose();
             if(_BackgroundChangeTracker.IsAlive)
                 _BackgroundChangeTracker.Abort();

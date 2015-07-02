@@ -91,17 +91,17 @@ namespace MiniPie.Core.SpotifyLocal {
             _Settings = settings;
             _Contracts = contracts;
 
-            RenewToken();
+            RenewToken().Wait();
         }
 
-        public void RenewToken() {
+        public async Task RenewToken() {
             try {
                 //Reset fields
                 _OAuth = string.Empty;
                 _Cfid = string.Empty;
 
-                _OAuth = GetOAuth();
-                _Cfid = Cfid.token;
+                _OAuth = await GetOAuth();
+                _Cfid = (await GetCfid()).token;
             }
             catch (Exception exc) {
                 _Log.WarnException("Failed to renew Spotify token", exc);
@@ -114,11 +114,11 @@ namespace MiniPie.Core.SpotifyLocal {
 
         /// <summary>Get a link to the 640x640 cover art image of a spotify album</summary>
         /// <param name="uri">The Spotify album URI</param>
-        public string GetArt(string uri) {
+        public async Task<string> GetArt(string uri) {
             try {
                 var albumId = uri.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries).Last();
                 //Modified to use spotify WEB API
-                var lines = _Client.GetStringAsync(string.Format("https://api.spotify.com/v1/albums/{0}", albumId)).Result;
+                var lines = await _Client.GetStringAsync(string.Format("https://api.spotify.com/v1/albums/{0}", albumId));
                 var album = JsonConvert.DeserializeObject<SpotifyWebApi.Album>(lines);
                 return album.Images.First(i => i.Width == 300).Url;
             }
@@ -141,13 +141,12 @@ namespace MiniPie.Core.SpotifyLocal {
         }
 
         /// <summary>Gets the 'CFID', a unique identifier for the current session. Note: It's required to get the CFID before making any other calls.</summary>
-        public Cfid Cfid {
-            get {
-                var a = SendLocalRequest("simplecsrf/token.json");
-                var d = (List<Cfid>)JsonConvert.DeserializeObject(a, typeof(List<Cfid>));
-                _Cfid = d[0].token;
-                return d[0];
-            }
+        public async Task<Cfid> GetCfid()
+        {
+            var a = await SendLocalRequest("simplecsrf/token.json");
+            var d = (List<Cfid>) JsonConvert.DeserializeObject(a, typeof (List<Cfid>));
+            _Cfid = d[0].token;
+            return d[0];
         }
 
         string _Uri = "";
@@ -162,30 +161,27 @@ namespace MiniPie.Core.SpotifyLocal {
         }
 
         /// <summary>Plays a certain URI and returns the status afterwards. Change SpotifyAPI.URI into the needed uri!</summary>
-        public Status Play {
-            get {
-                var a = SendLocalRequest("remote/play.json?uri=" + Uri, true, true, -1);
-                var d = (List<Status>)JsonConvert.DeserializeObject(a, typeof(List<Status>));
-                return d.FirstOrDefault();
-            }
+        public async Task<Status> Play()
+        {
+            var a = await SendLocalRequest("remote/play.json?uri=" + Uri, true, true, -1);
+            var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+            return d.FirstOrDefault();
         }
 
         /// <summary>Resume Spotify playback and return the status afterwards</summary>
-        public Status Resume {
-            get {
-                var a = SendLocalRequest("remote/pause.json?pause=false", true, true, -1);
-                var d = (List<Status>)JsonConvert.DeserializeObject(a, typeof(List<Status>));
-                return d.FirstOrDefault();
-            }
+        public async Task<Status> Resume()
+        {
+            var a = await SendLocalRequest("remote/pause.json?pause=false", true, true, -1);
+            var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+            return d.FirstOrDefault();
         }
 
         /// <summary>Pause Spotify playback and return the status afterwards</summary>
-        public Status Pause {
-            get {
-                var a = SendLocalRequest("remote/pause.json?pause=true", true, true, -1);
-                var d = (List<Status>)JsonConvert.DeserializeObject(a, typeof(List<Status>));
-                return d.FirstOrDefault();
-            }
+        public async Task<Status> Pause()
+        {
+            var a = await SendLocalRequest("remote/pause.json?pause=true", true, true, -1);
+            var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+            return d.FirstOrDefault();
         }
 
         private Status _lastStatus;
@@ -259,9 +255,8 @@ namespace MiniPie.Core.SpotifyLocal {
         }
 
         /// <summary>Recieves a OAuth key from the Spotify site</summary>
-        private string GetOAuth() {
-            var lines = _Client.GetStringAsync("https://embed.spotify.com/openplay/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt")
-                                     .Result
+        private async Task<string> GetOAuth() {
+            var lines = (await _Client.GetStringAsync("https://embed.spotify.com/openplay/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt"))
                                      .Replace(" ", "")
                                      .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -275,15 +270,15 @@ namespace MiniPie.Core.SpotifyLocal {
         }
 
 
-        private string SendLocalRequest(string request) {
-            return SendLocalRequest(request, false, false, -1);
+        private async Task<string> SendLocalRequest(string request) {
+            return await SendLocalRequest(request, false, false, -1);
         }
 
-        private string SendLocalRequest(string request, bool oauth, bool cfid) {
-            return SendLocalRequest(request, oauth, cfid, -1);
+        private async Task<string> SendLocalRequest(string request, bool oauth, bool cfid) {
+            return await SendLocalRequest(request, oauth, cfid, -1);
         }
 
-        private string SendLocalRequest(string request, bool oauth, bool cfid, int wait) {
+        private async Task<string> SendLocalRequest(string request, bool oauth, bool cfid, int wait) {
             var parameters = "?&ref=&cors=&_=" + TimeStamp;
             if (request.Contains("?"))
                 parameters = parameters.Substring(1);
@@ -301,10 +296,12 @@ namespace MiniPie.Core.SpotifyLocal {
             var requestUri = _Contracts.SpotifyLocalHost + request + parameters;
             var response = string.Empty;
             try {
-                response = _Client.GetStringAsync(requestUri).Result;
+                response = await _Client.GetStringAsync(requestUri);
                 response = "[ " + response + " ]";
+                bool spotifyProcessExists = true;
             }
-            catch (Exception wExc) {
+            catch (Exception wExc)
+            {
                 _Log.WarnException("SendLocalRequest failed", wExc);
                 //perhaps spotifywebhelper isn't started (happens sometimes)
                 if (Process.GetProcessesByName("SpotifyWebHelper").Length < 1) {
@@ -312,13 +309,14 @@ namespace MiniPie.Core.SpotifyLocal {
                         Process.Start(
                             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "Data","SpotifyWebHelper.exe"));
                     }
-                    catch (Exception exc) {
+                    catch (Exception exc)
+                    {
                         _Log.WarnException("Failed to start the Spotify webhelper", exc);
                         throw new Exception("Could not launch SpotifyWebHelper. Your installation of Spotify might be corrupt or you might not have Spotify installed", exc);
                     }
-
-                    return SendLocalRequest(request, oauth, cfid);
+                    return _Client.GetStringAsync(requestUri).Result;
                 }
+
                 //spotifywebhelper is running but we still can't connect, wtf?!
                 throw new Exception("Unable to connect to SpotifyWebHelper", wExc);
             }
@@ -326,12 +324,12 @@ namespace MiniPie.Core.SpotifyLocal {
         }
 
         /// <summary>Recieves client version information. Doesn't require a OAuth/CFID</summary>
-        public ClientVersion ClientVersion {
+        /*public ClientVersion ClientVersion {
             get {
                 var a = SendLocalRequest("service/version.json?service=remote");
                 var d = (List<ClientVersion>)JsonConvert.DeserializeObject(a, typeof(List<ClientVersion>));
                 return d.FirstOrDefault();
             }
-        }
+        }*/
     }
 }

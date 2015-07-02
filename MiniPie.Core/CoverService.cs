@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Serialization;
 using MiniPie.Core.Extensions;
@@ -46,16 +47,16 @@ namespace MiniPie.Core {
                                                                          });
         }
 
-        public string FetchCover(string artist, string track) {
+        public async Task<string> FetchCover(string artist, string track) {
             var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (artist + track).ToSHA1()));
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
-            var spotifyCover = FetchSpotifyCover(cachedFileName);
-            return string.IsNullOrEmpty(spotifyCover) ? FetchLastFmCover(artist, track, cachedFileName) : spotifyCover;
+            var spotifyCover = await FetchSpotifyCover(cachedFileName);
+            return string.IsNullOrEmpty(spotifyCover) ? await FetchLastFmCover(artist, track, cachedFileName) : spotifyCover;
         }
 
-        private string FetchSpotifyCover(string cachedFileName) {
+        private async Task<string> FetchSpotifyCover(string cachedFileName) {
             if (!_LocalApi.HasValidToken)
                 return string.Empty;
 
@@ -67,9 +68,9 @@ namespace MiniPie.Core {
                                                           trackStatus.error.type));
 
                     if (trackStatus.track != null && trackStatus.track.album_resource != null) {
-                        var coverUrl = _LocalApi.GetArt(trackStatus.track.album_resource.uri);
+                        var coverUrl = await _LocalApi.GetArt(trackStatus.track.album_resource.uri);
                         if (!string.IsNullOrEmpty(coverUrl))
-                            return DownloadAndSaveImage(coverUrl, cachedFileName);
+                            return await DownloadAndSaveImage(coverUrl, cachedFileName);
                     }
                 }
             }
@@ -83,7 +84,7 @@ namespace MiniPie.Core {
             return string.Empty;
         }
 
-        private string FetchLastFmCover(string artist, string track, string cachedFileName) {
+        private async Task<string> FetchLastFmCover(string artist, string track, string cachedFileName) {
             var requestUrl = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={0}&track={1}&artist={2}",
                     _lastFmApiKey,
                     HttpUtility.UrlEncode(CleanTrackName(track)),
@@ -105,7 +106,7 @@ namespace MiniPie.Core {
                     if (lfmTrack.Album != null && lfmTrack.Album.Image != null && lfmTrack.Album.Image.Length > 0) {
                         var images = lfmTrack.Album.Image;
                         var largeImage = images.FirstOrDefault(i => i.Size == "large");
-                        return DownloadAndSaveImage(largeImage != null ? largeImage.Url : images.Last().Url, cachedFileName);
+                        return await DownloadAndSaveImage(largeImage != null ? largeImage.Url : images.Last().Url, cachedFileName);
                     }
                 }
                 return string.Empty;
@@ -116,7 +117,7 @@ namespace MiniPie.Core {
             }
         }
 
-        private string DownloadAndSaveImage(string url, string destination) {
+        private async Task<string> DownloadAndSaveImage(string url, string destination) {
             var request = Helper.CreateWebRequest(url);
             var response = (HttpWebResponse) request.GetResponse();
 

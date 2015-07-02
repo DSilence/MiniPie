@@ -266,7 +266,7 @@ namespace MiniPie.ViewModels {
             IsPlaying = status.playing;
         }
 
-        private void UpdateView() {
+        private async void UpdateView() {
             try {
                 var status = _SpotifyController.GetStatus();
                 var track = _SpotifyController.GetSongName();
@@ -292,15 +292,12 @@ namespace MiniPie.ViewModels {
                     if(_Settings.DisableAnimations)
                         CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
 
-                    var updateCoverAction = new Action(() => {
-                                                           var coverUri = _CoverService.FetchCover(artist, track);
-                                                           if (string.IsNullOrEmpty(coverUri))
-                                                               coverUri = UnknownCoverUri;
-                                                           CoverImage = coverUri;
-                                                           if (IsPlaying)
-                                                               OnCoverDisplayFadeIn();
-                                                       });
-                    updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
+                    var coverUri = await _CoverService.FetchCover(artist, track);
+                    if (string.IsNullOrEmpty(coverUri))
+                        coverUri = UnknownCoverUri;
+                    CoverImage = coverUri;
+                    if (IsPlaying)
+                        OnCoverDisplayFadeIn();
                 }
                 else {
                     CoverImage = NoCoverUri;
@@ -310,15 +307,6 @@ namespace MiniPie.ViewModels {
             }
             catch (Exception exc) {
                 _Logger.FatalException("UpdateView() failed hard", exc);
-            }
-        }
-
-        private void UpdateCoverActionCallback(IAsyncResult result) {
-            var asyncResult = result as AsyncResult;
-            if (asyncResult != null) {
-                var d = asyncResult.AsyncDelegate as Action;
-                if (d != null)
-                    d.EndInvoke(result);
             }
         }
 
