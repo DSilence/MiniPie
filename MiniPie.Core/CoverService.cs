@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,6 +19,8 @@ namespace MiniPie.Core {
         private readonly SpotifyLocalApi _LocalApi;
         private readonly ILog _Logger;
         private HttpClient _client = new HttpClient();
+        
+        private const int MaxFileCount = 10000;
 
         public CoverService(string cacheRootDirectory,
             ILog logger, SpotifyLocalApi localApi)
@@ -29,10 +32,11 @@ namespace MiniPie.Core {
                 Directory.CreateDirectory(_CacheDirectory);
         }
 
-        public double CacheSize() {
+        public long CacheSize()
+        {
             return !Directory.Exists(_CacheDirectory)
-                       ? 0.0
-                       : Directory.GetFiles(_CacheDirectory, "*").Sum(f => new FileInfo(f).Length);
+                ? 0
+                : new DirectoryInfo(_CacheDirectory).GetFiles().Sum(f => f.Length);
         }
 
         public void ClearCache() {
@@ -89,10 +93,35 @@ namespace MiniPie.Core {
                 using (var rs = await _client.GetStreamAsync(url))
                 {
                     await rs.CopyToAsync(fs);
+                    CleanupCache();
                 }
             }
 
             return destination;
+        }
+
+        private void CleanupCache()
+        {
+            Task.Run(() =>
+            {
+                DirectoryInfo info = new DirectoryInfo(_CacheDirectory);
+                IEnumerable<FileInfo> files = info.GetFiles();
+                while (files.Count() > MaxFileCount)
+                {
+                    
+                    files = files.OrderBy(f => f.LastAccessTime);
+                    if (!files.Any())
+                    {
+                        throw new Exception("Invalid number of files in cache");
+                    }
+                    else
+                    {
+                        files.First().Delete();
+                        files = info.GetFiles();
+                    }
+                }
+            });
+            return;
         }
     }
 }
