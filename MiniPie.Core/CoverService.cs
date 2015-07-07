@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Serialization;
@@ -12,17 +13,15 @@ namespace MiniPie.Core {
     public class CoverService : ICoverService {
 
         private const string CacheFileNameTemplate = "{0}.jpg";
-        private readonly string _lastFmApiKey;
         private readonly string _cacheRootDirectory;
         private readonly string _CacheDirectory;
         private readonly SpotifyLocalApi _LocalApi;
         private readonly ILog _Logger;
+        private HttpClient _client = new HttpClient();
 
-        public CoverService(string lastFmApiKey, string cacheRootDirectory,
+        public CoverService(string cacheRootDirectory,
             ILog logger, SpotifyLocalApi localApi)
         {
-
-            _lastFmApiKey = lastFmApiKey;
             _CacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
             _Logger = logger;
             _LocalApi = localApi;
@@ -47,21 +46,20 @@ namespace MiniPie.Core {
                                                                          });
         }
 
-        public async Task<string> FetchCover(string artist, string track) {
-            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (artist + track).ToSHA1()));
+        public async Task<string> FetchCover(Status trackStatus) {
+            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (trackStatus.track.album_resource.uri).ToSHA1()));
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
-            var spotifyCover = await FetchSpotifyCover(cachedFileName);
-            return string.IsNullOrEmpty(spotifyCover) ? await FetchLastFmCover(artist, track, cachedFileName) : spotifyCover;
+            var spotifyCover = await FetchSpotifyCover(trackStatus, cachedFileName);
+            return spotifyCover;
         }
 
-        private async Task<string> FetchSpotifyCover(string cachedFileName) {
+        private async Task<string> FetchSpotifyCover(Status trackStatus, string cachedFileName) {
             if (!_LocalApi.HasValidToken)
                 return string.Empty;
 
             try {
-                var trackStatus = _LocalApi.LastStatus;
                 if (trackStatus != null) {
                     if (trackStatus.error != null)
                         throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.error.message,
@@ -84,72 +82,17 @@ namespace MiniPie.Core {
             return string.Empty;
         }
 
-        private async Task<string> FetchLastFmCover(string artist, string track, string cachedFileName) {
-            var requestUrl = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={0}&track={1}&artist={2}",
-                    _lastFmApiKey,
-                    HttpUtility.UrlEncode(CleanTrackName(track)),
-                    HttpUtility.UrlEncode(artist));
-            try {
-                var request = Helper.CreateWebRequest(requestUrl);
-                var response = (HttpWebResponse)request.GetResponse();
-                LastFmResponse lfmResponse;
-                using (var reader = new StreamReader(response.GetResponseStream())) {
-                    var serializer = new XmlSerializer(typeof (LastFmResponse));
-                    lfmResponse = serializer.Deserialize(reader) as LastFmResponse;
-                    if(lfmResponse == null || lfmResponse.Status != "ok")
-                        throw new Exception("Could not fetch lastfm details");
-                }
-                response.Close();
-
-                if (lfmResponse.Status == "ok" && lfmResponse.Track != null && lfmResponse.Track.Length > 0) {
-                    var lfmTrack = lfmResponse.Track[0];
-                    if (lfmTrack.Album != null && lfmTrack.Album.Image != null && lfmTrack.Album.Image.Length > 0) {
-                        var images = lfmTrack.Album.Image;
-                        var largeImage = images.FirstOrDefault(i => i.Size == "large");
-                        return await DownloadAndSaveImage(largeImage != null ? largeImage.Url : images.Last().Url, cachedFileName);
-                    }
-                }
-                return string.Empty;
-            }
-            catch (Exception exc) {
-                _Logger.WarnException(string.Format("Failed to retrieve cover. Endpoint: {0}", requestUrl), exc);
-                return string.Empty;
-            }
-        }
-
-        private async Task<string> DownloadAndSaveImage(string url, string destination) {
-            var request = Helper.CreateWebRequest(url);
-            var response = (HttpWebResponse) request.GetResponse();
-
-            using (var fs = File.Create(destination)) {
-                using (var rs = response.GetResponseStream()) {
-                    var buffer = new byte[1024];
-                    var bytesRead = rs.Read(buffer, 0, buffer.Length);
-                    while (bytesRead > 0) {
-                        fs.Write(buffer, 0, bytesRead);
-                        bytesRead = rs.Read(buffer, 0, buffer.Length);
-                    }
+        private async Task<string> DownloadAndSaveImage(string url, string destination)
+        {
+            using (var fs = File.Create(destination))
+            {
+                using (var rs = await _client.GetStreamAsync(url))
+                {
+                    await rs.CopyToAsync(fs);
                 }
             }
 
-            response.Close();
             return destination;
-        }
-
-        
-        private string CleanTrackName(string track) {
-            //By removing these strings, we raise the chance to find a proper cover image
-            var misleadingWords = new[] {
-                                            "Original Version", "Radio Edit", "Single Version", "Original Mix",
-                                            "Explicit Version", "Single Mix"
-                                        };
-
-            var formats = new[] {"- {0}", "({0})", "[{0}]"};
-            return misleadingWords.Aggregate(track,
-                                              (currentWord, word) =>
-                                              formats.Aggregate(currentWord, (current, format) =>
-                                                  current.Replace(string.Format(format, word), string.Empty)))
-                                                  .Trim();
         }
     }
 }

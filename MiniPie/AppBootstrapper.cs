@@ -52,8 +52,7 @@ namespace MiniPie {
 
             Container.Register<SpotifyLocalApi>(new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings));
             Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
-            Container.Register<ICoverService>(new CoverService(_Contracts.LastFmApiKey, 
-                Directory.GetCurrentDirectory(), Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
+            Container.Register<ICoverService>(new CoverService(Directory.GetCurrentDirectory(), Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
             
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(Container.Resolve<ISpotifyController>());

@@ -184,20 +184,6 @@ namespace MiniPie.Core.SpotifyLocal {
             return d.FirstOrDefault();
         }
 
-        private Status _lastStatus;
-        /// <summary>Returns the current track info.
-        /// Change <seealso cref="Wait"/> into the amount of waiting time before it will return
-        /// When the current track info changes it will return before elapsing the amount of seconds in <seealso cref="Wait"/>
-        /// (look at the project site for more information if you do not understand this)
-        /// </summary>
-        public Status LastStatus 
-        {
-            get
-            {
-                return _lastStatus;
-            }
-        }
-
         public async Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, int wait = -1)
         {
             var uriBuilder = new UriBuilder(_Contracts.SpotifyLocalHost +"remote/status.json");
@@ -219,7 +205,6 @@ namespace MiniPie.Core.SpotifyLocal {
             }
             var stringResponse = await response.Content.ReadAsStringAsync();
             var resultStatus = JsonConvert.DeserializeObject<Status>(stringResponse);
-            _lastStatus = resultStatus;
             return resultStatus;
         }
 

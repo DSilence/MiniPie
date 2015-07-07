@@ -292,7 +292,7 @@ namespace MiniPie.ViewModels {
                     if(_Settings.DisableAnimations)
                         CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
 
-                    var coverUri = await _CoverService.FetchCover(artist, track);
+                    var coverUri = await _CoverService.FetchCover(status);
                     if (string.IsNullOrEmpty(coverUri))
                         coverUri = UnknownCoverUri;
                     CoverImage = coverUri;

@@ -22,12 +22,9 @@ namespace MiniPie.Core {
             }
         }
 
-        public string SettingsFilename {
+        public string SettingsFilename
+        {
             get { return string.Format("{0}.Settings.json", ApplicationName); }
-        }
-
-        public string LastFmApiKey {
-            get { return "d6177d680cea0ec4c248b3cc4897047a"; }
         }
 
         public string HomepageUrl {
