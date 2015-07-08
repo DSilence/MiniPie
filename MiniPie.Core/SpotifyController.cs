@@ -363,11 +363,9 @@ namespace MiniPie.Core {
                 if (placement.showCmd == MINIMIZED_STATE)
                 {
                     ShowWindowAsync(handle, SW_RESTORE);
+                    
                 }
-                else
-                {
-                    SetForegroundWindow(handle);
-                }
+                SetForegroundWindow(handle);
             }
         }
 
