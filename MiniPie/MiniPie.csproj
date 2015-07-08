@@ -225,9 +225,6 @@
     <Resource Include="Images\Player\pause-pressed.png" />
     <Resource Include="Images\Player\next-mouseover.png" />
     <Resource Include="Images\Player\prev-mouseover.png" />
-    <Content Include="..\Uninstall\bin\Release\Uninstall.exe">
-      <Link>Uninstall.exe</Link>
-    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

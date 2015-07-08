@@ -82,8 +82,6 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="AppContracts.cs" />
-    <Compile Include="ClickOnceHelpers\ClickOnceHelper.cs" />
-    <Compile Include="ClickOnceHelpers\Keys.cs" />
     <Compile Include="Enums\ApplicationSize.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="AutorunService.cs" />

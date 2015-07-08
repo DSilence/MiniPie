@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using Caliburn.Micro;
 using Hardcodet.Wpf.TaskbarNotification;
-using MiniPie.ClickOnceHelpers;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
@@ -35,15 +34,6 @@ namespace MiniPie {
             base.Configure();
 
             _Contracts = new AppContracts();
-            try
-            {
-                var clickOnceHelper = new ClickOnceHelper(_Contracts.PublisherName, _Contracts.ProductName);
-                clickOnceHelper.UpdateUninstallParameters();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
             
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
             _Settings = _SettingsPersistor.Instance;
