@@ -188,7 +188,7 @@ namespace MiniPie.ClickOnceHelpers
             Thread.Sleep(100);
             const uint wparam = 0 << 29 | 0;
 
-            PostMessage(myWindowHandle, WM_KEYDOWN, (IntPtr)(Keys.Shift | Keys.Tab), (IntPtr)wparam);
+            /*PostMessage(myWindowHandle, WM_KEYDOWN, (IntPtr)(Keys.Shift | Keys.Tab), (IntPtr)wparam);
             //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)(Keys.Shift | Keys.Tab), (IntPtr)wparam);
             PostMessage(myWindowHandle, WM_KEYDOWN, (IntPtr)(Keys.Shift | Keys.Tab), (IntPtr)wparam);
             //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)(Keys.Shift | Keys.Tab), (IntPtr)wparam);
@@ -197,7 +197,7 @@ namespace MiniPie.ClickOnceHelpers
             //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Down, (IntPtr)wparam);
 
             PostMessage(myWindowHandle, WM_KEYDOWN, (IntPtr)Keys.Tab, (IntPtr)wparam);
-            //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Tab, (IntPtr)wparam);
+            //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Tab, (IntPtr)wparam);*/
 
             PostMessage(myWindowHandle, WM_KEYDOWN, (IntPtr)Keys.Enter, (IntPtr)wparam);
             //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Enter, (IntPtr)wparam);
