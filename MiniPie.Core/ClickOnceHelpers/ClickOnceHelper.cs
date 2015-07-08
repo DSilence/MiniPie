@@ -200,9 +200,9 @@ namespace MiniPie.ClickOnceHelpers
             //PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Tab, (IntPtr)wparam);*/
 
             //PostMessage(myWindowHandle, WM_KEYDOWN, (IntPtr)Keys.Enter, (IntPtr)wparam);
+            /*PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Tab, (IntPtr)wparam);
             PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Tab, (IntPtr)wparam);
-            PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Tab, (IntPtr)wparam);
-            PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Enter, (IntPtr)wparam);
+            PostMessage(myWindowHandle, WM_KEYUP, (IntPtr)Keys.Enter, (IntPtr)wparam);*/
         }
         #endregion
     }
