@@ -20,7 +20,7 @@ namespace MiniPie.Core {
         private readonly ILog _Logger;
         private HttpClient _client = new HttpClient();
         
-        private const int MaxFileCount = 10000;
+        private const int MaxFileCount = 500;
 
         public CoverService(string cacheRootDirectory,
             ILog logger, SpotifyLocalApi localApi)
