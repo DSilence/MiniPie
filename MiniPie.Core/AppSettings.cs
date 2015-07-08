@@ -99,5 +99,18 @@ namespace MiniPie.Core {
                 NotifyOfPropertyChange();
             }
         }
+
+        private string _cacheFolder;
+
+        [JsonProperty]
+        public string CacheFolder
+        {
+            get { return _cacheFolder; }
+            set
+            {
+                _cacheFolder = value;
+                NotifyOfPropertyChange();
+            }
+        }
     }
 }

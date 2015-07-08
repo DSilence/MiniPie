@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using Caliburn.Micro;
 using Hardcodet.Wpf.TaskbarNotification;
+using MiniPie.ClickOnceHelpers;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
@@ -34,7 +35,15 @@ namespace MiniPie {
             base.Configure();
 
             _Contracts = new AppContracts();
-
+            try
+            {
+                var clickOnceHelper = new ClickOnceHelper(_Contracts.PublisherName, _Contracts.ProductName);
+                clickOnceHelper.UpdateUninstallParameters();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
             _Settings = _SettingsPersistor.Instance;
@@ -52,7 +61,11 @@ namespace MiniPie {
 
             Container.Register<SpotifyLocalApi>(new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings));
             Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
-            Container.Register<ICoverService>(new CoverService(Directory.GetCurrentDirectory(), Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
+            Container.Register<ICoverService>(
+                new CoverService(
+                    string.IsNullOrEmpty(_Settings.CacheFolder)
+                        ? Directory.GetCurrentDirectory()
+                        : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
             
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(Container.Resolve<ISpotifyController>());

@@ -14,20 +14,48 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C56684
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstall", "Uninstall\Uninstall.csproj", "{F7EF6E70-38D2-4669-A03F-4029544FF827}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|x86.ActiveCfg = Debug|x86
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|x86.Build.0 = Debug|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|Any CPU.ActiveCfg = Release|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|Mixed Platforms.Build.0 = Release|x86
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|x86.ActiveCfg = Release|x86
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|x86.Build.0 = Release|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|x86.ActiveCfg = Debug|x86
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|x86.Build.0 = Debug|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|Any CPU.ActiveCfg = Release|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|x86.ActiveCfg = Release|x86
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|x86.Build.0 = Release|x86
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F7EF6E70-38D2-4669-A03F-4029544FF827}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

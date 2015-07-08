@@ -39,6 +39,16 @@ namespace MiniPie.Core {
             get { return "http://minipie.spotilocal.com:4380/"; }
         }
 
+        public string PublisherName
+        {
+            get { return "Dzmitry Safarau"; }
+        }
+
+        public string ProductName
+        {
+            get { return "MiniPie"; }
+        }
+
         public string BroadcastUrl { get { return "http://deploy.krausshq.com/winfy/broadcast.json"; } }
 
         public string SettingsLocation {
