@@ -19,7 +19,8 @@
              MaxWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              Padding="0"
              Background="#000000" FontFamily="Segoe UI"
-             Foreground="#FFFFFF" BorderBrush="#000000" Unloaded="ShellView_OnUnloaded">
+             Foreground="#FFFFFF" BorderBrush="#000000" Unloaded="ShellView_OnUnloaded"
+             DataContextChanged="ShellView_OnDataContextChanged">
     <UserControl.Resources>
         <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter"/>
         <Storyboard x:Key="StbFadeout">
@@ -50,14 +51,14 @@
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:.3"/>
         </Storyboard>
-        <tb:TaskbarIcon x:Key="NotifyIcon"
+        <!--<tb:TaskbarIcon x:Key="NotifyIcon"
                     Visibility="Visible"
                     MenuActivation="RightClick"
                     IconSource="..\App.ico">
             <tb:TaskbarIcon.ContextMenu>
                 <controls:MiniPieContextMenu/>
             </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+        </tb:TaskbarIcon>-->
         <Style TargetType="circularProgressButton1:PropgressButton">
             <Setter Property="Template">
                 <Setter.Value>
@@ -126,7 +127,7 @@
     </i:Interaction.Triggers>
     <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
         <Border.ContextMenu>
-            <controls:MiniPieContextMenu/>
+            <controls:MiniPieContextMenu x:Name="MiniPieContextMenu"/>
         </Border.ContextMenu>
         <Grid>
             <Grid.RowDefinitions>

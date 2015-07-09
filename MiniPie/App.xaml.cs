@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Hardcodet.Wpf.TaskbarNotification;
 
 namespace MiniPie {
     /// <summary>

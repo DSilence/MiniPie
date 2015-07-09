@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Runtime.Remoting.Messaging;
 using System.Windows;
 using Caliburn.Micro;
-using Hardcodet.Wpf.TaskbarNotification;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using TinyIoC;
-using Action = System.Action;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
@@ -19,7 +16,6 @@ namespace MiniPie.ViewModels {
         private readonly ILog _Logger;
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
-        private TaskbarIcon taskbarIcon;
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
@@ -63,23 +59,10 @@ namespace MiniPie.ViewModels {
                 if (_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
                     OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
             }
-
-
-            var viewElement = view as FrameworkElement;
-            if (viewElement != null)
-            {
-                taskbarIcon = (TaskbarIcon)viewElement.FindResource("NotifyIcon");
-                taskbarIcon.DataContext = this;
-                taskbarIcon.TrayLeftMouseUp += MaximizeMiniplayer;
-                taskbarIcon.TrayMouseDoubleClick += MinimizeMiniplayer;
-                base.OnActivate();
-            }
         }
 
         protected override void OnDeactivate(bool close)
         {
-            taskbarIcon.TrayLeftMouseUp -= MaximizeMiniplayer;
-            taskbarIcon.TrayMouseDoubleClick -= MinimizeMiniplayer;
             base.OnDeactivate(close);
         }
 
@@ -226,13 +209,13 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        private void MinimizeMiniplayer(object sender, RoutedEventArgs e)
+        public void MinimizeMiniplayer(object sender, EventArgs e)
         {
             var window = Application.Current.MainWindow;
             window.Visibility = Visibility.Hidden;
         }
 
-        public void MaximizeMiniplayer(object sender, RoutedEventArgs args)
+        public void MaximizeMiniplayer(object sender, EventArgs args)
         {
             var window = Application.Current.MainWindow;
             window.Visibility = Visibility.Visible;

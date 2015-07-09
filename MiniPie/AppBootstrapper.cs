@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Caliburn.Micro;
-using Hardcodet.Wpf.TaskbarNotification;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
