@@ -17,6 +17,8 @@ namespace MiniPie.ViewModels {
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
 
+        private const string _songFriendlyNameFormat = "{0} - {1}";
+
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
@@ -185,6 +187,11 @@ namespace MiniPie.ViewModels {
         public void OpenSpotifyWindow()
         {
             _SpotifyController.OpenSpotify();
+        }
+
+        public string GetTrackFriendlyName()
+        {
+            return String.Format(_songFriendlyNameFormat, CurrentArtist, CurrentTrack);
         }
 
         private double _maxProgress;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using System.Windows;
@@ -18,6 +19,7 @@ namespace MiniPie.Views {
     {
         private NotifyIcon _notifyIcon;
         private ContextMenu _menu;
+        private MenuItem _songNameMenuItem;
 
         public ShellView() {
             InitializeComponent();
@@ -35,8 +37,8 @@ namespace MiniPie.Views {
                 var viewModel = ShellViewModel;
                 if (viewModel != null)
                 {
-                    _notifyIcon.MouseUp -= viewModel.MaximizeMiniplayer;
-                    _notifyIcon.MouseDoubleClick -= viewModel.MinimizeMiniplayer;
+                    _notifyIcon.MouseClick -= viewModel.MaximizeMiniplayer;
+                    _notifyIcon.DoubleClick -= viewModel.MinimizeMiniplayer;
                 }
                 _notifyIcon.Dispose();
             }
@@ -76,17 +78,22 @@ namespace MiniPie.Views {
                     _menu.Dispose();
                 }
                 _notifyIcon.ContextMenu = null;
-                _notifyIcon.MouseUp -= oldContext.MaximizeMiniplayer;
-                _notifyIcon.MouseDoubleClick -= oldContext.MinimizeMiniplayer;
+                _notifyIcon.MouseClick -= oldContext.MaximizeMiniplayer;
+                _notifyIcon.DoubleClick -= oldContext.MinimizeMiniplayer;
+                oldContext.PropertyChanged += PropertyChangedForNotifyIcon;
             }
 
             var context = e.NewValue as ShellViewModel;
             if (context != null)
             {
-                _notifyIcon.MouseUp += context.MaximizeMiniplayer;
-                _notifyIcon.MouseDoubleClick += context.MinimizeMiniplayer;
+                _notifyIcon.MouseClick += context.MaximizeMiniplayer;
+                _notifyIcon.DoubleClick += context.MinimizeMiniplayer;
 
-                List<MenuItem> menuItems = new List<MenuItem>(MiniPieContextMenu.Items.Count);
+                List<MenuItem> menuItems = new List<MenuItem>(MiniPieContextMenu.Items.Count + 2);
+                _songNameMenuItem = new MenuItem();
+                _songNameMenuItem.Enabled = false;
+                menuItems.Add(_songNameMenuItem);
+                menuItems.Add(new MenuItem("-"));
                 foreach (var item in MiniPieContextMenu.Items)
                 {
                     var menuItem = item as System.Windows.Controls.MenuItem;
@@ -110,6 +117,19 @@ namespace MiniPie.Views {
                     }
                 }
                 _notifyIcon.ContextMenu = _menu = new ContextMenu(menuItems.ToArray());
+                _notifyIcon.Text
+                    = ShellViewModel.GetTrackFriendlyName();
+                context.PropertyChanged += PropertyChangedForNotifyIcon;
+            }
+        }
+
+        private void PropertyChangedForNotifyIcon(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "CurrentTrack" || propertyChangedEventArgs.PropertyName == "CurrentArtist")
+            {
+                string friendlyName = ShellViewModel.GetTrackFriendlyName();
+                _notifyIcon.Text = friendlyName;
+                _songNameMenuItem.Text = friendlyName;
             }
         }
     }
