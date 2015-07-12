@@ -211,20 +211,14 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Resource Include="Images\LogoUnknown.png" />
-    <Resource Include="Images\Player\next-normal.png" />
-    <Resource Include="Images\Player\next-pressed.png" />
-    <Resource Include="Images\Player\prev-normal.png" />
-    <Resource Include="Images\Player\prev-pressed.png" />
     <Resource Include="Images\Logo.png" />
     <Resource Include="App.ico" />
-    <Resource Include="Images\Player\play-normal.png" />
-    <Resource Include="Images\Player\play-pressed.png" />
-    <Resource Include="Images\Player\play-mouseover.png" />
-    <Resource Include="Images\Player\pause-mouseover.png" />
-    <Resource Include="Images\Player\pause-normal.png" />
-    <Resource Include="Images\Player\pause-pressed.png" />
     <Resource Include="Images\Player\next-mouseover.png" />
+    <Resource Include="Images\Player\next-normal.png" />
+    <Resource Include="Images\Player\next-pressed.png" />
     <Resource Include="Images\Player\prev-mouseover.png" />
+    <Resource Include="Images\Player\prev-normal.png" />
+    <Resource Include="Images\Player\prev-pressed.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

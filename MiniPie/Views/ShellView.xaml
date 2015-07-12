@@ -165,22 +165,6 @@
                                                                          Width="33" Height="33" 
                                                                          Maximum="{Binding MaxProgress}" 
                                                                          Value="{Binding Progress}"/>
-                                <!--<controls:ImageButton Width="33" Height="33" x:Name="Play"
-                                                      cal:Message.Attach="[Event Click] = [Action PlayPause]"
-                                                      Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"
-                                                      ImageSourceNormal="/Images/Player/play-normal.png"
-                                                      ImageSource="/Images/Player/play-normal.png"
-                                                      ImageSourcePressed="/Images/Player/play-pressed.png"
-                                                      ImageSourceMouseOver="/Images/Player/play-mouseover.png"
-                                                      ToolTip="Toggle playback" />
-                                <controls:ImageButton Width="33" Height="33" x:Name="Pause"
-                                                      cal:Message.Attach="[Event Click] = [Action PlayPause]"
-                                                      Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}"
-                                                      ImageSourceNormal="/Images/Player/pause-normal.png"
-                                                      ImageSource="/Images/Player/pause-normal.png"
-                                                      ImageSourcePressed="/Images/Player/pause-pressed.png"
-                                                      ImageSourceMouseOver="/Images/Player/pause-mouseover.png"
-                                                      ToolTip="Toggle playback" />-->
                                 <controls:ImageButton Width="24" Height="25" x:Name="PlayNext"
                                                   ImageSourceNormal="/Images/Player/next-normal.png"
                                                   ImageSource="/Images/Player/next-normal.png"

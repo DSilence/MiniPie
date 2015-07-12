@@ -33,7 +33,6 @@ namespace MiniPie.ViewModels {
             _ApplicationSize = _Settings.ApplicationSize;
 
             CoverImage = NoCoverUri;
-            UpdateView();
 
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
             _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
@@ -44,6 +43,7 @@ namespace MiniPie.ViewModels {
                                              if (e.PropertyName == ApplicationSize.GetType().Name)
                                                  ApplicationSize = _Settings.ApplicationSize;
                                          };
+            UpdateView();
         }
 
         protected override void OnViewLoaded(object view) {
