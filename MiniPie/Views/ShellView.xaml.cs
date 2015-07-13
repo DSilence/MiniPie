@@ -1,17 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
-using MiniPie.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using MiniPie.ViewModels;
+using Application = System.Windows.Application;
+using ContextMenu = System.Windows.Forms.ContextMenu;
+using FlowDirection = System.Windows.FlowDirection;
+using MenuItem = System.Windows.Forms.MenuItem;
 using Message = Caliburn.Micro.Message;
+using Size = System.Windows.Size;
 using UserControl = System.Windows.Controls.UserControl;
 
-namespace MiniPie.Views {
+namespace MiniPie.Views
+{
     /// <summary>
     /// Interaction logic for ShellView.xaml
     /// </summary>
@@ -21,7 +33,8 @@ namespace MiniPie.Views {
         private ContextMenu _menu;
         private MenuItem _songNameMenuItem;
 
-        public ShellView() {
+        public ShellView()
+        {
             InitializeComponent();
 
             _notifyIcon = new NotifyIcon();
@@ -30,7 +43,7 @@ namespace MiniPie.Views {
                 Assembly.GetExecutingAssembly().Location);
         }
 
-        private void ShellView_OnUnloaded(object sender, RoutedEventArgs e)
+        private void MainWindowOnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
             if (_notifyIcon != null)
             {
@@ -40,6 +53,7 @@ namespace MiniPie.Views {
                     _notifyIcon.MouseClick -= viewModel.MaximizeMiniplayer;
                     _notifyIcon.DoubleClick -= viewModel.MinimizeMiniplayer;
                 }
+                _notifyIcon.Visible = false;
                 _notifyIcon.Dispose();
             }
         }
@@ -58,10 +72,7 @@ namespace MiniPie.Views {
 
         private ShellViewModel ShellViewModel
         {
-            get
-            {
-                return DataContext as ShellViewModel;
-            }
+            get { return DataContext as ShellViewModel; }
         }
 
         private void ShellView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -86,6 +97,10 @@ namespace MiniPie.Views {
             var context = e.NewValue as ShellViewModel;
             if (context != null)
             {
+                //TODO kinda bad
+                Application.Current.MainWindow.Closing += MainWindowOnClosing;
+
+
                 _notifyIcon.MouseClick += context.MaximizeMiniplayer;
                 _notifyIcon.DoubleClick += context.MinimizeMiniplayer;
 
@@ -118,19 +133,112 @@ namespace MiniPie.Views {
                 }
                 _notifyIcon.ContextMenu = _menu = new ContextMenu(menuItems.ToArray());
                 _notifyIcon.Text
-                    = ShellViewModel.GetTrackFriendlyName();
+                    = TruncateWithEllipsis(ShellViewModel.GetTrackFriendlyName(), 63);
                 context.PropertyChanged += PropertyChangedForNotifyIcon;
             }
         }
 
         private void PropertyChangedForNotifyIcon(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "CurrentTrack" || propertyChangedEventArgs.PropertyName == "CurrentArtist")
+            if (propertyChangedEventArgs.PropertyName == "CurrentTrack" ||
+                propertyChangedEventArgs.PropertyName == "CurrentArtist")
             {
-                string friendlyName = ShellViewModel.GetTrackFriendlyName();
+                string friendlyName = TruncateWithEllipsis(ShellViewModel.GetTrackFriendlyName(), 63);
                 _notifyIcon.Text = friendlyName;
                 _songNameMenuItem.Text = friendlyName;
             }
+        }
+
+        //Truncates a string to be no longer than a certain length
+        public static string TruncateWithEllipsis(string s, int length)
+        {
+            //there may be a more appropiate unicode character for this
+            const string Ellipsis = "...";
+
+            if (Ellipsis.Length > length)
+                throw new ArgumentOutOfRangeException("length", length, "length must be at least as long as ellipsis.");
+
+            if (s.Length > length)
+                return s.Substring(0, length - Ellipsis.Length) + Ellipsis;
+            else
+                return s;
+        }
+
+
+        private const int InitialBeginAnimationCyclePause = 1;
+        private const int BeginAnimationCyclePause = 0;
+        private const int EndAnimationCyclePause = 5;
+        private double _speed;
+        private readonly RepeatBehavior _once = new RepeatBehavior(1);
+
+        private bool shouldAnimate;
+        private void CurrentTrack_OnTargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            CurrentTrack.IsMouseDirectlyOverChanged -= CurrentTrackOnIsMouseDirectlyOverChanged;
+            var textBlock = CurrentTrack;
+            var targetedWidth = MeasureString(textBlock.Text, textBlock).Width;
+
+            var diff = targetedWidth - TitlePanel.ActualWidth + 7;
+            if (textBlock.ActualWidth > 0 && diff > 0)
+            {
+                shouldAnimate = true;
+                Storyboard.Stop();
+                var animation = (DoubleAnimationUsingKeyFrames)Storyboard.Children.First();
+                animation.RepeatBehavior = _once;
+                MaxKeyFrame.Value = -diff;
+                EndDelayKeyFrame.Value = -diff;
+                _speed = diff/20;
+                
+                ModifyAnimation(animation, InitialBeginAnimationCyclePause);
+                Storyboard.Begin();
+            }
+            else
+            {
+                shouldAnimate = false;
+                Storyboard.Stop();
+            }
+        }
+
+        private void StoryboardOnCompleted(object sender, EventArgs eventArgs)
+        {
+            Debug.Print("StoryboardOnCompleted");
+            CurrentTrack.IsMouseDirectlyOverChanged += CurrentTrackOnIsMouseDirectlyOverChanged;
+        }
+
+        private void CurrentTrackOnIsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            Debug.Print("CurrentTrackOnIsMouseDirectlyOverChanged");
+            if (true.Equals(dependencyPropertyChangedEventArgs.NewValue) && shouldAnimate)
+            {
+                CurrentTrack.IsMouseDirectlyOverChanged -= CurrentTrackOnIsMouseDirectlyOverChanged;
+                Storyboard.Stop();
+                var animation = (DoubleAnimationUsingKeyFrames)Storyboard.Children.First();
+                ModifyAnimation(animation, BeginAnimationCyclePause);
+                Storyboard.Begin();
+            }
+        }
+
+        private void ModifyAnimation(DoubleAnimationUsingKeyFrames animation, int beginAnimationPause)
+        {
+            MinKeyTime.KeyTime = TimeSpan.FromSeconds(beginAnimationPause);
+            double maxKeyTimeSeconds = _speed + beginAnimationPause;
+            MaxKeyFrame.KeyTime = TimeSpan.FromSeconds(maxKeyTimeSeconds);
+            TimeSpan max = TimeSpan.FromSeconds(maxKeyTimeSeconds + EndAnimationCyclePause);
+            animation.Duration = max;
+            EndDelayKeyFrame.KeyTime = max;
+            ResetKeyFrame.KeyTime = max;
+        }
+
+        private Size MeasureString(string candidate, TextBlock target)
+        {
+            var formattedText = new FormattedText(
+                candidate,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(target.FontFamily, target.FontStyle, target.FontWeight, target.FontStretch),
+                target.FontSize, target.Foreground);
+
+            return new Size(formattedText.Width, formattedText.Height);
         }
     }
 }

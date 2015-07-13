@@ -32,7 +32,6 @@ namespace MiniPie.ViewModels {
                                                                 new ComponentData("https://github.com/dbuksbaum/Caliburn.Micro.TinyIOC","MIT License", "Caliburn.Micro.TinyIOC"), 
                                                                 new ComponentData("http://json.codeplex.com/","MIT License", "Newtonsoft Json.Net"), 
                                                                 new ComponentData("http://jariz.nl", "Apache 2.0 License","Spotify local API"),
-                                                                new ComponentData("http://wixtoolset.org/", "MS-RL", "WiX Toolset"), 
 																new ComponentData("http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files", "CPOL", "Resx Extention"), 
                                                             });
         }

@@ -19,7 +19,7 @@
              MaxWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              Padding="0"
              Background="#000000" FontFamily="Segoe UI"
-             Foreground="#FFFFFF" BorderBrush="#000000" Unloaded="ShellView_OnUnloaded"
+             Foreground="#FFFFFF" BorderBrush="#000000"
              DataContextChanged="ShellView_OnDataContextChanged">
     <UserControl.Resources>
         <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter"/>
@@ -177,9 +177,36 @@
                 </Border>
             </Border>
             
-            <StackPanel Grid.Row="1" Margin="5" Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}">
-                <TextBlock Name="CurrentTrack" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
-                <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" />
+            <StackPanel Name="TitlePanel" Grid.Row="1"  Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}" ClipToBounds="True">
+                <Canvas Margin="5" Height="20">
+                    <TextBlock Name="CurrentTrack" FontSize="12"
+                           ToolTip="{Binding CurrentTrack}" TextTrimming="None"
+                               Text="{Binding CurrentTrack, NotifyOnTargetUpdated=True}" TargetUpdated="CurrentTrack_OnTargetUpdated">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform x:Name="translate"/>
+                        </TextBlock.RenderTransform>
+                        <TextBlock.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard Name="Storyboard" Completed="StoryboardOnCompleted">
+                                        <DoubleAnimationUsingKeyFrames  Name="StoryAnimation"
+                                        Storyboard.TargetName="translate" 
+                                        Storyboard.TargetProperty="X"
+                                        Duration="0">
+                                            <LinearDoubleKeyFrame x:Name="ResetKeyFrameStart" Value="0" KeyTime="0"/>
+                                            <LinearDoubleKeyFrame x:Name="MinKeyTime" Value="0" KeyTime="0"/>
+                                            <LinearDoubleKeyFrame x:Name="MaxKeyFrame" Value="0" KeyTime="0"/>
+                                            <LinearDoubleKeyFrame x:Name="EndDelayKeyFrame" Value="0" KeyTime="0"/>
+                                            <LinearDoubleKeyFrame x:Name="ResetKeyFrame" Value="0" KeyTime="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </TextBlock.Triggers>
+                    </TextBlock>
+                </Canvas>
+                
+                <TextBlock Margin="5" Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
             </StackPanel>
             
         </Grid>
