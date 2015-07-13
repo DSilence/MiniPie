@@ -34,16 +34,15 @@ namespace MiniPie.ViewModels {
 
             CoverImage = NoCoverUri;
 
-            _SpotifyController.TrackChanged += (o, e) => UpdateView();
+            _SpotifyController.AttachTrackChangedHandler((o, e) => UpdateView());
             _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
             _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
-            _SpotifyController.TrackStatusChanged += SpotifyControllerOnTrackStatusChanged;
+            _SpotifyController.AttachTrackStatusChangedHandler(SpotifyControllerOnTrackStatusChanged);
 
             _Settings.PropertyChanged += (o, e) => {
                                              if (e.PropertyName == ApplicationSize.GetType().Name)
                                                  ApplicationSize = _Settings.ApplicationSize;
                                          };
-            UpdateView();
         }
 
         protected override void OnViewLoaded(object view) {

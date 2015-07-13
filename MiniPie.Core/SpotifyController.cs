@@ -19,7 +19,7 @@ namespace MiniPie.Core {
          */
 
         public event EventHandler SpotifyExited;
-        public event EventHandler TrackChanged;
+        protected event EventHandler TrackChanged;
         public event EventHandler TrackStatusChanged;
         public event EventHandler SpotifyOpened;
 
@@ -367,6 +367,17 @@ namespace MiniPie.Core {
                 }
                 SetForegroundWindow(handle);
             }
+        }
+
+        public void AttachTrackChangedHandler(EventHandler handler)
+        {
+            TrackChanged += handler;
+            OnTrackChanged();
+        }
+
+        public void AttachTrackStatusChangedHandler(EventHandler handler)
+        {
+            TrackStatusChanged += handler;
         }
 
         public void Dispose()

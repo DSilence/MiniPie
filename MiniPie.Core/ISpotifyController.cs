@@ -3,10 +3,8 @@ using MiniPie.Core.SpotifyLocal;
 
 namespace MiniPie.Core {
     public interface ISpotifyController : IDisposable {
-        event EventHandler TrackChanged;
         event EventHandler SpotifyOpened;
         event EventHandler SpotifyExited;
-        event EventHandler TrackStatusChanged;
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
         string GetSongName();
@@ -18,5 +16,7 @@ namespace MiniPie.Core {
         void VolumeUp();
         void VolumeDown();
         void OpenSpotify();
+        void AttachTrackChangedHandler(EventHandler handler);
+        void AttachTrackStatusChangedHandler(EventHandler handler);
     }
 }

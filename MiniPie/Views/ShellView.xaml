@@ -8,7 +8,6 @@
              xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
              xmlns:interactivity="clr-namespace:MiniPie.Interactivity"
              xmlns:controls="clr-namespace:MiniPie.Controls"
-             xmlns:tb="http://www.hardcodet.net/taskbar"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
@@ -20,7 +19,8 @@
              Padding="0"
              Background="#000000" FontFamily="Segoe UI"
              Foreground="#FFFFFF" BorderBrush="#000000"
-             DataContextChanged="ShellView_OnDataContextChanged">
+             DataContextChanged="ShellView_OnDataContextChanged"
+             UseLayoutRounding="True">
     <UserControl.Resources>
         <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter"/>
         <Storyboard x:Key="StbFadeout">
@@ -51,22 +51,13 @@
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:.3"/>
         </Storyboard>
-        <!--<tb:TaskbarIcon x:Key="NotifyIcon"
-                    Visibility="Visible"
-                    MenuActivation="RightClick"
-                    IconSource="..\App.ico">
-            <tb:TaskbarIcon.ContextMenu>
-                <controls:MiniPieContextMenu/>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>-->
         <Style TargetType="circularProgressButton1:PropgressButton">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type circularProgressButton1:PropgressButton}">
-                        <Grid>
+                        <Grid Background="Transparent">
                             <!--TODO Someone should fix this awful markup-->
-                            <!--<Ellipse SnapsToDevicePixels="False" Stroke="#6B6870" StrokeThickness="2" Fill="{TemplateBinding Background}"/>-->
-                            <Ellipse UseLayoutRounding="True" Name="BorderEllipse"  Stroke="#6B6870" StrokeThickness="2" Margin="0"
+                            <Ellipse Name="BorderEllipse"  Stroke="{TemplateBinding Foreground}" StrokeThickness="2" Margin="0"
                                      Fill="#222326" Opacity="0.95" />
                             <circularProgressButton1:Arc UseLayoutRounding="True" StrokeThickness="2"
                                                          Stroke="{TemplateBinding BorderBrush}" Margin="0">
@@ -95,19 +86,18 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="BorderEllipse" Property="Opacity" Value="0.85"/>
+                                <Setter Property="BorderBrush" Value="#6BDB92"/>
+                                <Setter Property="Foreground" Value="#808080"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="BorderBrush" Value="#81C300"></Setter>
+            <Setter Property="BorderBrush" Value="#1FD861"></Setter>
+            <!--In reality this is a color for second ellipse-->
+            <Setter Property="Foreground" Value="#6B6870"></Setter>
         </Style>
-        <!--
-        <Style x:Key="ProgressBarStyle" TargetType="{x:Type circularProgressButton1:PropgressButton}">
-            
-        </Style>-->
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.MouseEnter">
@@ -154,8 +144,8 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel Cursor="Arrow" Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
-                                        Name="PlayerButtons" Background="Transparent" Opacity="0">
-                                <controls:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
+                                        Name="PlayerButtons" Background="Transparent" Opacity="0" UseLayoutRounding="True">
+                                <controls:ImageButton RenderOptions.BitmapScalingMode="HighQuality"  Width="25" Height="25" x:Name="PlayPrevious"
                                                   ImageSourceNormal="/Images/Player/prev-normal.png"
                                                   ImageSource="/Images/Player/prev-normal.png"
                                                   ImageSourcePressed="/Images/Player/prev-pressed.png"
@@ -164,8 +154,8 @@
                                 <circularProgressButton1:PropgressButton cal:Message.Attach="[Event Click] = [Action PlayPause]"
                                                                          Width="33" Height="33" 
                                                                          Maximum="{Binding MaxProgress}" 
-                                                                         Value="{Binding Progress}"/>
-                                <controls:ImageButton Width="24" Height="25" x:Name="PlayNext"
+                                                                         Value="{Binding Progress}" Background="Transparent"/>
+                                <controls:ImageButton RenderOptions.BitmapScalingMode="HighQuality" Width="25" Height="25" x:Name="PlayNext"
                                                   ImageSourceNormal="/Images/Player/next-normal.png"
                                                   ImageSource="/Images/Player/next-normal.png"
                                                   ImageSourcePressed="/Images/Player/next-pressed.png"
