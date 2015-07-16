@@ -120,7 +120,7 @@ namespace MiniPie.Core.SpotifyLocal {
                 //Modified to use spotify WEB API
                 var lines = await _Client.GetStringAsync(string.Format("https://api.spotify.com/v1/albums/{0}", albumId));
                 var album = JsonConvert.DeserializeObject<SpotifyWebApi.Album>(lines);
-                return album.Images.First(i => i.Height == 300).Url;
+                return album.Images[1].Url;
             }
             catch (WebException webException) {
                 if (webException.Response != null && ((HttpWebResponse) webException.Response).StatusCode != HttpStatusCode.NotFound)
