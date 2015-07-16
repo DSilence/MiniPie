@@ -7,11 +7,6 @@
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
 			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d">
-        <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
-                  cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
-        <MenuItem Header="{wpf:Resx App_Settings}"
-                  cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
-        <Separator />
         <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />
         <MenuItem Header="{wpf:Resx App_Previous}"
@@ -24,5 +19,13 @@
         <MenuItem Header="{wpf:Resx App_VolumeDown}"
                   cal:Message.Attach="[Event Click] = [Action VolumeDown]" />
         <Separator />
+        <MenuItem Header="{wpf:Resx App_Settings}"
+                      cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
+
+        <Separator />
+        <MenuItem Header="{wpf:Resx App_MinimizeToTray}"
+                      cal:Message.Attach="[Event Click] = [Action MinimizeMiniplayer]"/>
+        <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
+                  cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
         <MenuItem Header="{wpf:Resx App_Exit}" cal:Message.Attach="[Event Click] = [Action Close]" />
 </ContextMenu>

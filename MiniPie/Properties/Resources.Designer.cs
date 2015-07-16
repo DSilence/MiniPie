@@ -106,6 +106,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Minimize to tray.
+        /// </summary>
+        public static string App_MinimizeToTray {
+            get {
+                return ResourceManager.GetString("App_MinimizeToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next Track.
         /// </summary>
         public static string App_Next {

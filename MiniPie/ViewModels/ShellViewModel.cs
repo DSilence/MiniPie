@@ -215,17 +215,27 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        public void MinimizeMiniplayer(object sender, EventArgs e)
+        public void MinimizeMiniplayer()
         {
             var window = Application.Current.MainWindow;
             window.Visibility = Visibility.Hidden;
         }
 
-        public void MaximizeMiniplayer(object sender, EventArgs args)
+        public void MaximizeMiniplayer()
         {
             var window = Application.Current.MainWindow;
             window.Visibility = Visibility.Visible;
             window.Activate();
+        }
+
+        internal void MinimizeMiniplayer(object sender, EventArgs e)
+        {
+            MinimizeMiniplayer();
+        }
+
+        internal void MaximizeMiniplayer(object sender, EventArgs args)
+        {
+            MaximizeMiniplayer();
         }
 
         public void Close()

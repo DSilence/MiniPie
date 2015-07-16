@@ -213,4 +213,7 @@
   <data name="Settings_StartMinimized" xml:space="preserve">
     <value>Start MiniPie minimized</value>
   </data>
+  <data name="App_MinimizeToTray" xml:space="preserve">
+    <value>Minimize to tray</value>
+  </data>
 </root>
