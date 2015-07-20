@@ -17,7 +17,7 @@ namespace MiniPie.ViewModels {
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
 
-        private const string _songFriendlyNameFormat = "{0} - {1}";
+        private const string _songFriendlyNameFormat = "{0} – {1}";
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
