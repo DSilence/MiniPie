@@ -1,12 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Winfy.Core")]
-[assembly: AssemblyDescription("Corelibrary for Winfy")]
+[assembly: AssemblyTitle("MiniPie.Core")]
+[assembly: AssemblyDescription("Corelibrary for MiniPie")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Maximilian Krauss")]
-[assembly: AssemblyProduct("Winfy.Core")]
-[assembly: AssemblyCopyright("Copyright 2013 Maximilian Krauss, krausshq.com")]
+[assembly: AssemblyCompany("Dzmitry Safarau")]
+[assembly: AssemblyProduct("MiniPie.Core")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

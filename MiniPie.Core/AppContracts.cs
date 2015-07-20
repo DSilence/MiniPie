@@ -49,8 +49,6 @@ namespace MiniPie.Core {
             get { return "MiniPie"; }
         }
 
-        public string BroadcastUrl { get { return "http://deploy.krausshq.com/winfy/broadcast.json"; } }
-
         public string SettingsLocation {
             get {
                 var location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName);

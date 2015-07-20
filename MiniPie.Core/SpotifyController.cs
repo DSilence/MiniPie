@@ -77,14 +77,10 @@ namespace MiniPie.Core {
         private Thread _BackgroundChangeTracker;
         private Timer _songStatusWatcher;
         private Status _CurrentTrackInfo;
-        private WinEventDelegate _ProcDelegate;
-
-        private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         public SpotifyController(ILog logger, SpotifyLocalApi localApi) {
             _Logger = logger;
             _LocalApi = localApi;
-
             
             AttachToProcess().Wait();
             _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
@@ -302,7 +298,7 @@ namespace MiniPie.Core {
             }
             catch (Exception exc) {
                 _Logger.WarnException("Failed to detect if Spotify is installed or not :(", exc);
-                //In case of an error it's better to return true instead of false, because this makes Winfy unusable if there is something wrong with Windows.
+                //In case of an error it's better to return true instead of false, because this makes MiniPie unusable if there is something wrong with Windows.
                 return true;
             }
         }

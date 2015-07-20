@@ -15,8 +15,8 @@ namespace MiniPie.Core {
                 Process.Start(url);
             }
             catch (Exception) {
-                MessageBox.Show(string.Format("Failed to open your default browser. Winfy tried to open the following url for you: {0}", url),
-                    "Winfy", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format("Failed to open your default browser. MiniPie tried to open the following url for you: {0}", url),
+                    "MiniPie", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -180,9 +180,6 @@
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UpdateReadyView.xaml.cs">
-      <DependentUpon>UpdateReadyView.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -224,8 +221,6 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="app.config" />
-    <None Include="broadcast.json" />
-    <None Include="changelog.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -260,10 +255,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\UpdateReadyView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniPie.Core\MiniPie.Core.csproj">
@@ -273,26 +264,6 @@
   </ItemGroup>
   <ItemGroup>
     <PublishFile Include="Caliburn.Micro.pdb">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Winfy.Core.pdb">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Winfy.pdb">
       <Visible>False</Visible>
       <Group>
       </Group>

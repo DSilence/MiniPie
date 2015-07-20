@@ -14,7 +14,6 @@ namespace MiniPie.Core {
     public class CoverService : ICoverService {
 
         private const string CacheFileNameTemplate = "{0}.jpg";
-        private readonly string _cacheRootDirectory;
         private readonly string _CacheDirectory;
         private readonly SpotifyLocalApi _LocalApi;
         private readonly ILog _Logger;

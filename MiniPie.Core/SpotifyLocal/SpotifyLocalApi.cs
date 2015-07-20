@@ -83,7 +83,7 @@ namespace MiniPie.Core.SpotifyLocal {
             _Client = new HttpClient();
             _Client.DefaultRequestHeaders.Add("Origin", "https://embed.spotify.com");
             _Client.DefaultRequestHeaders.Referrer = new Uri("https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
-            _Client.DefaultRequestHeaders.Add("User-Agent", "Winfy");
+            _Client.DefaultRequestHeaders.Add("User-Agent", "MiniPie");
             /*if (_Client.Proxy != null)
                 _Client.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
                 */
@@ -283,7 +283,6 @@ namespace MiniPie.Core.SpotifyLocal {
             try {
                 response = await _Client.GetStringAsync(requestUri);
                 response = "[ " + response + " ]";
-                bool spotifyProcessExists = true;
             }
             catch (Exception wExc)
             {
