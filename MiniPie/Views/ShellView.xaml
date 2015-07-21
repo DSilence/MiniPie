@@ -58,7 +58,7 @@
                         <Grid Background="Transparent">
                             <!--TODO Someone should fix this awful markup-->
                             <Ellipse Name="BorderEllipse"  Stroke="{TemplateBinding Foreground}" StrokeThickness="2" Margin="0"
-                                     Fill="#222326" Opacity="0.95" />
+                                     Fill="#282828" />
                             <circularProgressButton1:Arc UseLayoutRounding="True" StrokeThickness="2"
                                                          Stroke="{TemplateBinding BorderBrush}" Margin="0">
                                 <circularProgressButton1:Arc.StartAngle>
@@ -95,6 +95,7 @@
             </Setter>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="BorderBrush" Value="#1FD861"></Setter>
+            <Setter Property="UseLayoutRounding" Value="True"/>
             <!--In reality this is a color for second ellipse-->
             <Setter Property="Foreground" Value="#6B6870"></Setter>
         </Style>
@@ -151,7 +152,9 @@
                                                   ImageSourcePressed="/Images/Player/prev-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
                                                   ToolTip="plays the previous track" />
-                                <circularProgressButton1:PropgressButton cal:Message.Attach="[Event Click] = [Action PlayPause]"
+                                <circularProgressButton1:PropgressButton 
+                                                                         RenderOptions.BitmapScalingMode="HighQuality"
+                                                                         cal:Message.Attach="[Event Click] = [Action PlayPause]"
                                                                          Width="33" Height="33" 
                                                                          Maximum="{Binding MaxProgress}" 
                                                                          Value="{Binding Progress}" Background="Transparent"/>
