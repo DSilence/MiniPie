@@ -161,14 +161,14 @@ namespace MiniPie.Core {
                         Status newTrackInfo;
                         try
                         {
-                            Debug.Print("Started retrieving information from spotify, timeout is" + timeout);
+                            _Logger.Info("Started retrieving information from spotify, timeout is" + timeout);
                             newTrackInfo =
                                 await _LocalApi.SendLocalStatusRequest(true, true, timeout);
-                            Debug.Print("Finished retrieving information from spotify");
+                            _Logger.Info("Finished retrieving information from spotify");
                         }
                         catch (TaskCanceledException)
                         {
-                            Debug.Print("Retrieving cancelled");
+                            _Logger.Info("Retrieving cancelled");
                             _CurrentTrackInfo = null;
                             //TODO this is bad and dirt
                             //nothing to do here
@@ -232,8 +232,7 @@ namespace MiniPie.Core {
                 }
             }
             catch (Exception exc) {
-                _Logger.WarnException("BackgroundChangeTrackerWork failed", exc);
-                Console.WriteLine(exc.ToString());
+                _Logger.FatalException("BackgroundChangeTrackerWork failed", exc);
             }
         }
 
