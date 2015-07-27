@@ -216,4 +216,13 @@
   <data name="App_MinimizeToTray" xml:space="preserve">
     <value>Minimize to tray</value>
   </data>
+  <data name="App_CopySpotifyLink" xml:space="preserve">
+    <value>Copy Spotify Url</value>
+  </data>
+  <data name="App_CopyTrack" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="App_CopyTrackName" xml:space="preserve">
+    <value>Copy Track Name</value>
+  </data>
 </root>

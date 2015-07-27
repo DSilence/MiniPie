@@ -31,7 +31,9 @@ namespace MiniPie.Views
     {
         private NotifyIcon _notifyIcon;
         private ContextMenu _menu;
+        private MenuItem[] _menuItems;
         private MenuItem _songNameMenuItem;
+        private MenuItem _artistMenuItem;
 
         public ShellView()
         {
@@ -84,6 +86,10 @@ namespace MiniPie.Views
                 {
                     foreach (MenuItem menuItem in _menu.MenuItems)
                     {
+                        foreach (MenuItem menuItemChild in menuItem.MenuItems)
+                        {
+                            menuItemChild.Dispose();
+                        }
                         menuItem.Dispose();
                     }
                     _menu.Dispose();
@@ -104,54 +110,102 @@ namespace MiniPie.Views
                 _notifyIcon.MouseClick += context.MaximizeMiniplayer;
                 _notifyIcon.DoubleClick += context.MinimizeMiniplayer;
 
-                List<MenuItem> menuItems = new List<MenuItem>(MiniPieContextMenu.Items.Count + 2);
-                _songNameMenuItem = new MenuItem();
-                _songNameMenuItem.Enabled = false;
-                menuItems.Add(_songNameMenuItem);
-                menuItems.Add(new MenuItem("-"));
+                MiniPieContextMenu.DataContext = context;
+                List<MenuItem> menuItems = new List<MenuItem>(MiniPieContextMenu.Items.Count);
                 foreach (var item in MiniPieContextMenu.Items)
                 {
-                    var menuItem = item as System.Windows.Controls.MenuItem;
-                    if (menuItem != null)
+                    MenuItem menuItem = new MenuItem();
+                    menuItems.Add(menuItem);
+                    ProcessMenuItem(item, context, menuItem);
+                }
+                _menuItems = menuItems.ToArray();
+                _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems);
+                _notifyIcon.Text
+                    = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
+                context.PropertyChanged += PropertyChangedForNotifyIcon;
+            }
+        }
+
+        private void ProcessMenuItem(object source, ShellViewModel context,
+            MenuItem itemToPopulate = null)
+        {
+
+            if (itemToPopulate == null)
+            {
+                itemToPopulate = new MenuItem();
+            }
+
+            var menuItem = source as System.Windows.Controls.MenuItem;
+            if (menuItem != null)
+            {
+                var attach = Message.GetAttach(menuItem);
+                if (attach != null)
+                {
+                    var action = attach.Split('=')[1].Split(' ')[2].Trim(']');
+                    Action delegateAction = (Action) Delegate.CreateDelegate(typeof (Action), context, action);
+                    itemToPopulate.Text = Convert.ToString(menuItem.Header);
+                    itemToPopulate.Click += (sender, args) => { delegateAction(); };
+                    itemToPopulate.Enabled = menuItem.IsEnabled;
+                }
+                else
+                {
+                    itemToPopulate.Text = Convert.ToString(menuItem.Header);
+                    itemToPopulate.Enabled = menuItem.IsEnabled;
+                    if (menuItem.Name == "Artist")
                     {
-                        var attach = Message.GetAttach(menuItem);
-                        var action = attach.Split('=')[1].Split(' ')[2].Trim(']');
-                        Action delegateAction = (Action) Delegate.CreateDelegate(typeof (Action), context, action);
-                        menuItems.Add(new MenuItem(menuItem.Header.ToString(), (o, args) =>
-                        {
-                            delegateAction();
-                        }));
+                        _artistMenuItem = itemToPopulate;
                     }
-                    else
+                    else if (menuItem.Name == "Song")
                     {
-                        var separator = item as System.Windows.Controls.Separator;
-                        if (separator != null)
-                        {
-                            menuItems.Add(new MenuItem("-"));
-                        }
+                        _songNameMenuItem = itemToPopulate;
                     }
                 }
-                _notifyIcon.ContextMenu = _menu = new ContextMenu(menuItems.ToArray());
-                _notifyIcon.Text
-                    = TruncateWithEllipsis(ShellViewModel.GetTrackFriendlyName(), 63);
-                context.PropertyChanged += PropertyChangedForNotifyIcon;
+
+                if (menuItem.Items.Count > 0)
+                {
+                    foreach (System.Windows.Controls.MenuItem item in menuItem.Items)
+                    {
+                        var child = new MenuItem();
+                        ProcessMenuItem(item, context, child);
+                        itemToPopulate.MenuItems.Add(child);
+                    }
+                }
+            }
+            else
+            {
+                var separator = source as Separator;
+                if (separator != null)
+                {
+                    itemToPopulate.Text = "-";
+                }
             }
         }
 
         private void PropertyChangedForNotifyIcon(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "CurrentTrack" ||
-                propertyChangedEventArgs.PropertyName == "CurrentArtist")
+            if (propertyChangedEventArgs.PropertyName == "CurrentTrack")
             {
-                string friendlyName = TruncateWithEllipsis(ShellViewModel.GetTrackFriendlyName(), 63);
+                _songNameMenuItem.Text = ShellViewModel.CurrentTrack;
+                _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems.ToArray());
+                string friendlyName = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
                 _notifyIcon.Text = friendlyName;
-                _songNameMenuItem.Text = friendlyName;
+            }
+            else if (propertyChangedEventArgs.PropertyName == "CurrentArtist")
+            {
+                _artistMenuItem.Text = ShellViewModel.CurrentArtist;
+                _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems.ToArray());
+                string friendlyName = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
+                _notifyIcon.Text = friendlyName;
             }
         }
 
         //Truncates a string to be no longer than a certain length
         public static string TruncateWithEllipsis(string s, int length)
         {
+            if (s == null)
+            {
+                return String.Empty;
+            }
             //there may be a more appropiate unicode character for this
             const string Ellipsis = "...";
 
@@ -172,6 +226,7 @@ namespace MiniPie.Views
         private readonly RepeatBehavior _once = new RepeatBehavior(1);
 
         private bool shouldAnimate;
+
         private void CurrentTrack_OnTargetUpdated(object sender, DataTransferEventArgs e)
         {
             CurrentTrack.IsMouseDirectlyOverChanged -= CurrentTrackOnIsMouseDirectlyOverChanged;
@@ -183,12 +238,12 @@ namespace MiniPie.Views
             {
                 shouldAnimate = true;
                 Storyboard.Stop();
-                var animation = (DoubleAnimationUsingKeyFrames)Storyboard.Children.First();
+                var animation = (DoubleAnimationUsingKeyFrames) Storyboard.Children.First();
                 animation.RepeatBehavior = _once;
                 MaxKeyFrame.Value = -diff;
                 EndDelayKeyFrame.Value = -diff;
                 _speed = diff/20;
-                
+
                 ModifyAnimation(animation, InitialBeginAnimationCyclePause);
                 Storyboard.Begin();
             }
@@ -205,14 +260,15 @@ namespace MiniPie.Views
             CurrentTrack.IsMouseDirectlyOverChanged += CurrentTrackOnIsMouseDirectlyOverChanged;
         }
 
-        private void CurrentTrackOnIsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private void CurrentTrackOnIsMouseDirectlyOverChanged(object sender,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             Debug.Print("CurrentTrackOnIsMouseDirectlyOverChanged");
             if (true.Equals(dependencyPropertyChangedEventArgs.NewValue) && shouldAnimate)
             {
                 CurrentTrack.IsMouseDirectlyOverChanged -= CurrentTrackOnIsMouseDirectlyOverChanged;
                 Storyboard.Stop();
-                var animation = (DoubleAnimationUsingKeyFrames)Storyboard.Children.First();
+                var animation = (DoubleAnimationUsingKeyFrames) Storyboard.Children.First();
                 ModifyAnimation(animation, BeginAnimationCyclePause);
                 Storyboard.Begin();
             }

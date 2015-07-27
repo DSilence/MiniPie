@@ -7,6 +7,13 @@
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
 			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d">
+        <MenuItem Name="Artist" Header="{Binding CurrentArtist}" IsEnabled="False"/>
+    <MenuItem Name="Song" Header="{Binding CurrentTrack}" IsEnabled="False" />
+    <MenuItem Header="{wpf:Resx App_CopyTrack}">
+        <MenuItem Header="{wpf:Resx App_CopyTrackName}" cal:Message.Attach="[Event Click] = [Action CopyTrackName]" />
+        <MenuItem Header="{wpf:Resx App_CopySpotifyLink}" cal:Message.Attach="[Event Click] = [Action CopySpotifyLink]" />
+    </MenuItem>
+    <Separator />
         <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />
         <MenuItem Header="{wpf:Resx App_Previous}"

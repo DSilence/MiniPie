@@ -188,9 +188,26 @@ namespace MiniPie.ViewModels {
             _SpotifyController.OpenSpotify();
         }
 
-        public string GetTrackFriendlyName()
+        private string _trackFriendlyName;
+
+        public string TrackFriendlyName
         {
-            return String.Format(_songFriendlyNameFormat, CurrentArtist, CurrentTrack);
+            get { return _trackFriendlyName; }
+            set
+            {
+                _trackFriendlyName = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public void CopyTrackName()
+        {
+            Clipboard.SetText(TrackFriendlyName);
+        }
+
+        public void CopySpotifyLink()
+        {
+            Clipboard.SetText(TrackUrl);
         }
 
         private double _maxProgress;
@@ -213,6 +230,13 @@ namespace MiniPie.ViewModels {
                 _progress = value; 
                 NotifyOfPropertyChange();
             }
+        }
+
+        private string _trackUrl;
+        public string TrackUrl
+        {
+            get { return _trackUrl; }
+            set { _trackUrl = value; NotifyOfPropertyChange(); }
         }
 
         public void MinimizeMiniplayer()
@@ -268,6 +292,11 @@ namespace MiniPie.ViewModels {
         private async void UpdateView() {
             try {
                 var status = _SpotifyController.GetStatus();
+                if (status == null)
+                {
+                    return;
+                }
+
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
                 MaxProgress = status == null ? 0 : status.track.length;
@@ -278,8 +307,14 @@ namespace MiniPie.ViewModels {
                     OnCoverDisplayFadeOut();
 
                 HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
-                CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
-                CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+                _CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
+                _CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+                _trackFriendlyName = String.Format(_songFriendlyNameFormat, CurrentArtist, CurrentTrack);
+                _trackUrl = status.track.track_resource.location.og;
+                NotifyOfPropertyChange(() => CurrentTrack);
+                NotifyOfPropertyChange(() => CurrentArtist);
+                NotifyOfPropertyChange(() => TrackFriendlyName);
+                NotifyOfPropertyChange(() => TrackUrl);
 
                 CanPlayPause = _SpotifyController.IsSpotifyOpen();
                 CanPlayPrevious = _SpotifyController.IsSpotifyOpen();

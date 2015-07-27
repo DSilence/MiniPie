@@ -97,6 +97,33 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy Spotify Url.
+        /// </summary>
+        public static string App_CopySpotifyLink {
+            get {
+                return ResourceManager.GetString("App_CopySpotifyLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string App_CopyTrack {
+            get {
+                return ResourceManager.GetString("App_CopyTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Track Name.
+        /// </summary>
+        public static string App_CopyTrackName {
+            get {
+                return ResourceManager.GetString("App_CopyTrackName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
         public static string App_Exit {
