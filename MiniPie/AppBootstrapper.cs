@@ -57,7 +57,7 @@ namespace MiniPie {
                         : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
             
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
-            var keyManager = new KeyManager(Container.Resolve<ISpotifyController>());
+            var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());
             Container.Register<KeyManager>(keyManager);
             if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
             {

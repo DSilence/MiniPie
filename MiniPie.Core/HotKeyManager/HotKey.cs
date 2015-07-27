@@ -27,15 +27,11 @@ namespace MiniPie.Core.HotKeyManager
         public int Id { get; set; }
 
         // ******************************************************************
-        public HotKey(Key k, KeyModifier keyModifiers, Action<HotKey> action, bool register = true)
+        public HotKey(Key k, KeyModifier keyModifiers, Action<HotKey> action)
         {
             Key = k;
             KeyModifiers = keyModifiers;
             Action = action;
-            if (register)
-            {
-                Register();
-            }
         }
 
         // ******************************************************************

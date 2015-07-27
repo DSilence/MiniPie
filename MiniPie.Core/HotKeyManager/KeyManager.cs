@@ -14,19 +14,32 @@ namespace MiniPie.Core.HotKeyManager
         private readonly HotKey _volumeUp;
         private readonly HotKey _volumeDown;
 
-        public KeyManager(ISpotifyController spotifyController)
+        private List<HotKey> _hotKeys;
+        private readonly ILog _log;
+
+        public KeyManager(ISpotifyController spotifyController, ILog log)
         {
             _spotifyController = spotifyController;
             _next = new HotKey(Key.None, KeyModifier.None, 
-                key => _spotifyController.NextTrack(), false);
+                key => _spotifyController.NextTrack());
             _previous = new HotKey(Key.None, KeyModifier.None, 
-                key => _spotifyController.PreviousTrack(), false);
+                key => _spotifyController.PreviousTrack());
             _playPause = new HotKey(Key.None, KeyModifier.None,
-                key => _spotifyController.PausePlay(), false);
+                key => _spotifyController.PausePlay());
             _volumeDown = new HotKey(Key.None, KeyModifier.None,
-                key => _spotifyController.VolumeDown(), false);
+                key => _spotifyController.VolumeDown());
             _volumeUp = new HotKey(Key.None, KeyModifier.None, 
-                key => _spotifyController.VolumeUp(), false);
+                key => _spotifyController.VolumeUp());
+            _log = log;
+            _hotKeys = new List<HotKey>
+            {
+                _next,
+                _previous,
+                _playPause,
+                _volumeUp,
+                _volumeDown
+            };
+
         }
 
         public Task RegisterHotKeysAsync(HotKeys hotKeys)
@@ -59,7 +72,11 @@ namespace MiniPie.Core.HotKeyManager
             hotKey.KeyModifiers = value.Value;
             if (update)
             {
-                hotKey.Register();
+                if (!hotKey.Register())
+                {
+                    _log.Warn(String.Format("Failed to register hotkey:{0},{1}", 
+                        value.Key, value.Value));
+                }
             }
         }
 
