@@ -6,6 +6,7 @@ using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
 using ILog = MiniPie.Core.ILog;
 
@@ -48,13 +49,15 @@ namespace MiniPie {
             Container.Register<AutorunService>(new AutorunService(Container.Resolve<ILog>(), _Settings, _Contracts));
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
 
-            Container.Register<SpotifyLocalApi>(new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings));
-            Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
+            Container.Register(new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings));
+            Container.Register(new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>()));
+            Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<ILog>(), 
+                Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>()));
             Container.Register<ICoverService>(
                 new CoverService(
                     string.IsNullOrEmpty(_Settings.CacheFolder)
                         ? Directory.GetCurrentDirectory()
-                        : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyLocalApi>()));
+                        : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyWebApi>()));
             
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());

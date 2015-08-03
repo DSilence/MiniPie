@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using Caliburn.Micro;
 using Infralution.Localization.Wpf;
 using MiniPie.Core;
@@ -13,16 +15,19 @@ namespace MiniPie.ViewModels {
         private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
         private readonly ICoverService _CoverService;
+        private readonly ISpotifyController _spotifyController;
         private readonly ILog _Logger;
         private readonly HotKeyViewModel _hotKeyViewModel;
 
         public SettingsViewModel(AppSettings settings, AppContracts contracts, 
-            ICoverService coverService, ILog logger, HotKeyViewModel hotKeyViewModel) {
+            ICoverService coverService, ILog logger, HotKeyViewModel hotKeyViewModel, 
+            ISpotifyController spotifyController) {
             _Settings = settings;
             _Contracts = contracts;
             _CoverService = coverService;
             _Logger = logger;
             _hotKeyViewModel = hotKeyViewModel;
+            _spotifyController = spotifyController;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
         }
@@ -108,6 +113,64 @@ namespace MiniPie.ViewModels {
         public HotKeyViewModel HotKeyViewModel
         {
             get { return _hotKeyViewModel; }
+        }
+
+        private bool _loginChecking;
+
+        public bool LoginChecking
+        {
+            get { return _loginChecking; }
+            set
+            {
+                _loginChecking = value;
+                NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => LoginStatus);
+            }
+        }
+
+
+        public async void UpdateLoggedIn()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            LoginChecking = true;
+            LoggedIn = await _spotifyController.IsUserLoggedIn();
+            Mouse.OverrideCursor = null;
+            LoginChecking = false;
+        }
+
+        public string LoginStatus
+        {
+            get
+            {
+                if (LoginChecking)
+                {
+                    return Properties.Resources.Settings_RetrievingLoginStatus;
+                }
+                if (LoggedIn)
+                {
+                    return Properties.Resources.Settings_LoggedIn;
+                }
+                return Properties.Resources.Settings_NotLoggedIn;
+            }
+        }
+
+        private bool _loggedIn;
+        public bool LoggedIn
+        {
+            get { return _loggedIn; }
+            set { _loggedIn = value; NotifyOfPropertyChange(); }
+        }
+
+        private const string loginQueryFormat =
+            "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri=minipie://callback&state={1}";
+        public Uri BuildLoginQuery()
+        {
+            return _spotifyController.BuildLoginQuery();
+        }
+
+        public async Task UpdateToken(string token)
+        {
+            await _spotifyController.UpdateToken(token);
         }
     }
 }

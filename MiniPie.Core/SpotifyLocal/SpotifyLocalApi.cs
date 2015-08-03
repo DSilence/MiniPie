@@ -112,26 +112,6 @@ namespace MiniPie.Core.SpotifyLocal {
             get { return !string.IsNullOrEmpty(_OAuth) && !string.IsNullOrEmpty(_Cfid); }
         }
 
-        /// <summary>Get a link to the 640x640 cover art image of a spotify album</summary>
-        /// <param name="uri">The Spotify album URI</param>
-        public async Task<string> GetArt(string uri) {
-            try {
-                var albumId = uri.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries).Last();
-                //Modified to use spotify WEB API
-                var lines = await _Client.GetStringAsync(string.Format("https://api.spotify.com/v1/albums/{0}", albumId));
-                var album = JsonConvert.DeserializeObject<SpotifyWebApi.Album>(lines);
-                return album.Images[1].Url;
-            }
-            catch (WebException webException) {
-                if (webException.Response != null && ((HttpWebResponse) webException.Response).StatusCode != HttpStatusCode.NotFound)
-                    _Log.WarnException("[WebException] Failed to retrieve cover url from Spotify", webException);
-            }
-            catch(Exception exc) {
-                _Log.WarnException("Failed to retrieve cover url from Spotify", exc);
-            }
-            return string.Empty;
-        }
-
 
         /// <summary>Gets the current Unix Timestamp. Mostly for internal use</summary>
         private int TimeStamp {

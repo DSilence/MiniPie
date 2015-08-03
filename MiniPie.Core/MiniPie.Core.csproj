@@ -68,6 +68,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ObjectModel" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -106,8 +107,17 @@
     <Compile Include="SpotifyController.cs" />
     <Compile Include="SpotifyLocal\SpotifyLocalApi.cs" />
     <Compile Include="SpotifyLocal\SpotifyLocalApiPOCOs.cs" />
-    <Compile Include="SpotifyWebApi\Album.cs" />
-    <Compile Include="SpotifyWebApi\Image.cs" />
+    <Compile Include="SpotifyWeb\Models\Album.cs" />
+    <Compile Include="SpotifyWeb\Models\ExternalUrl.cs" />
+    <Compile Include="SpotifyWeb\Models\Followers.cs" />
+    <Compile Include="SpotifyWeb\Models\Image.cs" />
+    <Compile Include="SpotifyWeb\Models\ModelBase.cs" />
+    <Compile Include="SpotifyWeb\Models\PagingObject.cs" />
+    <Compile Include="SpotifyWeb\Models\Playlist.cs" />
+    <Compile Include="SpotifyWeb\Models\Track.cs" />
+    <Compile Include="SpotifyWeb\Models\User.cs" />
+    <Compile Include="SpotifyWeb\SpotifyWebApi.cs" />
+    <Compile Include="SpotifyWeb\Token.cs" />
     <Compile Include="WindowPosition.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +126,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

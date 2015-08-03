@@ -9,24 +9,25 @@ using System.Web;
 using System.Xml.Serialization;
 using MiniPie.Core.Extensions;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyWeb;
 
 namespace MiniPie.Core {
     public class CoverService : ICoverService {
 
         private const string CacheFileNameTemplate = "{0}.jpg";
         private readonly string _CacheDirectory;
-        private readonly SpotifyLocalApi _LocalApi;
+        private readonly SpotifyWebApi _webApi;
         private readonly ILog _Logger;
         private HttpClient _client = new HttpClient();
         
         private const int MaxFileCount = 500;
 
         public CoverService(string cacheRootDirectory,
-            ILog logger, SpotifyLocalApi localApi)
+            ILog logger, SpotifyWebApi webApi)
         {
             _CacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
             _Logger = logger;
-            _LocalApi = localApi;
+            _webApi = webApi;
             if (!Directory.Exists(_CacheDirectory))
                 Directory.CreateDirectory(_CacheDirectory);
         }
@@ -59,9 +60,6 @@ namespace MiniPie.Core {
         }
 
         private async Task<string> FetchSpotifyCover(Status trackStatus, string cachedFileName) {
-            if (!_LocalApi.HasValidToken)
-                return string.Empty;
-
             try {
                 if (trackStatus != null) {
                     if (trackStatus.error != null)
@@ -69,7 +67,7 @@ namespace MiniPie.Core {
                                                           trackStatus.error.type));
 
                     if (trackStatus.track != null && trackStatus.track.album_resource != null) {
-                        var coverUrl = await _LocalApi.GetArt(trackStatus.track.album_resource.uri);
+                        var coverUrl = await _webApi.GetArt(trackStatus.track.album_resource.uri);
                         if (!string.IsNullOrEmpty(coverUrl))
                             return await DownloadAndSaveImage(coverUrl, cachedFileName);
                     }

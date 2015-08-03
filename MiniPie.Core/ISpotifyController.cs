@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MiniPie.Core.SpotifyLocal;
 
 namespace MiniPie.Core {
@@ -18,5 +19,8 @@ namespace MiniPie.Core {
         void OpenSpotify();
         void AttachTrackChangedHandler(EventHandler handler);
         void AttachTrackStatusChangedHandler(EventHandler handler);
+        Task<bool> IsUserLoggedIn();
+        Uri BuildLoginQuery();
+        Task UpdateToken(string token);
     }
 }

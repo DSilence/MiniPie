@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using MiniPie.Core.Enums;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.ViewModels;
@@ -102,6 +106,39 @@ namespace MiniPie.Views {
         private SettingsViewModel ViewModel
         {
             get { return DataContext as SettingsViewModel; }
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Contains(AuthTab))
+            {
+                ViewModel.UpdateLoggedIn();
+            }
+        }
+
+        private void Login_OnClick(object sender, RoutedEventArgs e)
+        {
+            AuthBrowser.Navigate(ViewModel.BuildLoginQuery());
+        }
+
+        private async void AuthBrowser_OnNavigated(object sender, NavigationEventArgs e)
+        {
+            if (e.Uri.Scheme == "minipie")
+            {
+                var queryString = HttpUtility.ParseQueryString(e.Uri.Query);
+                var state = queryString["state"];
+                bool hasError = queryString.AllKeys.Contains("error");
+                if (hasError)
+                {
+                    throw new ApplicationException("Failed to login user");
+                }
+                else
+                {
+                    var code = queryString["code"];
+                    await ViewModel.UpdateToken(code);
+                    ViewModel.UpdateLoggedIn();
+                }
+            }
         }
     }
 }

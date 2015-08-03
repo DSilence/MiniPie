@@ -180,6 +180,9 @@
   <data name="Settings_ApplicationSize" xml:space="preserve">
     <value>Размер приложения:</value>
   </data>
+  <data name="Settings_Authorize" xml:space="preserve">
+    <value>Авторизация</value>
+  </data>
   <data name="Settings_CacheClearLabel" xml:space="preserve">
     <value>MiniPie кеширует все запрошенные обложки альбомов чтобы уменьшить расходы трафика. В случае возникновения проблем с какими-либо изображениями, вы можете использовать кнопку ниже чтобы очистить кэш.</value>
   </data>

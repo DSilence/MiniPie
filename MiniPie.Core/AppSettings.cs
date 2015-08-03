@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Caliburn.Micro;
 using MiniPie.Core.Enums;
 using MiniPie.Core.Extensions;
+using MiniPie.Core.SpotifyWeb;
 using Newtonsoft.Json;
 
 namespace MiniPie.Core {
@@ -109,6 +110,19 @@ namespace MiniPie.Core {
             set
             {
                 _cacheFolder = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        private Token _spotifyToken;
+
+        [JsonProperty]
+        public Token SpotifyToken
+        {
+            get { return _spotifyToken; }
+            set
+            {
+                _spotifyToken = value;
                 NotifyOfPropertyChange();
             }
         }

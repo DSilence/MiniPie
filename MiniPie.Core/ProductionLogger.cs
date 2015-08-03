@@ -17,7 +17,7 @@ namespace MiniPie.Core {
         }
 
         public void InfoException(string message, Exception exception) {
-            _Logger.InfoException(message, exception);
+            _Logger.Info(exception, message);
         }
 
         public void Warn(string message) {
@@ -25,7 +25,7 @@ namespace MiniPie.Core {
         }
 
         public void WarnException(string message, Exception exception) {
-            _Logger.WarnException(message, exception);
+            _Logger.Warn(exception, message);
         }
 
         public void Fatal(string message) {
@@ -33,7 +33,7 @@ namespace MiniPie.Core {
         }
 
         public void FatalException(string message, Exception exception) {
-            _Logger.FatalException(message, exception);
+            _Logger.Fatal(exception, message);
         }
     }
 }

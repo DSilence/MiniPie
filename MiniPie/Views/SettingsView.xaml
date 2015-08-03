@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter" />
     </UserControl.Resources>
-    <TabControl>
+    <TabControl SelectionChanged="Selector_OnSelectionChanged">
         <TabItem Header="{wpf:Resx Settings_Common}">
             <StackPanel Margin="20 10" Orientation="Vertical">
                 <StackPanel.Resources>
@@ -157,6 +157,21 @@
                          Grid.Column="2"
                          Text="{Binding VolumeUp, Converter={StaticResource CodeConverter}, Mode=OneWay}"
                          PreviewKeyDown="HotKey_OnPreviewKeyDown" />
+            </Grid>
+        </TabItem>
+        <TabItem Name="AuthTab" Header="{wpf:Resx Settings_Authorize}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Text="{Binding LoginStatus}"/>
+                <Button Content="{wpf:Resx Settings_Login}" Grid.Row="0" Grid.Column="1" Click="Login_OnClick"/>
+                <WebBrowser Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Name="AuthBrowser" Height="400" Navigated="AuthBrowser_OnNavigated"/>
             </Grid>
         </TabItem>
     </TabControl>

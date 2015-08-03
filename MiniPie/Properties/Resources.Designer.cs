@@ -277,6 +277,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorize.
+        /// </summary>
+        public static string Settings_Authorize {
+            get {
+                return ResourceManager.GetString("Settings_Authorize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MiniPie caches all requested cover images to save your bandwidth. If you have troubles with some images you can use the button below to clear the cache..
         /// </summary>
         public static string Settings_CacheClearLabel {
@@ -363,6 +372,42 @@ namespace MiniPie.Properties {
         public static string Settings_Language {
             get {
                 return ResourceManager.GetString("Settings_Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Logged In.
+        /// </summary>
+        public static string Settings_LoggedIn {
+            get {
+                return ResourceManager.GetString("Settings_LoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string Settings_Login {
+            get {
+                return ResourceManager.GetString("Settings_Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Not Logged In.
+        /// </summary>
+        public static string Settings_NotLoggedIn {
+            get {
+                return ResourceManager.GetString("Settings_NotLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verifying Login Status....
+        /// </summary>
+        public static string Settings_RetrievingLoginStatus {
+            get {
+                return ResourceManager.GetString("Settings_RetrievingLoginStatus", resourceCulture);
             }
         }
         

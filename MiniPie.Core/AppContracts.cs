@@ -5,6 +5,10 @@ using System.Reflection;
 
 namespace MiniPie.Core {
     public sealed class AppContracts {
+
+        public const string ClientId = "7cab801edfb04e309949c79b8e76b425";
+        public const string ClientSecret = "45e1983d0ba14f2a92e6b41c93f94f98";
+
         public string ApplicationName {
             get { return "MiniPie"; }
         }
