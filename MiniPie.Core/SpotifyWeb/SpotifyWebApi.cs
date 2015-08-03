@@ -31,13 +31,13 @@ namespace MiniPie.Core.SpotifyWeb
             _timer = new Timer(Callback);
             if (settings.SpotifyToken != null)
             {
-                UpdateToken(settings.SpotifyToken.RefreshToken);
+                UpdateToken(settings.SpotifyToken.RefreshToken, "refresh_token");
             }
         }
 
         private async void Callback(object state)
         {
-            await UpdateToken(_appSettings.SpotifyToken.RefreshToken);
+            await UpdateToken(_appSettings.SpotifyToken.RefreshToken, "refresh_token");
         }
 
         private readonly Uri _albumsUri = new Uri(_spotifyApiUrl + "albums/");
@@ -85,17 +85,24 @@ namespace MiniPie.Core.SpotifyWeb
 
         private const string tokenQueryFormat = "https://accounts.spotify.com/api/token";
 
-        public async Task UpdateToken(string refreshToken)
+        public async Task UpdateToken(string refreshToken, string grantType="authorization_code")
         {
             var parameters = new Dictionary<string, string>();
-            parameters.Add("grant_type", "authorization_code");
+            parameters.Add("grant_type", grantType);
             parameters.Add("redirect_uri", _redirectUrl);
             /*byte[] authHeader =
                 Encoding.UTF8.GetBytes(string.Format("{0}:{1}", AppContracts.ClientId, AppContracts.ClientSecret));
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authHeader));*/
             parameters.Add("client_id", AppContracts.ClientId);
             parameters.Add("client_secret", AppContracts.ClientSecret);
-            parameters.Add("code", refreshToken);
+            if (grantType == "authorization_code")
+            {
+                parameters.Add("code", refreshToken);
+            }
+            else
+            {
+                parameters.Add("refresh_token", refreshToken);
+            }
             var postResult = await _client.PostAsync(tokenQueryFormat, new FormUrlEncodedContent(parameters));
             var stringResult = await postResult.Content.ReadAsStringAsync();
             var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
