@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Caliburn.Micro;
 using MiniPie.Core;
@@ -16,18 +19,54 @@ namespace MiniPie {
         private AppSettings _Settings;
         private AppContracts _Contracts;
         private JsonPersister<AppSettings> _SettingsPersistor;
+        private ILog _log;
+        private bool _secondInstance;
+        private SpotifyWebApi _spotifyWebApi;
 
         public AppBootstrapper()
         {
         }
 
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
+        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
+        {
             base.OnStartup(sender, e);
 
-            //TODO: Find a better way
+            _log.Info("Starting");
             if(Process.GetProcessesByName("MiniPie").Length > 1)
-                Application.Shutdown();
+            {
+                //signal existing app via named pipes
 
+                try
+                {
+                    string code = e.Args.FirstOrDefault();
+                    _log.Info("Not First Application");
+                    _log.Info(code);
+                    if (code != null)
+                    {
+                        NamedPipe<string>.Send(NamedPipe<string>.NameTypes.PipeType1, code);
+                    }
+                    _secondInstance = true;
+                    Application.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    _log.Fatal(ex.Message);
+                    _log.FatalException(ex.StackTrace, ex);
+                }
+            }
+            else
+            {
+                _log.Info("First Application");
+                UriProtocolManager.RegisterUrlProtocol();
+                _spotifyWebApi.Initialize();
+                var namedPipeString = new NamedPipe<string>(NamedPipe<string>.NameTypes.PipeType1);
+                namedPipeString.OnRequest += async s =>
+                {
+                    await Container.Resolve<SpotifyWebApi>().CreateToken(s);
+                };
+                namedPipeString.Start();
+                Container.Register(namedPipeString);
+            }
         }
 
         protected override void Configure() {
@@ -45,12 +84,14 @@ namespace MiniPie {
 
             Container.Register<AppContracts>(_Contracts);
             Container.Register<AppSettings>(_Settings);
-            Container.Register<ILog>(new ProductionLogger());
+            _log = new ProductionLogger();
+            Container.Register<ILog>(_log);
             Container.Register<AutorunService>(new AutorunService(Container.Resolve<ILog>(), _Settings, _Contracts));
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
 
             Container.Register(new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings));
-            Container.Register(new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>()));
+            _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
+            Container.Register(_spotifyWebApi);
             Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<ILog>(), 
                 Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>()));
             Container.Register<ICoverService>(
@@ -66,10 +107,14 @@ namespace MiniPie {
             {
                 keyManager.RegisterHotKeys(_Settings.HotKeys);
             }
+
+            
         }
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
+            if(!_secondInstance)
+                UriProtocolManager.UnregisterUrlProtocol();
             _SettingsPersistor.Dispose();
             foreach (var keyManager in Container.ResolveAll<KeyManager>())
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Windows;
@@ -118,7 +119,7 @@ namespace MiniPie.Views {
 
         private void Login_OnClick(object sender, RoutedEventArgs e)
         {
-            AuthBrowser.Navigate(ViewModel.BuildLoginQuery());
+            Process.Start(ViewModel.BuildLoginQuery().ToString());
         }
 
         private async void AuthBrowser_OnNavigated(object sender, NavigationEventArgs e)

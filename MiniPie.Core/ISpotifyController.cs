@@ -6,6 +6,7 @@ namespace MiniPie.Core {
     public interface ISpotifyController : IDisposable {
         event EventHandler SpotifyOpened;
         event EventHandler SpotifyExited;
+        event EventHandler TokenUpdated;
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
         string GetSongName();
@@ -22,5 +23,6 @@ namespace MiniPie.Core {
         Task<bool> IsUserLoggedIn();
         Uri BuildLoginQuery();
         Task UpdateToken(string token);
+        void Logout();
     }
 }

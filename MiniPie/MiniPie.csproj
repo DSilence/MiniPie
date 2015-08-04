@@ -159,6 +159,7 @@
     <Compile Include="Localization\UICultureExtension.cs" />
     <Compile Include="Models\HotKey.cs" />
     <Compile Include="Models\HotKeyOperations.cs" />
+    <Compile Include="NamedPipe.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -167,6 +168,7 @@
     <Compile Include="TinyBootstrapper.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="ToggleVisibilityEventArgs.cs" />
+    <Compile Include="UriProtocolManager.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />

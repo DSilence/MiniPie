@@ -8,6 +8,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using MiniPie.Core.SpotifyWeb.Models;
 using Newtonsoft.Json;
 
@@ -24,14 +25,21 @@ namespace MiniPie.Core.SpotifyWeb
         private AppSettings _appSettings;
         private Timer _timer;
 
+        public event EventHandler TokenUpdated;
+
         public SpotifyWebApi(ILog log, AppSettings settings)
         {
             this._log = log;
             _appSettings = settings;
             _timer = new Timer(Callback);
-            if (settings.SpotifyToken != null)
+            
+        }
+
+        public async void Initialize()
+        {
+            if (_appSettings.SpotifyToken != null)
             {
-                UpdateToken(settings.SpotifyToken.RefreshToken, "refresh_token");
+                await UpdateToken(_appSettings.SpotifyToken.RefreshToken, "refresh_token");
             }
         }
 
@@ -83,16 +91,28 @@ namespace MiniPie.Core.SpotifyWeb
             return loginUri;
         }
 
+        public void Logout()
+        {
+            _client.DefaultRequestHeaders.Authorization = null;
+        }
+
         private const string tokenQueryFormat = "https://accounts.spotify.com/api/token";
+
+        public async Task CreateToken(string response)
+        {
+            var queryResult = HttpUtility.ParseQueryString(new Uri(response).Query);
+            await UpdateToken(queryResult["code"]);
+        }
 
         public async Task UpdateToken(string refreshToken, string grantType="authorization_code")
         {
+            if (refreshToken == null)
+            {
+                return;
+            }
             var parameters = new Dictionary<string, string>();
             parameters.Add("grant_type", grantType);
             parameters.Add("redirect_uri", _redirectUrl);
-            /*byte[] authHeader =
-                Encoding.UTF8.GetBytes(string.Format("{0}:{1}", AppContracts.ClientId, AppContracts.ClientSecret));
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authHeader));*/
             parameters.Add("client_id", AppContracts.ClientId);
             parameters.Add("client_secret", AppContracts.ClientSecret);
             if (grantType == "authorization_code")
@@ -107,10 +127,17 @@ namespace MiniPie.Core.SpotifyWeb
             var stringResult = await postResult.Content.ReadAsStringAsync();
             var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
             _appSettings.SpotifyToken = token;
-            _client.DefaultRequestHeaders.Authorization 
-                = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
-            TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn - 20);
-            _timer.Change(timeSpan, timeSpan);
+            if (token != null && token.TokenType != null && token.AccessToken != null)
+            {
+                _client.DefaultRequestHeaders.Authorization
+                    = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
+                TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn - 20);
+                _timer.Change(timeSpan, timeSpan);
+            }
+            if (TokenUpdated != null)
+            {
+                TokenUpdated(this, null);
+            }
         }
         
         /*public async Task<string> GetPlaylists()

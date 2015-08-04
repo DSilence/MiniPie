@@ -21,7 +21,8 @@ namespace MiniPie.ViewModels {
 
         public SettingsViewModel(AppSettings settings, AppContracts contracts, 
             ICoverService coverService, ILog logger, HotKeyViewModel hotKeyViewModel, 
-            ISpotifyController spotifyController) {
+            ISpotifyController spotifyController) 
+        {
             _Settings = settings;
             _Contracts = contracts;
             _CoverService = coverService;
@@ -30,6 +31,7 @@ namespace MiniPie.ViewModels {
             _spotifyController = spotifyController;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
+            
         }
 
         public bool AlwaysOnTop {
@@ -131,11 +133,16 @@ namespace MiniPie.ViewModels {
 
         public async void UpdateLoggedIn()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
             LoginChecking = true;
             LoggedIn = await _spotifyController.IsUserLoggedIn();
-            Mouse.OverrideCursor = null;
             LoginChecking = false;
+        }
+
+        public void Logout()
+        {
+            _Settings.SpotifyToken = null;
+            _spotifyController.Logout();
+            UpdateLoggedIn();
         }
 
         public string LoginStatus
@@ -161,8 +168,7 @@ namespace MiniPie.ViewModels {
             set { _loggedIn = value; NotifyOfPropertyChange(); }
         }
 
-        private const string loginQueryFormat =
-            "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri=minipie://callback&state={1}";
+
         public Uri BuildLoginQuery()
         {
             return _spotifyController.BuildLoginQuery();
@@ -171,6 +177,23 @@ namespace MiniPie.ViewModels {
         public async Task UpdateToken(string token)
         {
             await _spotifyController.UpdateToken(token);
+        }
+
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+            _spotifyController.TokenUpdated += SpotifyControllerOnTokenUpdated;
+        }
+
+        private void SpotifyControllerOnTokenUpdated(object sender, EventArgs eventArgs)
+        {
+            UpdateLoggedIn();
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            _spotifyController.TokenUpdated -= SpotifyControllerOnTokenUpdated;
         }
     }
 }

@@ -240,4 +240,7 @@
   <data name="Settings_RetrievingLoginStatus" xml:space="preserve">
     <value>Verifying Login Status...</value>
   </data>
+  <data name="Settings_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
 </root>

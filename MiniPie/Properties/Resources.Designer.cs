@@ -394,6 +394,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string Settings_Logout {
+            get {
+                return ResourceManager.GetString("Settings_Logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Not Logged In.
         /// </summary>
         public static string Settings_NotLoggedIn {

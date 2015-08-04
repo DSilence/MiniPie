@@ -25,6 +25,7 @@ namespace MiniPie.Core {
         protected event EventHandler TrackChanged;
         public event EventHandler TrackStatusChanged;
         public event EventHandler SpotifyOpened;
+        public event EventHandler TokenUpdated;
 
         #region Win32Imports
 
@@ -83,6 +84,13 @@ namespace MiniPie.Core {
             AttachToProcess().Wait();
             _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
             JoinBackgroundProcess();
+            spotifyWebApi.TokenUpdated += (sender, args) =>
+            {
+                if (TokenUpdated != null)
+                {
+                    TokenUpdated(sender, args);
+                }
+            };
         }
 
         private void SongTimerChanging(object state)
@@ -392,6 +400,11 @@ namespace MiniPie.Core {
         public async Task UpdateToken(string token)
         {
             await _spotifyWebApi.UpdateToken(token);
+        }
+
+        public void Logout()
+        {
+            _spotifyWebApi.Logout();
         }
 
         public void Dispose()

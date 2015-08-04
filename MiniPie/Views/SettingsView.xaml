@@ -168,10 +168,11 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Text="{Binding LoginStatus}"/>
                 <Button Content="{wpf:Resx Settings_Login}" Grid.Row="0" Grid.Column="1" Click="Login_OnClick"/>
-                <WebBrowser Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Name="AuthBrowser" Height="400" Navigated="AuthBrowser_OnNavigated"/>
+                <Button Name="Logout" Content="{wpf:Resx Settings_Logout}" Grid.Row="0" Grid.Column="2"/>
             </Grid>
         </TabItem>
     </TabControl>
