@@ -18,6 +18,7 @@ namespace MiniPie.Core.SpotifyWeb
     public class SpotifyWebApi
     {
         private readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _authClient = new HttpClient();
         private readonly ILog _log;
         private const string _spotifyApiUrl = "https://api.spotify.com/v1/";
         private const string _redirectUrl = "minipie://callback";
@@ -39,13 +40,13 @@ namespace MiniPie.Core.SpotifyWeb
         {
             if (_appSettings.SpotifyToken != null)
             {
-                await UpdateToken(_appSettings.SpotifyToken.RefreshToken, "refresh_token");
+                await UpdateToken(_appSettings.SpotifyToken.RefreshToken, GrantType.RefreshToken);
             }
         }
 
         private async void Callback(object state)
         {
-            await UpdateToken(_appSettings.SpotifyToken.RefreshToken, "refresh_token");
+            await UpdateToken(_appSettings.SpotifyToken.RefreshToken, GrantType.RefreshToken);
         }
 
         private readonly Uri _albumsUri = new Uri(_spotifyApiUrl + "albums/");
@@ -104,45 +105,64 @@ namespace MiniPie.Core.SpotifyWeb
             await UpdateToken(queryResult["code"]);
         }
 
-        public async Task UpdateToken(string refreshToken, string grantType="authorization_code")
+        public async Task UpdateToken(string refreshToken, 
+            GrantType grantType = GrantType.AuthorizationCode)//string grantType="authorization_code")
         {
-            if (refreshToken == null)
+            try
             {
-                return;
+                _log.Info("Refreshing token");
+                _log.Info("Token type:" + grantType.GetDescription());
+                if (refreshToken == null)
+                {
+                    return;
+                }
+                var parameters = new Dictionary<string, string>();
+                parameters.Add("grant_type", grantType.GetDescription());
+                parameters.Add("redirect_uri", _redirectUrl);
+                parameters.Add("client_id", AppContracts.ClientId);
+                parameters.Add("client_secret", AppContracts.ClientSecret);
+                if (grantType == GrantType.AuthorizationCode)
+                {
+                    parameters.Add("code", refreshToken);
+                }
+                else
+                {
+                    parameters.Add("refresh_token", refreshToken);
+                }
+                var postResult = await _authClient.PostAsync(tokenQueryFormat, new FormUrlEncodedContent(parameters));
+                var stringResult = await postResult.Content.ReadAsStringAsync();
+                var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
+                if (token != null)
+                {
+                    if (grantType == GrantType.RefreshToken)
+                    {
+                        token.RefreshToken = refreshToken;
+                    }
+                }
+                _appSettings.SpotifyToken = token;
+                if (token != null && token.TokenType != null && token.AccessToken != null)
+                {
+                    _client.DefaultRequestHeaders.Authorization
+                        = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
+                    TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn/3);
+                    _timer.Change(timeSpan, timeSpan);
+                    _log.Info("Token refreshed");
+                }
+                else
+                {
+                    _log.Info(stringResult);
+                }
+                
+                if (TokenUpdated != null)
+                {
+                    TokenUpdated(this, null);
+                }
             }
-            var parameters = new Dictionary<string, string>();
-            parameters.Add("grant_type", grantType);
-            parameters.Add("redirect_uri", _redirectUrl);
-            parameters.Add("client_id", AppContracts.ClientId);
-            parameters.Add("client_secret", AppContracts.ClientSecret);
-            if (grantType == "authorization_code")
+            catch (Exception ex)
             {
-                parameters.Add("code", refreshToken);
+                _log.FatalException("Update token failed with" + ex.Message, ex);
             }
-            else
-            {
-                parameters.Add("refresh_token", refreshToken);
-            }
-            var postResult = await _client.PostAsync(tokenQueryFormat, new FormUrlEncodedContent(parameters));
-            var stringResult = await postResult.Content.ReadAsStringAsync();
-            var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
-            _appSettings.SpotifyToken = token;
-            if (token != null && token.TokenType != null && token.AccessToken != null)
-            {
-                _client.DefaultRequestHeaders.Authorization
-                    = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
-                TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn - 20);
-                _timer.Change(timeSpan, timeSpan);
-            }
-            if (TokenUpdated != null)
-            {
-                TokenUpdated(this, null);
-            }
-        }
-        
-        /*public async Task<string> GetPlaylists()
-        {
             
-        }*/
+        }
     }
 }
