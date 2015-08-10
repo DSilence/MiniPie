@@ -33,10 +33,9 @@ namespace MiniPie.Core.SpotifyWeb
             this._log = log;
             _appSettings = settings;
             _timer = new Timer(Callback);
-            
         }
 
-        public async void Initialize()
+        public async Task Initialize()
         {
             if (_appSettings.SpotifyToken != null)
             {
@@ -80,6 +79,24 @@ namespace MiniPie.Core.SpotifyWeb
                 _log.WarnException("Failed to retrieve cover url from Spotify", exc);
             }
             return string.Empty;
+        }
+
+        private const string PlaylistsUrl = _spotifyApiUrl + "users/{0}/playlists";
+        public async Task<IList<Playlist>> GetUserPlaylists()
+        {
+            try
+            {
+                var profile = await GetProfile();
+                var url = string.Format(PlaylistsUrl, profile.Id);
+                var stringResult = await _client.GetStringAsync(url);
+                return JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult)
+                    .Items.ToList();
+            }
+            catch (Exception ex)
+            {
+                _log.WarnException("Failed to retrieve User Playlists", ex);
+            }
+            return null;
         }
 
         private const string loginQueryFormat =
@@ -144,7 +161,7 @@ namespace MiniPie.Core.SpotifyWeb
                 {
                     _client.DefaultRequestHeaders.Authorization
                         = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
-                    TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn/3);
+                    TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn - 30);
                     _timer.Change(timeSpan, timeSpan);
                     _log.Info("Token refreshed");
                 }

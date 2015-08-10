@@ -90,8 +90,11 @@ namespace MiniPie.Core.SpotifyLocal {
             _Log = log;
             _Settings = settings;
             _Contracts = contracts;
+        }
 
-            RenewToken().Wait();
+        public async Task Initialize()
+        {
+            await RenewToken();
         }
 
         public async Task RenewToken() {

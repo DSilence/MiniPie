@@ -143,6 +143,8 @@
       <DependentUpon>ProgressButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\ApplicationSizeConverter.cs" />
+    <Compile Include="Converter\BoolInvertedConverter.cs" />
+    <Compile Include="Converter\BoolToLoginTextConverter.cs" />
     <Compile Include="Converter\CircularProgressButton\ProgressToAngleConverter.cs" />
     <Compile Include="Converter\EnumToLocalizedStringConverter.cs" />
     <Compile Include="Converter\KeyCodeToReadableStringConverter.cs" />

@@ -97,7 +97,7 @@ namespace MiniPie.Views
                 _notifyIcon.ContextMenu = null;
                 _notifyIcon.MouseClick -= oldContext.MaximizeMiniplayer;
                 _notifyIcon.DoubleClick -= oldContext.MinimizeMiniplayer;
-                oldContext.PropertyChanged += PropertyChangedForNotifyIcon;
+                oldContext.PropertyChanged -= PropertyChangedForNotifyIcon;
             }
 
             var context = e.NewValue as ShellViewModel;
@@ -196,6 +196,10 @@ namespace MiniPie.Views
                 _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems.ToArray());
                 string friendlyName = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
                 _notifyIcon.Text = friendlyName;
+            }
+            else if (propertyChangedEventArgs.PropertyName == "Playlists")
+            {
+                var playLists = ShellViewModel.Playlists;
             }
         }
 

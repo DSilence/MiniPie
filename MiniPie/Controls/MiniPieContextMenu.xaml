@@ -13,6 +13,7 @@
         <MenuItem Header="{wpf:Resx App_CopyTrackName}" cal:Message.Attach="[Event Click] = [Action CopyTrackName]" />
         <MenuItem Header="{wpf:Resx App_CopySpotifyLink}" cal:Message.Attach="[Event Click] = [Action CopySpotifyLink]" />
     </MenuItem>
+    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}"/>
     <Separator />
         <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />

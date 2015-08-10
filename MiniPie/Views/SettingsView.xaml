@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter" />
     </UserControl.Resources>
-    <TabControl SelectionChanged="Selector_OnSelectionChanged">
+    <TabControl>
         <TabItem Header="{wpf:Resx Settings_Common}">
             <StackPanel Margin="20 10" Orientation="Vertical">
                 <StackPanel.Resources>
@@ -21,6 +21,27 @@
                         <Setter Property="Margin" Value="0 2" />
                     </Style>
                 </StackPanel.Resources>
+                <Grid Margin="0 5 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <converter:BoolToLoginTextConverter x:Key="BoolToLoginTextConverter"/>
+                    </Grid.Resources>
+                    <TextBlock Grid.Row="0" Text="{Binding LoginStatus}"/>
+                    <Button
+                        Margin="0,0,5,0"
+                        MinWidth="50"
+                        Name="PerformLoginLogout" Grid.Row="0" Grid.Column="1" 
+                            IsEnabled="{Binding LoginChecking, Converter={StaticResource BoolInvertedConverter}}"
+                            Content="{Binding LoggedIn, Converter={StaticResource BoolToLoginTextConverter}}">
+                    </Button>
+                </Grid>
                 <CheckBox Content="{wpf:Resx Settings_AlwaysOnTop}" Name="AlwaysOnTop" />
                 <CheckBox Content="{wpf:Resx Settings_StartWithWindows}" Name="StartWithWindows" />
                 <CheckBox Content="{wpf:Resx Settings_StartMinimized}" Name="StartMinimized"/>
@@ -157,22 +178,6 @@
                          Grid.Column="2"
                          Text="{Binding VolumeUp, Converter={StaticResource CodeConverter}, Mode=OneWay}"
                          PreviewKeyDown="HotKey_OnPreviewKeyDown" />
-            </Grid>
-        </TabItem>
-        <TabItem Name="AuthTab" Header="{wpf:Resx Settings_Authorize}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Text="{Binding LoginStatus}"/>
-                <Button Content="{wpf:Resx Settings_Login}" Grid.Row="0" Grid.Column="1" Click="Login_OnClick"/>
-                <Button Name="Logout" Content="{wpf:Resx Settings_Logout}" Grid.Row="0" Grid.Column="2"/>
             </Grid>
         </TabItem>
     </TabControl>

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
+using MiniPie.Core.SpotifyWeb.Models;
 using TinyIoC;
 using ILog = MiniPie.Core.ILog;
 
@@ -132,7 +134,6 @@ namespace MiniPie.ViewModels {
         }
 
         private bool _isPlaying;
-
         public bool IsPlaying
         {
             get { return _isPlaying; }
@@ -145,6 +146,14 @@ namespace MiniPie.ViewModels {
                 }
             }
         }
+
+        private ObservableCollection<Playlist> _playlists;
+        public ObservableCollection<Playlist> Playlists
+        {
+            get { return _playlists; }
+            set { _playlists = value; 
+                NotifyOfPropertyChange(); }
+        } 
 
         #endregion
 
@@ -338,10 +347,17 @@ namespace MiniPie.ViewModels {
                     if (IsPlaying)
                         OnCoverDisplayFadeIn();
                 }
+
+                UpdatePlaylists();
             }
             catch (Exception exc) {
                 _Logger.FatalException("UpdateView() failed hard", exc);
             }
+        }
+
+        private async void UpdatePlaylists()
+        {
+            var playLists = await _SpotifyController.GetPlaylists();
         }
 
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {

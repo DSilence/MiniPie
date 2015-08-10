@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyWeb.Models;
 
 namespace MiniPie.Core {
     public interface ISpotifyController : IDisposable {
         event EventHandler SpotifyOpened;
         event EventHandler SpotifyExited;
         event EventHandler TokenUpdated;
+        Task Initialize();
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
         string GetSongName();
@@ -24,5 +27,6 @@ namespace MiniPie.Core {
         Uri BuildLoginQuery();
         Task UpdateToken(string token);
         void Logout();
+        Task<IList<Playlist>> GetPlaylists();
     }
 }

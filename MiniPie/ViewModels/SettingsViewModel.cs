@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using Caliburn.Micro;
 using Infralution.Localization.Wpf;
 using MiniPie.Core;
@@ -31,7 +30,7 @@ namespace MiniPie.ViewModels {
             _spotifyController = spotifyController;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
-            
+            UpdateLoggedIn();
         }
 
         public bool AlwaysOnTop {
@@ -136,6 +135,26 @@ namespace MiniPie.ViewModels {
             LoginChecking = true;
             LoggedIn = await _spotifyController.IsUserLoggedIn();
             LoginChecking = false;
+        }
+
+        public void PerformLoginLogout()
+        {
+            if (!LoginChecking)
+            {
+                if (LoggedIn)
+                {
+                    Logout();
+                }
+                else
+                {
+                    Login();
+                }
+            }
+        }
+
+        public void Login()
+        {
+            Process.Start(BuildLoginQuery().ToString());
         }
 
         public void Logout()

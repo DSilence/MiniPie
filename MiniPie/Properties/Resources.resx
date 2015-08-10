@@ -243,4 +243,7 @@
   <data name="Settings_Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="App_AddToPlaylist" xml:space="preserve">
+    <value>Add To Playlist</value>
+  </data>
 </root>

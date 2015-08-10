@@ -1,16 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
+using Action = System.Action;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
@@ -22,6 +24,8 @@ namespace MiniPie {
         private ILog _log;
         private bool _secondInstance;
         private SpotifyWebApi _spotifyWebApi;
+        private SpotifyController _spotifyController;
+        private SpotifyLocalApi _spotifyLocalApi;
 
         public AppBootstrapper()
         {
@@ -58,7 +62,6 @@ namespace MiniPie {
             {
                 _log.Info("First Application");
                 UriProtocolManager.RegisterUrlProtocol();
-                _spotifyWebApi.Initialize();
                 var namedPipeString = new NamedPipe<string>(NamedPipe<string>.NameTypes.PipeType1);
                 namedPipeString.OnRequest += async s =>
                 {
@@ -69,11 +72,11 @@ namespace MiniPie {
             }
         }
 
-        protected override void Configure() {
+        protected override async void Configure() {
             base.Configure();
 
             _Contracts = new AppContracts();
-            
+
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
             _Settings = _SettingsPersistor.Instance;
             if (_Settings.Language != null)
@@ -89,17 +92,19 @@ namespace MiniPie {
             Container.Register<AutorunService>(new AutorunService(Container.Resolve<ILog>(), _Settings, _Contracts));
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
 
-            Container.Register(new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings));
+            _spotifyLocalApi = new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings);
+            Container.Register(_spotifyLocalApi);
             _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
             Container.Register(_spotifyWebApi);
-            Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<ILog>(), 
-                Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>()));
+            _spotifyController = new SpotifyController(Container.Resolve<ILog>(),
+                Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>());
+            Container.Register<ISpotifyController>(_spotifyController);
             Container.Register<ICoverService>(
                 new CoverService(
                     string.IsNullOrEmpty(_Settings.CacheFolder)
                         ? Directory.GetCurrentDirectory()
                         : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyWebApi>()));
-            
+
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());
             Container.Register<KeyManager>(keyManager);
@@ -107,8 +112,14 @@ namespace MiniPie {
             {
                 keyManager.RegisterHotKeys(_Settings.HotKeys);
             }
+        }
 
-            
+        public async Task ConfigurationInitialize()
+        {
+            await _spotifyWebApi.Initialize();
+            await _spotifyController.Initialize();
+            await _spotifyLocalApi.Initialize();
+
         }
 
         protected override void OnExit(object sender, EventArgs e) {

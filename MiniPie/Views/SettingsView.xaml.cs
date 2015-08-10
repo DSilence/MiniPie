@@ -108,38 +108,5 @@ namespace MiniPie.Views {
         {
             get { return DataContext as SettingsViewModel; }
         }
-
-        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Contains(AuthTab))
-            {
-                ViewModel.UpdateLoggedIn();
-            }
-        }
-
-        private void Login_OnClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start(ViewModel.BuildLoginQuery().ToString());
-        }
-
-        private async void AuthBrowser_OnNavigated(object sender, NavigationEventArgs e)
-        {
-            if (e.Uri.Scheme == "minipie")
-            {
-                var queryString = HttpUtility.ParseQueryString(e.Uri.Query);
-                var state = queryString["state"];
-                bool hasError = queryString.AllKeys.Contains("error");
-                if (hasError)
-                {
-                    throw new ApplicationException("Failed to login user");
-                }
-                else
-                {
-                    var code = queryString["code"];
-                    await ViewModel.UpdateToken(code);
-                    ViewModel.UpdateLoggedIn();
-                }
-            }
-        }
     }
 }

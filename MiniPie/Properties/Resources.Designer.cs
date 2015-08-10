@@ -97,6 +97,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add To Playlist.
+        /// </summary>
+        public static string App_AddToPlaylist {
+            get {
+                return ResourceManager.GetString("App_AddToPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Spotify Url.
         /// </summary>
         public static string App_CopySpotifyLink {

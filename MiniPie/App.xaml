@@ -8,14 +8,16 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:properties="clr-namespace:MiniPie.Properties"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
-             xmlns:system="clr-namespace:System;assembly=mscorlib">
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             Startup="App_OnStartup">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <miniPie:AppBootstrapper x:Key="bootstrapper" />
+                    <miniPie:AppBootstrapper x:Key="bootstrapper"/>
                     <converter:VisibilityConverter x:Key="VisibilityConverter" />
                     <converter:ApplicationSizeConverter x:Key="ApplicationSizeConverter" />
+                    <converter:BoolInvertedConverter x:Key="BoolInvertedConverter"/>
                     
                     <Style TargetType="{x:Type Window}">
                         <Setter Property="TextOptions.TextFormattingMode" Value="Display"></Setter>

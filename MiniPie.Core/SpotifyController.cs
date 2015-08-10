@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -80,11 +81,14 @@ namespace MiniPie.Core {
             _Logger = logger;
             _localApi = localApi;
             _spotifyWebApi = spotifyWebApi;
-            
-            AttachToProcess().Wait();
+        }
+
+        public async Task Initialize()
+        {
+            await AttachToProcess();
             _songStatusWatcher = new Timer(SongTimerChanging, null, 1000, 1000);
             JoinBackgroundProcess();
-            spotifyWebApi.TokenUpdated += (sender, args) =>
+            _spotifyWebApi.TokenUpdated += (sender, args) =>
             {
                 if (TokenUpdated != null)
                 {
@@ -405,6 +409,11 @@ namespace MiniPie.Core {
         public void Logout()
         {
             _spotifyWebApi.Logout();
+        }
+
+        public async Task<IList<Playlist>> GetPlaylists()
+        {
+            return await _spotifyWebApi.GetUserPlaylists();
         }
 
         public void Dispose()
