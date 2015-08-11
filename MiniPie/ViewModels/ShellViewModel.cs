@@ -357,7 +357,7 @@ namespace MiniPie.ViewModels {
 
         private async void UpdatePlaylists()
         {
-            var playLists = await _SpotifyController.GetPlaylists();
+            Playlists = new ObservableCollection<Playlist>(await _SpotifyController.GetPlaylists());
         }
 
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {

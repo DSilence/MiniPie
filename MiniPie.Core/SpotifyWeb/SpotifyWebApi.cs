@@ -81,16 +81,24 @@ namespace MiniPie.Core.SpotifyWeb
             return string.Empty;
         }
 
-        private const string PlaylistsUrl = _spotifyApiUrl + "users/{0}/playlists";
+        private const int PlayListLimit = 50;
+        private const string PlaylistsUrl = _spotifyApiUrl + "users/{0}/playlists?limit={1}";
         public async Task<IList<Playlist>> GetUserPlaylists()
         {
             try
             {
                 var profile = await GetProfile();
-                var url = string.Format(PlaylistsUrl, profile.Id);
+                var url = string.Format(PlaylistsUrl, profile.Id, PlayListLimit);
                 var stringResult = await _client.GetStringAsync(url);
-                return JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult)
-                    .Items.ToList();
+                var playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
+                var result = playLists.Items.ToList();
+                while (playLists.Next != null)
+                {
+                    stringResult = await _client.GetStringAsync(playLists.Next);
+                    playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
+                    result.AddRange(playLists.Items);
+                }
+                return result;
             }
             catch (Exception ex)
             {

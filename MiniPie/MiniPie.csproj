@@ -63,7 +63,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\minipie.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>minipie.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>minipie.pfx</ManifestKeyFile>
@@ -207,9 +207,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru.resx" />
-    <None Include="..\minipie.pfx">
-      <Link>minipie.pfx</Link>
-    </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

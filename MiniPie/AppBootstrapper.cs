@@ -39,24 +39,7 @@ namespace MiniPie {
             if(Process.GetProcessesByName("MiniPie").Length > 1)
             {
                 //signal existing app via named pipes
-
-                try
-                {
-                    string code = e.Args.FirstOrDefault();
-                    _log.Info("Not First Application");
-                    _log.Info(code);
-                    if (code != null)
-                    {
-                        NamedPipe<string>.Send(NamedPipe<string>.NameTypes.PipeType1, code);
-                    }
-                    _secondInstance = true;
-                    Application.Shutdown();
-                }
-                catch (Exception ex)
-                {
-                    _log.Fatal(ex.Message);
-                    _log.FatalException(ex.StackTrace, ex);
-                }
+                _secondInstance = true;
             }
             else
             {
@@ -72,7 +55,7 @@ namespace MiniPie {
             }
         }
 
-        protected override async void Configure() {
+        protected override void Configure() {
             base.Configure();
 
             _Contracts = new AppContracts();

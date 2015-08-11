@@ -20,7 +20,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\minipie.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>minipie.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -122,10 +122,10 @@
     <Compile Include="WindowPosition.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\minipie.pfx">
-      <Link>minipie.pfx</Link>
+    <None Include="minipie.pfx" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

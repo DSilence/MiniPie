@@ -200,6 +200,11 @@ namespace MiniPie.Views
             else if (propertyChangedEventArgs.PropertyName == "Playlists")
             {
                 var playLists = ShellViewModel.Playlists;
+                MiniPieContextMenu.AddToPlaylist.Items.Clear();
+                foreach (var playlist in playLists)
+                {
+                    
+                }
             }
         }
 

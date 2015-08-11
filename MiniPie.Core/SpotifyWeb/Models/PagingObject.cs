@@ -2,7 +2,7 @@
 
 namespace MiniPie.Core.SpotifyWeb.Models
 {
-    public abstract class PagingObject<T>
+    public class PagingObject<T>
     {
         public string Href { get; set; }
         public IList<T> Items { get; set; }
