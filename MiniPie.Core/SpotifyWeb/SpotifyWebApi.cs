@@ -88,32 +88,60 @@ namespace MiniPie.Core.SpotifyWeb
             try
             {
                 var profile = await GetProfile();
-                var url = string.Format(PlaylistsUrl, profile.Id, PlayListLimit);
-                var stringResult = await _client.GetStringAsync(url);
-                var playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
-                var result = playLists.Items.ToList();
-                while (playLists.Next != null)
+                if (profile != null)
                 {
-                    stringResult = await _client.GetStringAsync(playLists.Next);
-                    playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
-                    result.AddRange(playLists.Items);
+                    var url = string.Format(PlaylistsUrl, profile.Id, PlayListLimit);
+                    var stringResult = await _client.GetStringAsync(url);
+                    var playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
+                    var result = playLists.Items.ToList();
+                    while (playLists.Next != null)
+                    {
+                        stringResult = await _client.GetStringAsync(playLists.Next);
+                        playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
+                        result.AddRange(playLists.Items);
+                    }
+                    return result;
                 }
-                return result;
+                else
+                {
+                    _log.Warn("User can't be retrieved");
+                }
             }
             catch (Exception ex)
             {
                 _log.WarnException("Failed to retrieve User Playlists", ex);
             }
-            return null;
+            return new List<Playlist>();
         }
 
+        private const string AddToPlaylistUrl = _spotifyApiUrl + "users/{0}/playlists/{1}/tracks?uris={2}";
+        public async Task AddToPlaylist(string playlistId, string trackUrls)
+        {
+            try
+            {
+                var profile = await GetProfile();
+                if (profile != null)
+                {
+                    var url = string.Format(AddToPlaylistUrl, profile.Id, playlistId, trackUrls);
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    await _client.SendAsync(request);
+                }
+            }
+            catch (Exception exc)
+            {
+                _log.WarnException("Failed to add playlist to Spotify", exc);
+            }
+        }
+
+        private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming user-read-private user-read-birthdate user-read-email";
         private const string loginQueryFormat =
-            "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri={1}&state={2}";
+            "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}";
         public Uri BuildLoginQuery()
         {
+            var scopeEncoded = HttpUtility.UrlEncode(scope);
             var loginUri = new Uri(
                 string.Format(loginQueryFormat, AppContracts.ClientId, 
-                _redirectUrl, Guid.NewGuid()));
+                _redirectUrl, Guid.NewGuid(), scopeEncoded));
             return loginUri;
         }
 

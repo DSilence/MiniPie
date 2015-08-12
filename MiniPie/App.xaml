@@ -4,10 +4,6 @@
              xmlns:miniPie="clr-namespace:MiniPie"
              xmlns:converter="clr-namespace:MiniPie.Converter"
              xmlns:ctrl="clr-namespace:MiniPie.Controls"
-             xmlns:tb="http://www.hardcodet.net/taskbar"
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:properties="clr-namespace:MiniPie.Properties"
-             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              Startup="App_OnStartup">
     <Application.Resources>

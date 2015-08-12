@@ -16,18 +16,37 @@ namespace MiniPie {
 
         private async void App_OnStartup(object sender, StartupEventArgs e)
         {
-                if (Process.GetProcessesByName("MiniPie").Length > 1)
+            foreach (var arg in e.Args)
+            {
+                if (arg == "registerUri")
                 {
-                    string code = e.Args.FirstOrDefault();
-                    if (code != null)
-                    {
-                        NamedPipe<string>.Send(NamedPipe<string>.NameTypes.PipeType1, code);
-                    }
+                    UriProtocolManager.RegisterUrlProtocol();
                     Shutdown();
+                    return;
                 }
-            AppBootstrapper bootstrapper = (AppBootstrapper)Resources["bootstrapper"];
-            await bootstrapper.ConfigurationInitialize();
-            
+                else if (arg == "unregisterUri")
+                {
+                    UriProtocolManager.UnregisterUrlProtocol();
+                    Shutdown();
+                    return;
+                }
+            }
+
+            if (Process.GetProcessesByName("MiniPie").Length > 1)
+            {
+                string code = e.Args.FirstOrDefault();
+                if (code != null)
+                {
+                    NamedPipe<string>.Send(NamedPipe<string>.NameTypes.PipeType1, code);
+                }
+                Shutdown();
+                return;
+            }
+            else
+            {
+                AppBootstrapper bootstrapper = (AppBootstrapper)Resources["bootstrapper"];
+                await bootstrapper.ConfigurationInitialize();
+            }
         }
     }
 }

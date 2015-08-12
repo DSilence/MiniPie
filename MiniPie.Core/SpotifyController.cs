@@ -167,7 +167,7 @@ namespace MiniPie.Core {
                     if (_SpotifyProcess != null)
                     {
                         //TODO this should be a bool field probably
-                        int timeout = _CurrentTrackInfo == null ? -1 : 60;
+                        int timeout = _CurrentTrackInfo == null ? -1 : 15;
                         Status newTrackInfo;
                         try
                         {
@@ -414,6 +414,11 @@ namespace MiniPie.Core {
         public async Task<IList<Playlist>> GetPlaylists()
         {
             return await _spotifyWebApi.GetUserPlaylists();
+        }
+
+        public async Task AddToPlaylist(string playlistId, string trackUrls)
+        {
+            await _spotifyWebApi.AddToPlaylist(playlistId, trackUrls);
         }
 
         public void Dispose()

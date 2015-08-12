@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Reflection;
+using System.Windows;
 using Microsoft.Win32;
 
 namespace MiniPie
@@ -19,7 +21,7 @@ namespace MiniPie
                     rKey.SetValue("URL Protocol", "");
 
                     rKey = rKey.CreateSubKey(@"shell\open\command");
-                    rKey.SetValue("", "\"" + Application.ResourceAssembly.Location + "\" %1");
+                    rKey.SetValue("", "\"" + Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "MiniPie.exe") + "\" %1");
                 }
             }
             else

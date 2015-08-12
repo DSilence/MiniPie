@@ -28,5 +28,6 @@ namespace MiniPie.Core {
         Task UpdateToken(string token);
         void Logout();
         Task<IList<Playlist>> GetPlaylists();
+        Task AddToPlaylist(string playlistId, string trackUrls);
     }
 }

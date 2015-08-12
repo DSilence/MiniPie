@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
 using MiniPie.Core;
@@ -248,6 +249,13 @@ namespace MiniPie.ViewModels {
             set { _trackUrl = value; NotifyOfPropertyChange(); }
         }
 
+        private string _spotifyUri;
+        public string SpotifyUri
+        {
+            get { return _spotifyUri; }
+            set { _spotifyUri = value; NotifyOfPropertyChange(); }
+        }
+
         public void MinimizeMiniplayer()
         {
             var window = Application.Current.MainWindow;
@@ -320,6 +328,7 @@ namespace MiniPie.ViewModels {
                 _CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
                 _trackFriendlyName = String.Format(_songFriendlyNameFormat, CurrentArtist, CurrentTrack);
                 _trackUrl = status.track.track_resource.location.og;
+                _spotifyUri = status.track.track_resource.uri;
                 NotifyOfPropertyChange(() => CurrentTrack);
                 NotifyOfPropertyChange(() => CurrentArtist);
                 NotifyOfPropertyChange(() => TrackFriendlyName);
@@ -357,7 +366,16 @@ namespace MiniPie.ViewModels {
 
         private async void UpdatePlaylists()
         {
-            Playlists = new ObservableCollection<Playlist>(await _SpotifyController.GetPlaylists());
+            var newPlaylists = await _SpotifyController.GetPlaylists();
+            if (Playlists == null ||!newPlaylists.SequenceEqual(Playlists))
+            {
+                Playlists = new ObservableCollection<Playlist>(newPlaylists);
+            }
+        }
+
+        public async void AddToPlaylist(string id)
+        {
+            await _SpotifyController.AddToPlaylist(id, SpotifyUri);
         }
 
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {

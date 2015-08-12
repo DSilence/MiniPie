@@ -44,11 +44,15 @@ namespace MiniPie {
             else
             {
                 _log.Info("First Application");
-                UriProtocolManager.RegisterUrlProtocol();
                 var namedPipeString = new NamedPipe<string>(NamedPipe<string>.NameTypes.PipeType1);
                 namedPipeString.OnRequest += async s =>
                 {
                     await Container.Resolve<SpotifyWebApi>().CreateToken(s);
+                    var processStartInfo = new ProcessStartInfo("MiniPie.exe", "unregisterUri");
+                    processStartInfo.Verb = "runas";
+                    processStartInfo.CreateNoWindow = true;
+                    processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    Process.Start(processStartInfo);
                 };
                 namedPipeString.Start();
                 Container.Register(namedPipeString);
@@ -107,8 +111,7 @@ namespace MiniPie {
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
-            if(!_secondInstance)
-                UriProtocolManager.UnregisterUrlProtocol();
+                
             _SettingsPersistor.Dispose();
             foreach (var keyManager in Container.ResolveAll<KeyManager>())
             {
