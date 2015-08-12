@@ -167,7 +167,7 @@ namespace MiniPie.Core {
                     if (_SpotifyProcess != null)
                     {
                         //TODO this should be a bool field probably
-                        int timeout = _CurrentTrackInfo == null ? -1 : 15;
+                        int timeout = _CurrentTrackInfo == null ? -1 : 30;
                         Status newTrackInfo;
                         try
                         {

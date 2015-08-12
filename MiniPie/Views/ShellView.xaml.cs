@@ -261,6 +261,22 @@ namespace MiniPie.Views
         private readonly RepeatBehavior _once = new RepeatBehavior(1);
 
         private bool shouldAnimate;
+        private bool _isStoryboardRunning;
+
+        private void BeginStoryboard()
+        {
+            _isStoryboardRunning = true;
+            Storyboard.Begin();
+        }
+
+        private void StopStoryboard()
+        {
+            if (_isStoryboardRunning)
+            {
+                _isStoryboardRunning = false;
+                Storyboard.Stop();
+            }
+        }
 
         private void CurrentTrack_OnTargetUpdated(object sender, DataTransferEventArgs e)
         {
@@ -272,7 +288,7 @@ namespace MiniPie.Views
             if (textBlock.ActualWidth > 0 && diff > 0)
             {
                 shouldAnimate = true;
-                Storyboard.Stop();
+                StopStoryboard();
                 var animation = (DoubleAnimationUsingKeyFrames) Storyboard.Children.First();
                 animation.RepeatBehavior = _once;
                 MaxKeyFrame.Value = -diff;
@@ -280,12 +296,12 @@ namespace MiniPie.Views
                 _speed = diff/20;
 
                 ModifyAnimation(animation, InitialBeginAnimationCyclePause);
-                Storyboard.Begin();
+                BeginStoryboard();
             }
             else
             {
                 shouldAnimate = false;
-                Storyboard.Stop();
+                StopStoryboard();
             }
         }
 
@@ -302,10 +318,10 @@ namespace MiniPie.Views
             if (true.Equals(dependencyPropertyChangedEventArgs.NewValue) && shouldAnimate)
             {
                 CurrentTrack.IsMouseDirectlyOverChanged -= CurrentTrackOnIsMouseDirectlyOverChanged;
-                Storyboard.Stop();
+                StopStoryboard();
                 var animation = (DoubleAnimationUsingKeyFrames) Storyboard.Children.First();
                 ModifyAnimation(animation, BeginAnimationCyclePause);
-                Storyboard.Begin();
+                BeginStoryboard();
             }
         }
 
