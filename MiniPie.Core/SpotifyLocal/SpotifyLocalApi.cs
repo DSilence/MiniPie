@@ -179,7 +179,7 @@ namespace MiniPie.Core.SpotifyLocal {
 
             HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
-            int timeout = wait == -1 ? 1000 : 32000;
+            int timeout = wait == -1 ? 1000 : 45000;
             HttpResponseMessage response;
             using (var cancellationTokenSource = new CancellationTokenSource(timeout))
             {
