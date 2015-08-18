@@ -108,6 +108,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Expressions">
+      <HintPath>C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Linq.Expressions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.ObjectModel">
       <HintPath>C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.ObjectModel.dll</HintPath>
