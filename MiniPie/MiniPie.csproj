@@ -63,10 +63,10 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>minipie.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../minipie.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>minipie.pfx</ManifestKeyFile>
+    <ManifestKeyFile>../minipie.snk</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

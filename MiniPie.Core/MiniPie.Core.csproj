@@ -20,7 +20,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>minipie.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../minipie.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -122,7 +122,6 @@
     <Compile Include="WindowPosition.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="minipie.pfx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
