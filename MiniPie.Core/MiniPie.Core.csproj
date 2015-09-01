@@ -111,6 +111,7 @@
     <Compile Include="SpotifyLocal\SpotifyLocalApi.cs" />
     <Compile Include="SpotifyLocal\SpotifyLocalApiPOCOs.cs" />
     <Compile Include="SpotifyWeb\Models\Album.cs" />
+    <Compile Include="SpotifyWeb\Models\Artist.cs" />
     <Compile Include="SpotifyWeb\Models\ExternalUrl.cs" />
     <Compile Include="SpotifyWeb\Models\Followers.cs" />
     <Compile Include="SpotifyWeb\Models\Image.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="SpotifyWeb\Models\Playlist.cs" />
     <Compile Include="SpotifyWeb\Models\GrantType.cs" />
     <Compile Include="SpotifyWeb\Models\Track.cs" />
+    <Compile Include="SpotifyWeb\Models\TrackCollection.cs" />
     <Compile Include="SpotifyWeb\Models\User.cs" />
     <Compile Include="SpotifyWeb\SpotifyWebApi.cs" />
     <Compile Include="SpotifyWeb\Token.cs" />

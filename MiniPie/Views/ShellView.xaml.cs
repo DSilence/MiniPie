@@ -16,6 +16,8 @@ using System.Windows.Media.Animation;
 using MiniPie.ViewModels;
 using Application = System.Windows.Application;
 using ContextMenu = System.Windows.Forms.ContextMenu;
+using DataFormats = System.Windows.DataFormats;
+using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
 using MenuItem = System.Windows.Forms.MenuItem;
 using Message = Caliburn.Micro.Message;
@@ -346,6 +348,13 @@ namespace MiniPie.Views
                 target.FontSize, target.Foreground);
 
             return new Size(formattedText.Width, formattedText.Height);
+        }
+
+        private void TitlePanel_OnDrop(object sender, DragEventArgs e)
+        {
+            var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
+            var urls = data.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
+            ShellViewModel.CopyTracksInfo(urls);
         }
     }
 }

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -132,6 +130,23 @@ namespace MiniPie.Core.SpotifyWeb
                 _log.WarnException("Failed to add playlist to Spotify", exc);
             }
         }
+
+        private const string GetTrackInfoUrl = _spotifyApiUrl + "tracks?ids={0}";
+        public async Task<IList<Models.Track>> GetTrackInfo(IList<string> trackIds)
+        {
+            try
+            {
+                var url = string.Format(GetTrackInfoUrl, string.Join(",", trackIds));
+                var response = await _client.GetStringAsync(url);
+                var tracks = await Helper.DeserializeObjectAsync<TrackCollection>(response);
+                return tracks.Tracks;
+            }
+            catch (Exception exc)
+            {
+                _log.WarnException("Failed to retrieve track info", exc);
+            }
+            return null;
+        } 
 
         private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming user-read-private user-read-birthdate user-read-email";
         private const string loginQueryFormat =

@@ -29,5 +29,6 @@ namespace MiniPie.Core {
         void Logout();
         Task<IList<Playlist>> GetPlaylists();
         Task AddToPlaylist(string playlistId, string trackUrls);
+        Task<IList<SpotifyWeb.Models.Track>> GetTrackInfo(IList<string> trackIds);
     }
 }

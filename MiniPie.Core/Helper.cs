@@ -3,9 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
 
 namespace MiniPie.Core {
     public static class Helper {
@@ -71,5 +73,9 @@ namespace MiniPie.Core {
             catch (FileFormatException) { return null; }
         }
 
+        public static Task<T> DeserializeObjectAsync<T>(string value)
+        {
+            return Task.Run(() => JsonConvert.DeserializeObject<T>(value));
+        }
     }
 }

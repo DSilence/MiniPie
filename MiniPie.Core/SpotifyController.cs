@@ -421,6 +421,11 @@ namespace MiniPie.Core {
             await _spotifyWebApi.AddToPlaylist(playlistId, trackUrls);
         }
 
+        public async Task<IList<SpotifyWeb.Models.Track>> GetTrackInfo(IList<string> trackIds)
+        {
+            return await _spotifyWebApi.GetTrackInfo(trackIds);
+        }
+
         public void Dispose()
         {
             _songStatusWatcher.Dispose();

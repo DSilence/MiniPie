@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
+using NLog.Fluent;
 using TinyIoC;
 using ILog = MiniPie.Core.ILog;
 
@@ -376,6 +379,36 @@ namespace MiniPie.ViewModels {
         public async void AddToPlaylist(string id)
         {
             await _SpotifyController.AddToPlaylist(id, SpotifyUri);
+        }
+
+        private const string TrackPattern = @".*\/\/open\.spotify\.com\/track\/(.*)";
+        public async void CopyTracksInfo(IList<string> trackUrls)
+        {
+            try
+            {
+                List<string> ids = new List<string>();
+                foreach (var trackUrl in trackUrls)
+                {
+                    var match = Regex.Match(trackUrl, TrackPattern);
+                    if (match.Groups.Count > 0)
+                    {
+                        var id = match.Groups[1];
+                        ids.Add(id.Value);
+                    }
+                }
+                var trackInfo = await _SpotifyController.GetTrackInfo(ids);
+                var niceNames =
+                    trackInfo.Select(
+                        track =>
+                            string.Format(_songFriendlyNameFormat,
+                                string.Join(", ", track.Artists.Select(artist => artist.Name)), track.Name));
+                var result = string.Join(Environment.NewLine, niceNames);
+                Clipboard.SetText(result);
+            }
+            catch (Exception e)
+            {
+                _Logger.WarnException("Failed to copy track info", e);
+            }
         }
 
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
