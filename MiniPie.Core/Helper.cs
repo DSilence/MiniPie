@@ -21,23 +21,12 @@ namespace MiniPie.Core {
                     "MiniPie", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        public static bool IsDWMSupported {
-            get { return Environment.OSVersion.Version.Major >= 6; }
-        }
         public static bool IsWindows7 {
             get { return Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1; }
         }
 
         public static string MakeNiceSize(double size) {
             return MakeNiceSize(size, "auto");
-        }
-
-        public static HttpWebRequest CreateWebRequest(string url) {
-            var request = (HttpWebRequest) WebRequest.Create(url);
-            if (request.Proxy != null) //Fix for NTLM secured proxies (hi ISA)
-                request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-            return request;
         }
 
         private static string MakeNiceSize(double size, string mode) {
