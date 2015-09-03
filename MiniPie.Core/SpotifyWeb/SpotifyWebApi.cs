@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace MiniPie.Core.SpotifyWeb
 {
     //TODO move all web api associated stuff here(album art, etc.)
-    public class SpotifyWebApi
+    public class SpotifyWebApi : ISpotifyWebApi
     {
         private readonly HttpClient _client = new HttpClient();
         private readonly HttpClient _authClient = new HttpClient();

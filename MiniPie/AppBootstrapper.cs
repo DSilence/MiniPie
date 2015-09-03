@@ -80,9 +80,9 @@ namespace MiniPie {
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
 
             _spotifyLocalApi = new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings);
-            Container.Register(_spotifyLocalApi);
+            Container.Register<ISpotifyLocalApi>(_spotifyLocalApi);
             _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
-            Container.Register(_spotifyWebApi);
+            Container.Register<ISpotifyWebApi>(_spotifyWebApi);
             _spotifyController = new SpotifyController(Container.Resolve<ILog>(),
                 Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>());
             Container.Register<ISpotifyController>(_spotifyController);

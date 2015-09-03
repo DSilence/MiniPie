@@ -13,7 +13,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
 namespace MiniPie.Core.SpotifyLocal {
-    public class SpotifyLocalApi {
+    public class SpotifyLocalApi : ISpotifyLocalApi
+    {
 
         #region LICENSE
 

@@ -108,8 +108,10 @@
     <Compile Include="ProductionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpotifyController.cs" />
+    <Compile Include="SpotifyLocal\ISpotifyLocalApi.cs" />
     <Compile Include="SpotifyLocal\SpotifyLocalApi.cs" />
     <Compile Include="SpotifyLocal\SpotifyLocalApiPOCOs.cs" />
+    <Compile Include="SpotifyWeb\ISpotifyWebApi.cs" />
     <Compile Include="SpotifyWeb\Models\Album.cs" />
     <Compile Include="SpotifyWeb\Models\Artist.cs" />
     <Compile Include="SpotifyWeb\Models\ExternalUrl.cs" />

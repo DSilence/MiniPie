@@ -69,15 +69,15 @@ namespace MiniPie.Core {
         private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
         private readonly ILog _Logger;
-        private readonly SpotifyLocalApi _localApi;
-        private readonly SpotifyWebApi _spotifyWebApi;
+        private readonly ISpotifyLocalApi _localApi;
+        private readonly ISpotifyWebApi _spotifyWebApi;
 
         private Process _SpotifyProcess;
         private Thread _BackgroundChangeTracker;
         private Timer _songStatusWatcher;
         private Status _CurrentTrackInfo;
 
-        public SpotifyController(ILog logger, SpotifyLocalApi localApi, SpotifyWebApi spotifyWebApi) {
+        public SpotifyController(ILog logger, ISpotifyLocalApi localApi, ISpotifyWebApi spotifyWebApi) {
             _Logger = logger;
             _localApi = localApi;
             _spotifyWebApi = spotifyWebApi;
