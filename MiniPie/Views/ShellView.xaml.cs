@@ -354,7 +354,16 @@ namespace MiniPie.Views
         {
             var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
             var urls = data.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
+            //TODO url validation
             ShellViewModel.CopyTracksInfo(urls);
+        }
+
+        private void AlbumArt_OnDrop(object sender, DragEventArgs e)
+        {
+            var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
+            var urls = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            //TODO url validation
+            ShellViewModel.AddTracksToQueue(urls);
         }
     }
 }

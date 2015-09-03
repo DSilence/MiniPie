@@ -411,6 +411,17 @@ namespace MiniPie.ViewModels {
             }
         }
 
+        public async void AddTracksToQueue(IList<string> trackUrls)
+        {
+            try
+            {
+                await _SpotifyController.AddToQueue(trackUrls);
+            }
+            catch (Exception e)
+            {
+                _Logger.WarnException("Failed to add tracks to queue", e);
+            }
+        }
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
             Execute.OnUIThread(() => {
                                    var handler = ToggleVisibility;

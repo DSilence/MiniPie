@@ -129,7 +129,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
-            <Border Grid.Row="0" Background="#000000">
+            <Border Grid.Row="0" Background="#000000" Drop="AlbumArt_OnDrop" AllowDrop="True">
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding CoverImage}" />

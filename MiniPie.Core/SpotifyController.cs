@@ -426,6 +426,14 @@ namespace MiniPie.Core {
             return await _spotifyWebApi.GetTrackInfo(trackIds);
         }
 
+        public async Task AddToQueue(IList<string> songUrls)
+        {
+            foreach (var song in songUrls)
+            {
+                await _localApi.Queue(song);
+            }
+        }
+
         public void Dispose()
         {
             _songStatusWatcher.Dispose();
