@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="minipie.snk" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
