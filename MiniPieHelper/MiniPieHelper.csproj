@@ -51,7 +51,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>minipie.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../minipie.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>4577C195361CFFE76B1D29D6E89442E303341108</ManifestCertificateThumbprint>
@@ -92,7 +92,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="minipie.snk" />
-    <None Include="MiniPieHelper_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
