@@ -288,10 +288,6 @@
       <Project>{83442cc4-42e0-4a4b-8bb7-e913b0dce77c}</Project>
       <Name>MiniPie.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MiniPieHelper\MiniPieHelper.csproj">
-      <Project>{d37d7c80-15bb-423f-a3bd-608f9723f8cc}</Project>
-      <Name>MiniPieHelper</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PublishFile Include="Caliburn.Micro.pdb">
