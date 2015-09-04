@@ -4,8 +4,7 @@
              xmlns:miniPie="clr-namespace:MiniPie"
              xmlns:converter="clr-namespace:MiniPie.Converter"
              xmlns:ctrl="clr-namespace:MiniPie.Controls"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             Startup="App_OnStartup">
+             xmlns:system="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

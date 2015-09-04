@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.Reflection;
-using System.Windows;
 using Microsoft.Win32;
 
-namespace MiniPie
+namespace MiniPieHelper
 {
     public static class UriProtocolManager
     {

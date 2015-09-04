@@ -87,6 +87,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>MiniPie.Entry</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -100,6 +103,7 @@
       <HintPath>..\packages\Unofficial.Blend.Interactivity.1.0.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -162,6 +166,7 @@
     <Compile Include="Converter\KeyCodeToReadableStringConverter.cs" />
     <Compile Include="Converter\VisibilityConverter.cs" />
     <Compile Include="Controls\ImageButton.cs" />
+    <Compile Include="Entry.cs" />
     <Compile Include="IFixedPosition.cs" />
     <Compile Include="Interactivity\BindingListener.cs" />
     <Compile Include="Interactivity\DataEventTrigger.cs" />
@@ -173,16 +178,15 @@
     <Compile Include="Localization\UICultureExtension.cs" />
     <Compile Include="Models\HotKey.cs" />
     <Compile Include="Models\HotKeyOperations.cs" />
-    <Compile Include="NamedPipe.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SingleInstanceManager.cs" />
     <Compile Include="TinyBootstrapper.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="ToggleVisibilityEventArgs.cs" />
-    <Compile Include="UriProtocolManager.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />
@@ -280,6 +284,10 @@
     <ProjectReference Include="..\MiniPie.Core\MiniPie.Core.csproj">
       <Project>{83442cc4-42e0-4a4b-8bb7-e913b0dce77c}</Project>
       <Name>MiniPie.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniPieHelper\MiniPieHelper.csproj">
+      <Project>{d37d7c80-15bb-423f-a3bd-608f9723f8cc}</Project>
+      <Name>MiniPieHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

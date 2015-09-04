@@ -1,18 +1,14 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
-using Action = System.Action;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
@@ -22,7 +18,6 @@ namespace MiniPie {
         private AppContracts _Contracts;
         private JsonPersister<AppSettings> _SettingsPersistor;
         private ILog _log;
-        private bool _secondInstance;
         private SpotifyWebApi _spotifyWebApi;
         private SpotifyController _spotifyController;
         private SpotifyLocalApi _spotifyLocalApi;
@@ -36,27 +31,16 @@ namespace MiniPie {
             base.OnStartup(sender, e);
 
             _log.Info("Starting");
-            if(Process.GetProcessesByName("MiniPie").Length > 1)
-            {
-                //signal existing app via named pipes
-                _secondInstance = true;
-            }
-            else
-            {
-                _log.Info("First Application");
-                var namedPipeString = new NamedPipe<string>(NamedPipe<string>.NameTypes.PipeType1);
-                namedPipeString.OnRequest += async s =>
-                {
-                    await Container.Resolve<SpotifyWebApi>().CreateToken(s);
-                    var processStartInfo = new ProcessStartInfo("MiniPie.exe", "unregisterUri");
-                    processStartInfo.Verb = "runas";
-                    processStartInfo.CreateNoWindow = true;
-                    processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    Process.Start(processStartInfo);
-                };
-                namedPipeString.Start();
-                Container.Register(namedPipeString);
-            }
+        }
+
+        public async void ProcessTokenUpdate(string input)
+        {
+            await Container.Resolve<SpotifyWebApi>().CreateToken(input);
+            var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "unregisterUri");
+            processStartInfo.Verb = "runas";
+            processStartInfo.CreateNoWindow = true;
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            Process.Start(processStartInfo);
         }
 
         protected override void Configure() {
@@ -84,7 +68,7 @@ namespace MiniPie {
             _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
             Container.Register<ISpotifyWebApi>(_spotifyWebApi);
             _spotifyController = new SpotifyController(Container.Resolve<ILog>(),
-                Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>());
+                _spotifyLocalApi, _spotifyWebApi);
             Container.Register<ISpotifyController>(_spotifyController);
             Container.Register<ICoverService>(
                 new CoverService(
@@ -104,9 +88,8 @@ namespace MiniPie {
         public async Task ConfigurationInitialize()
         {
             await _spotifyWebApi.Initialize();
-            await _spotifyController.Initialize();
             await _spotifyLocalApi.Initialize();
-
+            await _spotifyController.Initialize();
         }
 
         protected override void OnExit(object sender, EventArgs e) {

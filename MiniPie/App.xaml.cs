@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Navigation;
+using MiniPie.Core;
+using ILog = Caliburn.Micro.ILog;
 
 namespace MiniPie {
     /// <summary>
@@ -12,41 +14,15 @@ namespace MiniPie {
     {
         public App()
         {
+            InitializeComponent();
         }
 
-        private async void App_OnStartup(object sender, StartupEventArgs e)
+        public AppBootstrapper Bootstrapper { get; set; }
+        protected override async void OnStartup(StartupEventArgs e)
         {
-            foreach (var arg in e.Args)
-            {
-                if (arg == "registerUri")
-                {
-                    UriProtocolManager.RegisterUrlProtocol();
-                    Shutdown();
-                    return;
-                }
-                else if (arg == "unregisterUri")
-                {
-                    UriProtocolManager.UnregisterUrlProtocol();
-                    Shutdown();
-                    return;
-                }
-            }
-
-            if (Process.GetProcessesByName("MiniPie").Length > 1)
-            {
-                string code = e.Args.FirstOrDefault();
-                if (code != null)
-                {
-                    NamedPipe<string>.Send(NamedPipe<string>.NameTypes.PipeType1, code);
-                }
-                Shutdown();
-                return;
-            }
-            else
-            {
-                AppBootstrapper bootstrapper = (AppBootstrapper)Resources["bootstrapper"];
-                await bootstrapper.ConfigurationInitialize();
-            }
+            base.OnStartup(e);
+            Bootstrapper = (AppBootstrapper)Resources["bootstrapper"];
+            await Bootstrapper.ConfigurationInitialize();
         }
     }
 }

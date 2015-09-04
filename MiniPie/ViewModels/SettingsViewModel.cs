@@ -154,7 +154,7 @@ namespace MiniPie.ViewModels {
 
         public void Login()
         {
-            var processStartInfo = new ProcessStartInfo("MiniPie.exe", "registerUri");
+            var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "registerUri");
             processStartInfo.Verb = "runas";
             processStartInfo.CreateNoWindow = true;
             processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
