@@ -35,7 +35,7 @@ namespace MiniPie {
 
         public async void ProcessTokenUpdate(string input)
         {
-            await Container.Resolve<SpotifyWebApi>().CreateToken(input);
+            await Container.Resolve<ISpotifyWebApi>().CreateToken(input);
             var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "unregisterUri");
             processStartInfo.Verb = "runas";
             processStartInfo.CreateNoWindow = true;
@@ -74,7 +74,7 @@ namespace MiniPie {
                 new CoverService(
                     string.IsNullOrEmpty(_Settings.CacheFolder)
                         ? Directory.GetCurrentDirectory()
-                        : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyWebApi>()));
+                        : _Settings.CacheFolder, Container.Resolve<ILog>(), _spotifyWebApi));
 
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());
