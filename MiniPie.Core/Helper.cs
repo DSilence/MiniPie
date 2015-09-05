@@ -66,5 +66,23 @@ namespace MiniPie.Core {
         {
             return Task.Run(() => JsonConvert.DeserializeObject<T>(value));
         }
+
+        public static Task<T> DeserializeStreamAsync<T>(Stream input)
+        {
+            return Task.Run(() =>
+            {
+                using (StreamReader sr = new StreamReader(input))
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    // read the json from a stream
+                    // json size doesn't matter because only a small piece is read at a time from the HTTP request
+                    var result = serializer.Deserialize<T>(reader);
+                    return result;
+                }
+            });
+            
+        } 
     }
 }

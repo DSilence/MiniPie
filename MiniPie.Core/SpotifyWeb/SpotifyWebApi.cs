@@ -20,9 +20,8 @@ namespace MiniPie.Core.SpotifyWeb
         private readonly ILog _log;
         private const string _spotifyApiUrl = "https://api.spotify.com/v1/";
         private const string _redirectUrl = "minipie://callback";
-        private Token _spotifyToken;
-        private AppSettings _appSettings;
-        private Timer _timer;
+        private readonly AppSettings _appSettings;
+        private readonly Timer _timer;
 
         public event EventHandler TokenUpdated;
 
@@ -53,7 +52,7 @@ namespace MiniPie.Core.SpotifyWeb
         public async Task<User> GetProfile()
         {
             var response = await _client.GetStringAsync(_spotifyProfileUri);
-            User user = await JsonConvert.DeserializeObjectAsync<User>(response);
+            User user = await Helper.DeserializeObjectAsync<User>(response);
             return user;
         }
 
@@ -64,7 +63,7 @@ namespace MiniPie.Core.SpotifyWeb
                 var albumId = uri.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries).Last();
                 //Modified to use spotify WEB API
                 var lines = await _client.GetStringAsync(new Uri(_albumsUri, albumId));
-                var album = await JsonConvert.DeserializeObjectAsync<Models.Album>(lines);
+                var album = await Helper.DeserializeObjectAsync<Models.Album>(lines);
                 return album.Images[1].Url;
             }
             catch (WebException webException)
@@ -165,7 +164,7 @@ namespace MiniPie.Core.SpotifyWeb
             _client.DefaultRequestHeaders.Authorization = null;
         }
 
-        private const string tokenQueryFormat = "https://accounts.spotify.com/api/token";
+        private const string TokenQueryFormat = "https://accounts.spotify.com/api/token";
 
         public async Task CreateToken(string response)
         {
@@ -197,9 +196,9 @@ namespace MiniPie.Core.SpotifyWeb
                 {
                     parameters.Add("refresh_token", refreshToken);
                 }
-                var postResult = await _authClient.PostAsync(tokenQueryFormat, new FormUrlEncodedContent(parameters));
+                var postResult = await _authClient.PostAsync(TokenQueryFormat, new FormUrlEncodedContent(parameters));
                 var stringResult = await postResult.Content.ReadAsStringAsync();
-                var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
+                var token = await Helper.DeserializeObjectAsync<Token>(stringResult);
                 if (token != null)
                 {
                     if (grantType == GrantType.RefreshToken)
@@ -231,6 +230,11 @@ namespace MiniPie.Core.SpotifyWeb
                 _log.FatalException("Update token failed with" + ex.Message, ex);
             }
             
+        }
+
+        public Task<bool> IsTracksSaved(IList<string> trackIds)
+        {
+            throw new NotImplementedException();
         }
     }
 }
