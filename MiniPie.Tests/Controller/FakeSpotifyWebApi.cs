@@ -58,5 +58,10 @@ namespace MiniPie.Tests.Controller
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> IsTracksSaved(IList<string> trackIds)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
