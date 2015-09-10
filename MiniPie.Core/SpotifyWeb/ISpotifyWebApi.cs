@@ -20,6 +20,8 @@ namespace MiniPie.Core.SpotifyWeb
         void Logout();
         Task UpdateToken(string refreshToken, GrantType grantType = GrantType.AuthorizationCode);
 
-        Task<bool> IsTracksSaved(IList<string> trackIds);
+        Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
+        Task AddToMyMusic(IList<string> trackIds);
+        Task RemoveFromMyMusic(IList<string> trackIds);
     }
 }

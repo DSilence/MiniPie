@@ -28,7 +28,7 @@ namespace MiniPie.Tests
                 Key = "abc",
                 Value = "qwe"
             };
-            var testSerialized = JsonConvert.SerializeObject(test);
+            var testSerialized = await Helper.SerializeObjectAsync(test);
             var resulting = await Helper.DeserializeObjectAsync<ExternalUrl>(testSerialized);
             Assert.Equal(test.Key, resulting.Key);
             Assert.Equal(test.Value, resulting.Value);

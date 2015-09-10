@@ -59,7 +59,22 @@ namespace MiniPie.Tests.Controller
             throw new NotImplementedException();
         }
 
+        Task<IList<bool>> ISpotifyWebApi.IsTracksSaved(IList<string> trackIds)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> IsTracksSaved(IList<string> trackIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddToMyMusic(IList<string> trackIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFromMyMusic(IList<string> trackIds)
         {
             throw new NotImplementedException();
         }

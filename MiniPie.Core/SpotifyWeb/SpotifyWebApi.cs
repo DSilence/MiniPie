@@ -183,11 +183,13 @@ namespace MiniPie.Core.SpotifyWeb
                 {
                     return;
                 }
-                var parameters = new Dictionary<string, string>();
-                parameters.Add("grant_type", grantType.GetDescription());
-                parameters.Add("redirect_uri", _redirectUrl);
-                parameters.Add("client_id", AppContracts.ClientId);
-                parameters.Add("client_secret", AppContracts.ClientSecret);
+                var parameters = new Dictionary<string, string>
+                {
+                    {"grant_type", grantType.GetDescription()},
+                    {"redirect_uri", _redirectUrl},
+                    {"client_id", AppContracts.ClientId},
+                    {"client_secret", AppContracts.ClientSecret}
+                };
                 if (grantType == GrantType.AuthorizationCode)
                 {
                     parameters.Add("code", refreshToken);
@@ -232,9 +234,27 @@ namespace MiniPie.Core.SpotifyWeb
             
         }
 
-        public Task<bool> IsTracksSaved(IList<string> trackIds)
+        private const string IsTrackSavedFormat = _spotifyApiUrl + "me/tracks/contains?ids={0}";
+        public async Task<IList<bool>> IsTracksSaved(IList<string> trackIds)
         {
-            throw new NotImplementedException();
+            var url = string.Format(IsTrackSavedFormat, string.Join(",", trackIds));
+            var result = await _client.GetStringAsync(url);
+            return await Helper.DeserializeObjectAsync<IList<bool>>(result);
         }
+
+        private const string MyMusicAddFormat = _spotifyApiUrl + "me/tracks";
+        public async Task AddToMyMusic(IList<string> trackIds)
+        {
+            var url = MyMusicAddFormat;
+            var result = await _client.PutAsync(url, 
+                new StringContent(await Helper.SerializeObjectAsync(trackIds)));
+        }
+
+        private const string MyMusicDeleteFormat = MyMusicAddFormat + "?ids={0}";
+        public async Task RemoveFromMyMusic(IList<string> trackIds)
+        {
+            var url = string.Format(MyMusicDeleteFormat, string.Join(",", trackIds));
+            var result = await _client.DeleteAsync(url);
+        } 
     }
 }

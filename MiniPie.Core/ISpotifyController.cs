@@ -31,5 +31,8 @@ namespace MiniPie.Core {
         Task AddToPlaylist(string playlistId, string trackUrls);
         Task<IList<SpotifyWeb.Models.Track>> GetTrackInfo(IList<string> trackIds);
         Task AddToQueue(IList<string> songUrls);
+        Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
+        Task AddToMyMusic(IList<string> trackIds);
+        Task RemoveFromMyMusic(IList<string> trackIds);
     }
 }

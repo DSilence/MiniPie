@@ -14,6 +14,7 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
              xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
+             xmlns:viewModels="clr-namespace:MiniPie.ViewModels"
              mc:Ignorable="d" 
              MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
@@ -153,7 +154,8 @@
                                                   ImageSource="/Images/Player/prev-normal.png"
                                                   ImageSourcePressed="/Images/Player/prev-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
-                                                  ToolTip="plays the previous track" />
+                                                  ToolTip="plays the previous track" 
+                                                  Visibility="{Binding CanPlayPrevious, Converter={StaticResource VisibilityConverter}}"/>
                                 <circularProgressButton1:PropgressButton 
                                                                          RenderOptions.BitmapScalingMode="HighQuality"
                                                                          cal:Message.Attach="[Event Click] = [Action PlayPause]"
@@ -165,7 +167,8 @@
                                                   ImageSource="/Images/Player/next-normal.png"
                                                   ImageSourcePressed="/Images/Player/next-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/next-mouseover.png"
-                                                  ToolTip="plays the next track" />
+                                                  ToolTip="plays the next track" 
+                                                  Visibility="{Binding CanPlayNext, Converter={StaticResource VisibilityConverter}}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -200,11 +203,30 @@
                         </TextBlock.Triggers>
                     </TextBlock>
                 </Canvas>
-                
-                <TextBlock Margin="5" Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
+                <Grid UseLayoutRounding="True" Margin="5"> 
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
+                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="HighQuality" Width="15" Height="15" 
+                                          x:Name="AddToMyMusic"
+                                      ImageSource="/Images/Player/add-normal.png"
+                                      ImageSourceNormal="/Images/Player/add-normal.png"
+                                      ImageSourceMouseOver="/Images/Player/add-mouseover.png"
+                                      HorizontalAlignment="Right"
+                                      Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"
+                                      />
+                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="HighQuality" Width="15" Height="15" 
+                                          x:Name="RemoveFromMyMusic"
+                                      ImageSource="/Images/Player/remove-normal.png"
+                                      ImageSourceNormal="/Images/Player/remove-normal.png"
+                                      ImageSourceMouseOver="/Images/Player/remove-mouseover.png"
+                                      HorizontalAlignment="Right"
+                                      Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}}"
+                                      />
+                </Grid>
             </StackPanel>
-            
         </Grid>
     </Border>
-    
 </UserControl>

@@ -434,6 +434,21 @@ namespace MiniPie.Core {
             }
         }
 
+        public async Task<IList<bool>> IsTracksSaved(IList<string> trackIds)
+        {
+            return await _spotifyWebApi.IsTracksSaved(trackIds);
+        }
+
+        public async Task AddToMyMusic(IList<string> trackIds)
+        {
+            await _spotifyWebApi.AddToMyMusic(trackIds);
+        }
+
+        public async Task RemoveFromMyMusic(IList<string> trackIds)
+        {
+            await _spotifyWebApi.RemoveFromMyMusic(trackIds);
+        }
+
         public void Dispose()
         {
             _songStatusWatcher.Dispose();

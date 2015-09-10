@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using Infralution.Localization.Wpf;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
+using PostSharp.Patterns.Model;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {

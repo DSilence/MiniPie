@@ -62,6 +62,11 @@ namespace MiniPie.Core {
             catch (FileFormatException) { return null; }
         }
 
+        public static Task<string> SerializeObjectAsync<T>(T value)
+        {
+            return Task.Run(() => JsonConvert.SerializeObject(value));
+        } 
+
         public static Task<T> DeserializeObjectAsync<T>(string value)
         {
             return Task.Run(() => JsonConvert.DeserializeObject<T>(value));
