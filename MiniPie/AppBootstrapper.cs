@@ -49,13 +49,9 @@ namespace MiniPie {
             _Contracts = new AppContracts();
 
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
+            Container.Register(_SettingsPersistor);
             _Settings = _SettingsPersistor.Instance;
-            if (_Settings.Language != null)
-            {
-                Thread.CurrentThread.CurrentCulture = _Settings.Language.CultureInfo;
-                Thread.CurrentThread.CurrentUICulture = _Settings.Language.CultureInfo;
-            }
-
+            
             Container.Register<AppContracts>(_Contracts);
             Container.Register<AppSettings>(_Settings);
             _log = new ProductionLogger();
@@ -95,7 +91,6 @@ namespace MiniPie {
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
                 
-            _SettingsPersistor.Dispose();
             foreach (var keyManager in Container.ResolveAll<KeyManager>())
             {
                 keyManager.Dispose();

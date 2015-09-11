@@ -62,12 +62,6 @@ namespace MiniPie {
                                             DwmExtendFrameIntoClientArea(helper.Handle, ref m);
                                         };
             window.MouseLeftButtonDown += (o, e) => window.DragMove();
-
-            //Track changes on TopMost-settings
-            _Settings.PropertyChanged += (o, e) => {
-                                             if (e.PropertyName == "AlwaysOnTop")
-                                                 window.Topmost = _Settings.AlwaysOnTop;
-                                         };
         }
 
         private void TrackLocation(Window wnd, object rootViewModel) {

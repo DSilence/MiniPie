@@ -8,13 +8,11 @@ using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
-using PostSharp.Patterns.Model;
 using TinyIoC;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
-    [NotifyPropertyChanged]
-    public sealed class ShellViewModel : MiniPieScreen, IToggleVisibility {
+    public sealed class ShellViewModel : Screen, IToggleVisibility {
         private readonly IWindowManager _WindowManager;
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
@@ -47,10 +45,8 @@ namespace MiniPie.ViewModels {
             _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
             _SpotifyController.AttachTrackStatusChangedHandler(SpotifyControllerOnTrackStatusChanged);
 
-            _Settings.PropertyChanged += (o, e) => {
-                                             if (e.PropertyName == ApplicationSize.GetType().Name)
-                                                 ApplicationSize = _Settings.ApplicationSize;
-                                         };
+            //TODO more app sizes
+            ApplicationSize = ApplicationSize.Medium;
         }
 
         protected override void OnViewLoaded(object view) {

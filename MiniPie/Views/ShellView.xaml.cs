@@ -9,13 +9,12 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Hardcodet.Wpf.TaskbarNotification;
 using MiniPie.ViewModels;
 using Application = System.Windows.Application;
-using ContextMenu = System.Windows.Forms.ContextMenu;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
@@ -31,7 +30,7 @@ namespace MiniPie.Views
     /// </summary>
     public partial class ShellView : UserControl
     {
-        private NotifyIcon _notifyIcon;
+        private TaskbarIcon _notifyIcon;
         private ContextMenu _menu;
         private MenuItem[] _menuItems;
         private MenuItem _songNameMenuItem;
@@ -41,26 +40,14 @@ namespace MiniPie.Views
         public ShellView()
         {
             InitializeComponent();
-
-            _notifyIcon = new NotifyIcon();
-            _notifyIcon.Visible = true;
-            _notifyIcon.Icon = Icon.ExtractAssociatedIcon(
-                Assembly.GetExecutingAssembly().Location);
+            _notifyIcon = (TaskbarIcon) this.Resources["NotifyIcon"];
+            _menu = (ContextMenu) this.Resources["MiniPieContextMenu"];
         }
 
         private void MainWindowOnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            if (_notifyIcon != null)
-            {
-                var viewModel = ShellViewModel;
-                if (viewModel != null)
-                {
-                    _notifyIcon.MouseClick -= viewModel.MaximizeMiniplayer;
-                    _notifyIcon.DoubleClick -= viewModel.MinimizeMiniplayer;
-                }
-                _notifyIcon.Visible = false;
-                _notifyIcon.Dispose();
-            }
+            _notifyIcon.Visibility = Visibility.Collapsed;
+            _notifyIcon.Dispose();
         }
 
         private void AlbumArt_OnMouseDown(object sender, MouseButtonEventArgs e)
@@ -82,51 +69,9 @@ namespace MiniPie.Views
 
         private void ShellView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var oldContext = e.OldValue as ShellViewModel;
-            if (oldContext != null)
-            {
-                if (_menu != null)
-                {
-                    foreach (MenuItem menuItem in _menu.MenuItems)
-                    {
-                        foreach (MenuItem menuItemChild in menuItem.MenuItems)
-                        {
-                            menuItemChild.Dispose();
-                        }
-                        menuItem.Dispose();
-                    }
-                    _menu.Dispose();
-                }
-                _notifyIcon.ContextMenu = null;
-                _notifyIcon.MouseClick -= oldContext.MaximizeMiniplayer;
-                _notifyIcon.DoubleClick -= oldContext.MinimizeMiniplayer;
-                oldContext.PropertyChanged -= PropertyChangedForNotifyIcon;
-            }
-
-            var context = e.NewValue as ShellViewModel;
-            if (context != null)
-            {
-                //TODO kinda bad
-                Application.Current.MainWindow.Closing += MainWindowOnClosing;
-
-
-                _notifyIcon.MouseClick += context.MaximizeMiniplayer;
-                _notifyIcon.DoubleClick += context.MinimizeMiniplayer;
-
-                MiniPieContextMenu.DataContext = context;
-                List<MenuItem> menuItems = new List<MenuItem>(MiniPieContextMenu.Items.Count);
-                foreach (var item in MiniPieContextMenu.Items)
-                {
-                    MenuItem menuItem = new MenuItem();
-                    menuItems.Add(menuItem);
-                    ProcessMenuItem(item, context, menuItem);
-                }
-                _menuItems = menuItems.ToArray();
-                _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems);
-                _notifyIcon.Text
-                    = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
-                context.PropertyChanged += PropertyChangedForNotifyIcon;
-            }
+            Application.Current.MainWindow.Closing -= MainWindowOnClosing;
+            Application.Current.MainWindow.Closing += MainWindowOnClosing;
+            _menu.DataContext = e.NewValue;
         }
 
         private void ProcessMenuItem(object source, ShellViewModel context,
@@ -188,23 +133,9 @@ namespace MiniPie.Views
             }
         }
 
-        private void PropertyChangedForNotifyIcon(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        /*private void PropertyChangedForNotifyIcon(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "CurrentTrack")
-            {
-                _songNameMenuItem.Text = ShellViewModel.CurrentTrack;
-                _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems.ToArray());
-                string friendlyName = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
-                _notifyIcon.Text = friendlyName;
-            }
-            else if (propertyChangedEventArgs.PropertyName == "CurrentArtist")
-            {
-                _artistMenuItem.Text = ShellViewModel.CurrentArtist;
-                _notifyIcon.ContextMenu = _menu = new ContextMenu(_menuItems.ToArray());
-                string friendlyName = TruncateWithEllipsis(ShellViewModel.TrackFriendlyName, 63);
-                _notifyIcon.Text = friendlyName;
-            }
-            else if (propertyChangedEventArgs.PropertyName == "Playlists")
+            if (propertyChangedEventArgs.PropertyName == "Playlists")
             {
                 var playLists = ShellViewModel.Playlists;
                 
@@ -233,8 +164,8 @@ namespace MiniPie.Views
                     MiniPieContextMenu.AddToPlaylist.Items.Add(wpfMenuItem);
                 }
                 _addToPlaylist.MenuItems.AddRange(menuItems.ToArray());
-            }
-        }
+    }
+}*/
 
         //Truncates a string to be no longer than a certain length
         public static string TruncateWithEllipsis(string s, int length)
@@ -364,6 +295,16 @@ namespace MiniPie.Views
             var urls = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             //TODO url validation
             ShellViewModel.AddTracksToQueue(urls);
+        }
+
+        private void NotifyIcon_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            ShellViewModel.MinimizeMiniplayer();
+        }
+
+        private void NotifyIcon_OnTrayLeftMouseUp(object sender, RoutedEventArgs e)
+        {
+            ShellViewModel.MaximizeMiniplayer();
         }
     }
 }

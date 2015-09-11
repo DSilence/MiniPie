@@ -5,15 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
-			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
+             xmlns:converter="clr-namespace:MiniPie.Converter"
+             wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d">
-        <MenuItem Name="Artist" Header="{Binding CurrentArtist}" IsEnabled="False"/>
+    <ContextMenu.Resources>
+        <converter:PlaylistMenuItemsConverter x:Key="PlaylistMenuItemsConverter"/>
+    </ContextMenu.Resources>
+    <MenuItem Name="Artist" Header="{Binding CurrentArtist}" IsEnabled="False"/>
     <MenuItem Name="Song" Header="{Binding CurrentTrack}" IsEnabled="False" />
     <MenuItem Header="{wpf:Resx App_CopyTrack}">
         <MenuItem Header="{wpf:Resx App_CopyTrackName}" cal:Message.Attach="[Event Click] = [Action CopyTrackName]" />
         <MenuItem Header="{wpf:Resx App_CopySpotifyLink}" cal:Message.Attach="[Event Click] = [Action CopySpotifyLink]" />
     </MenuItem>
-    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}"/>
+    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}" 
+              ItemsSource="{Binding Playlists, Converter={StaticResource PlaylistMenuItemsConverter}}"/>
     <Separator />
         <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />

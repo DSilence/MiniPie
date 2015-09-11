@@ -37,7 +37,8 @@
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <DontImportPostSharp>True</DontImportPostSharp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -105,20 +106,16 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PostSharp, Version=4.1.23.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.4.1.23\lib\net35-client\PostSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PostSharp.Patterns.Common, Version=4.1.23.0, Culture=neutral, PublicKeyToken=e7f631e6ce13f078, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.Patterns.Common.4.1.23\lib\net40\PostSharp.Patterns.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PostSharp.Patterns.Model, Version=4.1.23.0, Culture=neutral, PublicKeyToken=e7f631e6ce13f078, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.Patterns.Model.4.1.23\lib\net40\PostSharp.Patterns.Model.dll</HintPath>
+    <Reference Include="PropertyChanged, Version=1.50.3.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyChanged.Fody.1.50.3\lib\dotnet\PropertyChanged.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -171,12 +168,32 @@
     <Compile Include="Controls\CircularProgressButton\ProgressButton.xaml.cs">
       <DependentUpon>ProgressButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NotifyIcon\BalloonIcon.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\BalloonFlags.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\IconDataMembers.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\IconState.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\MouseEvent.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\NotifyCommand.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\NotifyIconData.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\NotifyIconVersion.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\Point.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\SystemInfo.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\TrayInfo.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\WinApi.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\WindowClass.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\WindowMessageSink.cs" />
+    <Compile Include="Controls\NotifyIcon\PopupActivationMode.cs" />
+    <Compile Include="Controls\NotifyIcon\RoutedEventHelper.cs" />
+    <Compile Include="Controls\NotifyIcon\TaskbarIcon.cs" />
+    <Compile Include="Controls\NotifyIcon\TaskbarIcon.Declarations.cs" />
+    <Compile Include="Controls\NotifyIcon\Util.cs" />
     <Compile Include="Converter\ApplicationSizeConverter.cs" />
     <Compile Include="Converter\BoolInvertedConverter.cs" />
     <Compile Include="Converter\BoolToLoginTextConverter.cs" />
     <Compile Include="Converter\CircularProgressButton\ProgressToAngleConverter.cs" />
     <Compile Include="Converter\EnumToLocalizedStringConverter.cs" />
     <Compile Include="Converter\KeyCodeToReadableStringConverter.cs" />
+    <Compile Include="Converter\PlaylistMenuItemsConverter.cs" />
     <Compile Include="Converter\VisibilityConverter.cs" />
     <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Entry.cs" />
@@ -184,6 +201,7 @@
     <Compile Include="Interactivity\BindingListener.cs" />
     <Compile Include="Interactivity\DataEventTrigger.cs" />
     <Compile Include="IToggleVisibility.cs" />
+    <Compile Include="JsonPersister.cs" />
     <Compile Include="Localization\ManagedMarkupExtension.cs" />
     <Compile Include="Localization\MarkupExtensionManager.cs" />
     <Compile Include="Localization\ResourceEnumConverter.cs" />
@@ -258,6 +276,7 @@
     <Resource Include="Images\Player\add-normal.png" />
     <Resource Include="Images\Player\remove-mouseover.png" />
     <Resource Include="Images\Player\remove-normal.png" />
+    <Resource Include="FodyWeavers.xml" />
     <Content Include="MiniPieHelper.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -356,11 +375,15 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\PostSharp.4.1.23\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.4.1.23\tools\PostSharp.targets')" />
-  <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
-    <Error Condition="!Exists('..\packages\PostSharp.4.1.23\tools\PostSharp.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://www.postsharp.net/links/nuget-restore." />
-    <Error Condition="Exists('..\packages\PostSharp.4.1.23\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
+  <Import Project="..\packages\Fody.1.29.3\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\dotnet\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\dotnet\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets'))" />
   </Target>
+  <Import Project="..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets" Condition="Exists('..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

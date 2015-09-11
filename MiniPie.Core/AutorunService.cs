@@ -20,15 +20,9 @@ namespace MiniPie.Core
             _Contracts = contracts;
 
             ValidateAutorun();
-
-            _Settings.PropertyChanged += (o, e) =>
-            {
-                if (e.PropertyName == AutorunSettingsName)
-                    ValidateAutorun();
-            };
         }
 
-        private void ValidateAutorun()
+        public void ValidateAutorun()
         {
             try
             {

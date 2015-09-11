@@ -19,7 +19,7 @@ namespace MiniPie
             _commandLine = eventArgs.CommandLine;
             _application = new App();
             _application.Run();
-            return true;
+            return false;
         }
        
 

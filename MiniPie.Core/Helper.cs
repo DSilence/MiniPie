@@ -9,63 +9,74 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 
-namespace MiniPie.Core {
-    public static class Helper {
-
-        public static void OpenUrl(string url) {
-            try {
-                Process.Start(url);
-            }
-            catch (Exception) {
-                MessageBox.Show(string.Format("Failed to open your default browser. MiniPie tried to open the following url for you: {0}", url),
-                    "MiniPie", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+namespace MiniPie.Core
+{
+    public static class Helper
+    {
+        public static void OpenUrl(string url)
+        {
+            Process.Start(url);
         }
-        public static bool IsWindows7 {
+
+        public static bool IsWindows7
+        {
             get { return Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1; }
         }
 
-        public static string MakeNiceSize(double size) {
+        public static string MakeNiceSize(double size)
+        {
             return MakeNiceSize(size, "auto");
         }
 
-        private static string MakeNiceSize(double size, string mode) {
-            var suffix = new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+        private static string MakeNiceSize(double size, string mode)
+        {
+            var suffix = new[] {"B", "KB", "MB", "GB", "TB", "PB", "EB"};
             var run = 0;
 
-            if (mode == "auto") {
-                while (size >= 1024) {
+            if (mode == "auto")
+            {
+                while (size >= 1024)
+                {
                     size /= 1024;
                     run++;
                 }
             }
-            else if (mode != "auto") {
-                if (suffix.Contains(mode)) {
-                    while (suffix[run] != mode) {
+            else if (mode != "auto")
+            {
+                if (suffix.Contains(mode))
+                {
+                    while (suffix[run] != mode)
+                    {
                         size /= 1024;
                         run++;
                     }
                 }
-                else {
+                else
+                {
                     return "ERROR: Unknown mode";
                 }
-
             }
             return Math.Round(size, 2).ToString("0.00") + " " + suffix[run];
         }
 
-        public static ImageSource GetImageSourceFromResource(string psResourceName) {
-            try {
-                var oUri = new Uri("pack://application:,,,/MiniPie;component/" + psResourceName, UriKind.RelativeOrAbsolute);
+        public static ImageSource GetImageSourceFromResource(string psResourceName)
+        {
+            try
+            {
+                var oUri = new Uri("pack://application:,,,/MiniPie;component/" + psResourceName,
+                    UriKind.RelativeOrAbsolute);
                 return BitmapFrame.Create(oUri);
             }
-            catch (FileFormatException) { return null; }
+            catch (FileFormatException)
+            {
+                return null;
+            }
         }
 
         public static Task<string> SerializeObjectAsync<T>(T value)
         {
             return Task.Run(() => JsonConvert.SerializeObject(value));
-        } 
+        }
 
         public static Task<T> DeserializeObjectAsync<T>(string value)
         {
@@ -87,7 +98,6 @@ namespace MiniPie.Core {
                     return result;
                 }
             });
-            
-        } 
+        }
     }
 }
