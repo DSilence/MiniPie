@@ -8,7 +8,7 @@ using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
-using TinyIoC;
+using Ninject;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
@@ -19,6 +19,7 @@ namespace MiniPie.ViewModels {
         private readonly IEventAggregator _EventAggregator;
         private readonly AppSettings _Settings;
         private readonly ILog _Logger;
+        private readonly IKernel _kernel;
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
         private const string TrackPattern = @".*\/\/open\.spotify\.com\/track\/(.*)";
@@ -29,13 +30,15 @@ namespace MiniPie.ViewModels {
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
 
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, ILog logger) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
+            ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, ILog logger, IKernel kernel) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
             _EventAggregator = eventAggregator;
             _Settings = settings;
             _Logger = logger;
+            _kernel = kernel;
             ApplicationSize = _Settings.ApplicationSize;
 
             CoverImage = NoCoverUri;
@@ -53,7 +56,7 @@ namespace MiniPie.ViewModels {
             base.OnViewLoaded(view);
 
             if (!_SpotifyController.IsSpotifyInstalled())
-                _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
+                _WindowManager.ShowDialog(_kernel.Get<NoSpotifyViewModel>());
 
             if (_Settings.StartMinimized)
             {
@@ -94,11 +97,11 @@ namespace MiniPie.ViewModels {
         #endregion
 
         public void ShowSettings() {
-            _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<SettingsViewModel>());
+            _WindowManager.ShowDialog(_kernel.Get<SettingsViewModel>());
         }
 
         public void ShowAbout() {
-            _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<AboutViewModel>());
+            _WindowManager.ShowDialog(_kernel.Get<AboutViewModel>());
         }
 
         public void PlayPause() {

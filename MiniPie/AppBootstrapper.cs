@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -9,10 +10,13 @@ using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
+using MiniPie.Views;
+using Ninject;
+using Ninject.Extensions.Conventions;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
-    public sealed class AppBootstrapper : TinyBootstrapper<ShellViewModel> {
+    public sealed class AppBootstrapper : BootstrapperBase {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
@@ -21,8 +25,9 @@ namespace MiniPie {
         private SpotifyWebApi _spotifyWebApi;
         private SpotifyController _spotifyController;
         private SpotifyLocalApi _spotifyLocalApi;
+        private readonly IKernel _kernel = new StandardKernel();
 
-        public AppBootstrapper()
+        public AppBootstrapper():base(true)
         {
         }
 
@@ -31,11 +36,27 @@ namespace MiniPie {
             base.OnStartup(sender, e);
 
             _log.Info("Starting");
+            DisplayRootViewFor<ShellViewModel>();
+        }
+
+        protected override object GetInstance(Type service, string key)
+        {
+            return _kernel.Get(service, key);
+        }
+
+        protected override IEnumerable<object> GetAllInstances(Type service)
+        {
+            return _kernel.GetAll(service);
+        }
+
+        protected override void BuildUp(object instance)
+        {
+            _kernel.Inject(instance);
         }
 
         public async void ProcessTokenUpdate(string input)
         {
-            await Container.Resolve<ISpotifyWebApi>().CreateToken(input);
+            await _kernel.Get<ISpotifyWebApi>().CreateToken(input);
             var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "unregisterUri");
             processStartInfo.Verb = "runas";
             processStartInfo.CreateNoWindow = true;
@@ -44,41 +65,44 @@ namespace MiniPie {
         }
 
         protected override void Configure() {
-            base.Configure();
-
             _Contracts = new AppContracts();
 
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
-            Container.Register(_SettingsPersistor);
+            _kernel.Bind<JsonPersister<AppSettings>>().ToConstant(_SettingsPersistor).InSingletonScope();
+            _kernel.Inject(_Contracts);
             _Settings = _SettingsPersistor.Instance;
+            _kernel.Inject(_Settings);
             
-            Container.Register<AppContracts>(_Contracts);
-            Container.Register<AppSettings>(_Settings);
             _log = new ProductionLogger();
-            Container.Register<ILog>(_log);
-            Container.Register<AutorunService>(new AutorunService(Container.Resolve<ILog>(), _Settings, _Contracts));
-            Container.Register<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.Bind<ILog>().ToConstant(_log).InSingletonScope();
 
-            _spotifyLocalApi = new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings);
-            Container.Register<ISpotifyLocalApi>(_spotifyLocalApi);
-            _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
-            Container.Register<ISpotifyWebApi>(_spotifyWebApi);
-            _spotifyController = new SpotifyController(Container.Resolve<ILog>(),
+            _kernel.Inject(new AutorunService(_log, _Settings, _Contracts));
+            _kernel.Bind<IWindowManager>().ToConstant(new AppWindowManager(_Settings)).InSingletonScope();
+            _kernel.Bind<IEventAggregator>().To<EventAggregator>();
+
+            _spotifyLocalApi = new SpotifyLocalApi(_log, _Contracts, _Settings);
+            _kernel.Bind<ISpotifyLocalApi>().ToConstant(_spotifyLocalApi).InSingletonScope();
+            _spotifyWebApi = new SpotifyWebApi(_log, _Settings);
+            _kernel.Bind<ISpotifyWebApi>().ToConstant(_spotifyWebApi).InSingletonScope();
+            _spotifyController = new SpotifyController(_log,
                 _spotifyLocalApi, _spotifyWebApi);
-            Container.Register<ISpotifyController>(_spotifyController);
-            Container.Register<ICoverService>(
-                new CoverService(
-                    string.IsNullOrEmpty(_Settings.CacheFolder)
-                        ? Directory.GetCurrentDirectory()
-                        : _Settings.CacheFolder, Container.Resolve<ILog>(), _spotifyWebApi));
+            _kernel.Bind<ISpotifyController>().ToConstant(_spotifyController).InSingletonScope();
+            _kernel.Bind<ICoverService>().ToConstant(new CoverService(
+                string.IsNullOrEmpty(_Settings.CacheFolder)
+                    ? Directory.GetCurrentDirectory()
+                    : _Settings.CacheFolder, _log, _spotifyWebApi)).InSingletonScope();
 
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
-            var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());
-            Container.Register<KeyManager>(keyManager);
+            var keyManager = new KeyManager(_spotifyController, _log);
+            _kernel.Inject(keyManager);
             if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
             {
                 keyManager.RegisterHotKeys(_Settings.HotKeys);
             }
+
+            _kernel.Bind(
+                x => x.FromThisAssembly().SelectAllClasses().InNamespaceOf(typeof (ShellViewModel), typeof(ShellView)).BindToSelf());
+            base.Configure();
         }
 
         public async Task ConfigurationInitialize()
@@ -91,10 +115,11 @@ namespace MiniPie {
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
                 
-            foreach (var keyManager in Container.ResolveAll<KeyManager>())
+            foreach (var keyManager in _kernel.GetAll<KeyManager>())
             {
                 keyManager.Dispose();
             }
+            _kernel.Dispose();
         }
     }
 }

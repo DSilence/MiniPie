@@ -9,7 +9,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <miniPie:AppBootstrapper x:Key="bootstrapper"/>
                     <converter:VisibilityConverter x:Key="VisibilityConverter" />
                     <converter:ApplicationSizeConverter x:Key="ApplicationSizeConverter" />
                     <converter:BoolInvertedConverter x:Key="BoolInvertedConverter"/>

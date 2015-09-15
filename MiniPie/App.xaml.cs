@@ -14,6 +14,8 @@ namespace MiniPie {
     {
         public App()
         {
+            Bootstrapper = new AppBootstrapper();
+            Bootstrapper.Initialize();
             InitializeComponent();
         }
 
@@ -21,7 +23,6 @@ namespace MiniPie {
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Bootstrapper = (AppBootstrapper)Resources["bootstrapper"];
             await Bootstrapper.ConfigurationInitialize();
         }
     }
