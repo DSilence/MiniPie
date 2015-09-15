@@ -26,7 +26,6 @@
              UseLayoutRounding="True">
     <UserControl.Resources>
         <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter"/>
-        <controls:MiniPieContextMenu x:Key="MiniPieContextMenu"/>
         <Storyboard x:Key="StbFadeout">
             <DoubleAnimation AutoReverse="False"
                              From="1" To="0.0"
@@ -106,10 +105,12 @@
         <taskbarNotification:TaskbarIcon x:Key="NotifyIcon"
                                          IconSource="..\App.ico"
                                          ToolTipText="{Binding TrackFriendlyName}"
-                                         ContextMenu="{StaticResource MiniPieContextMenu}"
                                          TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
                                          TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp"
                                          >
+            <taskbarNotification:TaskbarIcon.ContextMenu>
+                <controls:MiniPieContextMenu x:Name="TaskbarContextMenu"/>
+            </taskbarNotification:TaskbarIcon.ContextMenu>
         </taskbarNotification:TaskbarIcon>
     </UserControl.Resources>
     <UserControl.Triggers>
@@ -128,10 +129,10 @@
             <im:ControlStoryboardAction Storyboard="{StaticResource StbFadein}" ControlStoryboardOption="Play" />
         </interactivity:DataEventTrigger>
     </i:Interaction.Triggers>
-    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000" ContextMenu="{StaticResource MiniPieContextMenu}">
-        <!--<Border.ContextMenu>
+    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
+        <Border.ContextMenu>
             <controls:MiniPieContextMenu x:Name="MiniPieContextMenu"/>
-        </Border.ContextMenu>-->
+        </Border.ContextMenu>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}" />

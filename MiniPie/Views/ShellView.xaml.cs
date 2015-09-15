@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,7 +16,6 @@ using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
 using MenuItem = System.Windows.Forms.MenuItem;
-using Message = Caliburn.Micro.Message;
 using Size = System.Windows.Size;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -31,17 +27,12 @@ namespace MiniPie.Views
     public partial class ShellView : UserControl
     {
         private TaskbarIcon _notifyIcon;
-        private ContextMenu _menu;
         private MenuItem[] _menuItems;
-        private MenuItem _songNameMenuItem;
-        private MenuItem _artistMenuItem;
-        private MenuItem _addToPlaylist;
 
         public ShellView()
         {
             InitializeComponent();
             _notifyIcon = (TaskbarIcon) this.Resources["NotifyIcon"];
-            _menu = (ContextMenu) this.Resources["MiniPieContextMenu"];
         }
 
         private void MainWindowOnClosing(object sender, CancelEventArgs cancelEventArgs)
@@ -71,101 +62,9 @@ namespace MiniPie.Views
         {
             Application.Current.MainWindow.Closing -= MainWindowOnClosing;
             Application.Current.MainWindow.Closing += MainWindowOnClosing;
-            _menu.DataContext = e.NewValue;
+            MiniPieContextMenu.DataContext = e.NewValue;
+            _notifyIcon.ContextMenu.DataContext = e.NewValue;
         }
-
-        private void ProcessMenuItem(object source, ShellViewModel context,
-            MenuItem itemToPopulate = null)
-        {
-
-            if (itemToPopulate == null)
-            {
-                itemToPopulate = new MenuItem();
-            }
-
-            var menuItem = source as System.Windows.Controls.MenuItem;
-            if (menuItem != null)
-            {
-                var attach = Message.GetAttach(menuItem);
-                if (attach != null)
-                {
-                    var action = attach.Split('=')[1].Split(' ')[2].Trim(']');
-                    Action delegateAction = (Action) Delegate.CreateDelegate(typeof (Action), context, action);
-                    itemToPopulate.Text = Convert.ToString(menuItem.Header);
-                    itemToPopulate.Click += (sender, args) => { delegateAction(); };
-                    itemToPopulate.Enabled = menuItem.IsEnabled;
-                }
-                else
-                {
-                    itemToPopulate.Text = Convert.ToString(menuItem.Header);
-                    itemToPopulate.Enabled = menuItem.IsEnabled;
-                    if (menuItem.Name == "Artist")
-                    {
-                        _artistMenuItem = itemToPopulate;
-                    }
-                    else if (menuItem.Name == "Song")
-                    {
-                        _songNameMenuItem = itemToPopulate;
-                    }
-                    else if (menuItem.Name == "AddToPlaylist")
-                    {
-                        _addToPlaylist = itemToPopulate;
-                    }
-                }
-
-                if (menuItem.Items.Count > 0)
-                {
-                    foreach (System.Windows.Controls.MenuItem item in menuItem.Items)
-                    {
-                        var child = new MenuItem();
-                        ProcessMenuItem(item, context, child);
-                        itemToPopulate.MenuItems.Add(child);
-                    }
-                }
-            }
-            else
-            {
-                var separator = source as Separator;
-                if (separator != null)
-                {
-                    itemToPopulate.Text = "-";
-                }
-            }
-        }
-
-        /*private void PropertyChangedForNotifyIcon(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == "Playlists")
-            {
-                var playLists = ShellViewModel.Playlists;
-                
-                List<System.Windows.Controls.MenuItem> wpfMenuItems = new List<System.Windows.Controls.MenuItem>();
-                List<MenuItem> menuItems = new List<MenuItem>();
-                foreach (var playlist in playLists)
-                {
-                    var playListToProcess = playlist;
-                    var wpfMenuItem = new System.Windows.Controls.MenuItem();
-                    wpfMenuItem.Header = playlist.Name;
-                    wpfMenuItem.Click += (o, args) =>
-                    {
-                        ShellViewModel.AddToPlaylist(playListToProcess.Id);
-                    };
-                    var itemToPopulate = new MenuItem(playListToProcess.Name, (o, args) =>
-                    {
-                        ShellViewModel.AddToPlaylist(playListToProcess.Id);
-                    });
-                    wpfMenuItems.Add(wpfMenuItem);
-                    menuItems.Add(itemToPopulate);
-                }
-                _addToPlaylist.MenuItems.Clear();
-                MiniPieContextMenu.AddToPlaylist.Items.Clear();
-                foreach (var wpfMenuItem in wpfMenuItems)
-                {
-                    MiniPieContextMenu.AddToPlaylist.Items.Add(wpfMenuItem);
-                }
-                _addToPlaylist.MenuItems.AddRange(menuItems.ToArray());
-    }
-}*/
 
         //Truncates a string to be no longer than a certain length
         public static string TruncateWithEllipsis(string s, int length)
