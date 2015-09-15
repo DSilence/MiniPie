@@ -69,14 +69,16 @@ namespace MiniPie {
 
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
             _kernel.Bind<JsonPersister<AppSettings>>().ToConstant(_SettingsPersistor).InSingletonScope();
-            _kernel.Inject(_Contracts);
+            _kernel.Bind<AppContracts>().ToConstant(_Contracts).InSingletonScope();
             _Settings = _SettingsPersistor.Instance;
-            _kernel.Inject(_Settings);
+            _kernel.Bind<AppSettings>().ToConstant(_Settings).InSingletonScope();
             
             _log = new ProductionLogger();
             _kernel.Bind<ILog>().ToConstant(_log).InSingletonScope();
 
-            _kernel.Inject(new AutorunService(_log, _Settings, _Contracts));
+            _kernel.Bind<AutorunService>()
+                .ToConstant(new AutorunService(_log, _Settings, _Contracts))
+                .InSingletonScope();
             _kernel.Bind<IWindowManager>().ToConstant(new AppWindowManager(_Settings)).InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>();
 
@@ -94,7 +96,7 @@ namespace MiniPie {
 
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(_spotifyController, _log);
-            _kernel.Inject(keyManager);
+            _kernel.Bind<KeyManager>().ToConstant(keyManager).InSingletonScope();
             if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
             {
                 keyManager.RegisterHotKeys(_Settings.HotKeys);
