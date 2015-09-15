@@ -7,7 +7,8 @@
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              xmlns:converter="clr-namespace:MiniPie.Converter"
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             Name="MiniPieMenu">
     <ContextMenu.Resources>
         <converter:PlaylistMenuItemsConverter x:Key="PlaylistMenuItemsConverter"/>
     </ContextMenu.Resources>
@@ -17,8 +18,14 @@
         <MenuItem Header="{wpf:Resx App_CopyTrackName}" cal:Message.Attach="[Event Click] = [Action CopyTrackName]" />
         <MenuItem Header="{wpf:Resx App_CopySpotifyLink}" cal:Message.Attach="[Event Click] = [Action CopySpotifyLink]" />
     </MenuItem>
-    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}" 
-              ItemsSource="{Binding Playlists, Converter={StaticResource PlaylistMenuItemsConverter}}"/>
+    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}">
+        <MenuItem.ItemsSource>
+            <MultiBinding Converter="{StaticResource PlaylistMenuItemsConverter}">
+                <Binding Path="Playlists"/>
+                <Binding Path="DataContext" ElementName="MiniPieMenu"/>
+            </MultiBinding>
+        </MenuItem.ItemsSource>
+    </MenuItem>
     <Separator />
         <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />
