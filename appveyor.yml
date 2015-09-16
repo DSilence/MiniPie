@@ -34,9 +34,11 @@ deploy:
         folder: 'clickonceinstallmaster'
         artifact: MiniPie
 after_build:
-        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
+        - 
+        ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
         on:
             branch: develop
-        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstallmaster/"
+        - 
+        ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstallmaster/"
         on:
             branch: master
