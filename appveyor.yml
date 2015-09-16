@@ -27,7 +27,7 @@ branches:
         folder: clickonceinstalldevelop
         artifact: MiniPie
     after_build:
-    - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
+        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
 branches:
     only:
       - master
@@ -41,5 +41,5 @@ branches:
         set_public: true
         folder: 'clickonceinstallmaster'
         artifact: MiniPie
-     after_build:
-    - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstallmaster/"
+    after_build:
+        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstallmaster/"
