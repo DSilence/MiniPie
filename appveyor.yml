@@ -15,26 +15,25 @@ artifacts:
       name: MiniPie
 deploy:
     - provider: AzureBlob
-        storage_account_name: minipie
-        storage_access_key:
-            secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
-        container: clickonceinstalldevelop
-        folder:''
-        artifact: MiniPie
-        unzip: true
-        on:
-           branch: develop
+    storage_account_name: minipie
+    storage_access_key:
+        secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
+    container: clickonceinstalldevelop
+    folder:''
+    artifact: MiniPie
+    unzip: true
+    on:
+        branch: develop
 
     - provider: AzureBlob
-        storage_account_name: minipie
-        storage_access_key:
-            secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
-        container: clickonceinstallmaster
-        folder:''
-        artifact: MiniPie
-        unzip: true
-        on:
-           branch: master
-      
+    storage_account_name: minipie
+    storage_access_key:
+        secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
+    container: clickonceinstallmaster
+    folder:''
+    artifact: MiniPie
+    unzip: true
+    on:
+        branch: master
 after_build:
         - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="http://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
