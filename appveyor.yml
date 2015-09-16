@@ -14,12 +14,12 @@ artifacts:
     - path: MiniPie\bin\Release\app.publish\
       name: MiniPie
 deploy:
-    - provider: AzureBlob
+    -provider: AzureBlob
     storage_account_name: minipie
     storage_access_key:
         secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
     container: clickonceinstalldevelop
-    folder:''
+    folder: ''
     artifact: MiniPie
     unzip: true
     on:
@@ -30,7 +30,7 @@ deploy:
     storage_access_key:
         secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
     container: clickonceinstallmaster
-    folder:''
+    folder: ''
     artifact: MiniPie
     unzip: true
     on:
