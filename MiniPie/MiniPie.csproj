@@ -397,4 +397,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterCompile">
+  <GetAssemblyIdentity AssemblyFiles="$(ProjectDir)obj\$(ConfigurationName)\$(TargetFileName)">
+     <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+  </GetAssemblyIdentity>
+  <PropertyGroup>
+    <ApplicationVersion>%(AssemblyInfo.Version)</ApplicationVersion>
+  </PropertyGroup>
+</Target>
 </Project>
