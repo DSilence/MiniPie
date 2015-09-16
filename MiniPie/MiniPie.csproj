@@ -29,8 +29,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://minipie.blob.core.windows.net/clickonceinstdevelop/</InstallUrl>
-    <UpdateUrl>https://minipie.blob.core.windows.net/clickonceinstallalpha/</UpdateUrl>
+    <InstallUrl>https://minipie.blob.core.windows.net/clickonceinstdevelop/</InstallUrl>
+    <UpdateUrl>https://minipie.blob.core.windows.net/clickonceinstalldevelop/</UpdateUrl>
     <PublisherName>Dzmitry Safarau</PublisherName>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
     <ApplicationRevision>8</ApplicationRevision>
