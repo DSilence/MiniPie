@@ -1,5 +1,6 @@
 version: 0.0.2.{build}
 configuration: Release
+platform: Any CPU
 assembly_info:
       patch: true
       file: '**\AssemblyInfoCommon.*'
@@ -36,4 +37,4 @@ deploy:
     on:
         branch: master
 after_build:
-        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/" /p:UpdateUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
+        - ps: MSBuild MiniPie.sln /p:Platform="Any CPU" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/" /p:UpdateUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
