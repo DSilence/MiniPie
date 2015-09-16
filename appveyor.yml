@@ -1,45 +1,78 @@
-version: 0.0.2.{build}
-configuration: Release
-assembly_info:
-      patch: true
-      file: '**\AssemblyInfoCommon.*'
-      assembly_version: '{version}'
-      assembly_file_version: '{version}'
-      assembly_informational_version: '{version}'
-build:
-    verbosity: minimal
-before_build:
-    - nuget restore
-artifacts:
-    - path: MiniPie\bin\Release\app.publish\
-      name: MiniPie
+-
+    version: 0.0.2.{build}
+    configuration: Release
+    assembly_info:
+          patch: true
+          file: '**\AssemblyInfoCommon.*'
+          assembly_version: '{version}'
+          assembly_file_version: '{version}'
+          assembly_informational_version: '{version}'
+    build:
+        verbosity: minimal
+    before_build:
+        - nuget restore
+    artifacts:
+        - path: MiniPie\bin\Release\app.publish\
+          name: MiniPie
 
-branches:
-    only:
-      - develop
-    deploy:
-        provider: S3
-        access_key_id:
-            secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
-        secret_access_key:
-            secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-        bucket: minipie.sleepymaniac.com
-        folder: clickonceinstalldevelop
-        artifact: MiniPie
-    after_build:
-        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
-branches:
-    only:
-      - master
-    deploy:
-        provider: S3
-        access_key_id:
-            secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
-        secret_access_key:
-            secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-        bucket: minipie.sleepymaniac.com
-        set_public: true
-        folder: 'clickonceinstallmaster'
-        artifact: MiniPie
-    after_build:
-        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstallmaster/"
+-
+    branches:
+        only:
+          - develop
+        version: 0.0.2.{build}
+        configuration: Release
+        assembly_info:
+              patch: true
+              file: '**\AssemblyInfoCommon.*'
+              assembly_version: '{version}'
+              assembly_file_version: '{version}'
+              assembly_informational_version: '{version}'
+        build:
+            verbosity: minimal
+        before_build:
+            - nuget restore
+        artifacts:
+            - path: MiniPie\bin\Release\app.publish\
+              name: MiniPie
+        deploy:
+            provider: S3
+            access_key_id:
+                secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
+            secret_access_key:
+                secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
+            bucket: minipie.sleepymaniac.com
+            folder: clickonceinstalldevelop
+            artifact: MiniPie
+        after_build:
+            - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
+-
+    branches:
+        only:
+          - master
+        version: 0.0.2.{build}
+        configuration: Release
+        assembly_info:
+              patch: true
+              file: '**\AssemblyInfoCommon.*'
+              assembly_version: '{version}'
+              assembly_file_version: '{version}'
+              assembly_informational_version: '{version}'
+        build:
+            verbosity: minimal
+        before_build:
+            - nuget restore
+        artifacts:
+            - path: MiniPie\bin\Release\app.publish\
+              name: MiniPie
+        deploy:
+            provider: S3
+            access_key_id:
+                secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
+            secret_access_key:
+                secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
+            bucket: minipie.sleepymaniac.com
+            set_public: true
+            folder: 'clickonceinstallmaster'
+            artifact: MiniPie
+        after_build:
+            - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstallmaster/"
