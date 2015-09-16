@@ -205,8 +205,8 @@ namespace MiniPie.ViewModels {
                     return;
                 }
 
-                var track = _SpotifyController.GetSongName();
-                var artist = _SpotifyController.GetArtistName();
+                var track = status.track?.track_resource?.name;
+                var artist = status.track?.artist_resource?.name;
                 MaxProgress = status.track.length;
                 Progress = status.playing_position;
                 IsPlaying = status.playing;

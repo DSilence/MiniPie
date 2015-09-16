@@ -23,7 +23,7 @@ namespace MiniPie.Core {
          */
 
         public event EventHandler SpotifyExited;
-        protected event EventHandler TrackChanged;
+        public event EventHandler TrackChanged;
         public event EventHandler TrackStatusChanged;
         public event EventHandler SpotifyOpened;
         public event EventHandler TokenUpdated;
@@ -246,7 +246,7 @@ namespace MiniPie.Core {
             }
         }
 
-        private void ProcessTrackInfo(Status newTrackInfo)
+        protected internal void ProcessTrackInfo(Status newTrackInfo)
         {
             if (_CurrentTrackInfo == null || _CurrentTrackInfo.track == null ||
                             _CurrentTrackInfo.track.track_resource == null ||
@@ -255,19 +255,19 @@ namespace MiniPie.Core {
             {
                 _CurrentTrackInfo = newTrackInfo;
                 OnTrackChanged();
-                _songStatusWatcher.Change(
+                _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
             else
             {
                 _CurrentTrackInfo = newTrackInfo;
                 OnTrackTimerChanged();
-                _songStatusWatcher.Change(
+                _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
         }
 
-        private int GetDelayForPlaybackUpdate(double playPosition)
+        protected internal int GetDelayForPlaybackUpdate(double playPosition)
         {
             int i = (int) playPosition;
             double fract = playPosition - i;
@@ -299,20 +299,6 @@ namespace MiniPie.Core {
                 //In case of an error it's better to return true instead of false, because this makes MiniPie unusable if there is something wrong with Windows.
                 return true;
             }
-        }
-
-        public string GetSongName() {
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.track != null && _CurrentTrackInfo.track.track_resource != null)
-                return _CurrentTrackInfo.track.track_resource.name;
-
-            return string.Empty;
-        }
-
-        public string GetArtistName() {
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.track != null && _CurrentTrackInfo.track.artist_resource != null)
-                return _CurrentTrackInfo.track.artist_resource.name;
-
-            return string.Empty;
         }
 
         public Status GetStatus() {
@@ -451,8 +437,8 @@ namespace MiniPie.Core {
 
         public void Dispose()
         {
-            _songStatusWatcher.Dispose();
-            if(_BackgroundChangeTracker.IsAlive)
+            _songStatusWatcher?.Dispose();
+            if(_BackgroundChangeTracker != null && _BackgroundChangeTracker.IsAlive)
                 _BackgroundChangeTracker.Abort();
         }
     }

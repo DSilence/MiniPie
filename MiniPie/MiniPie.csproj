@@ -227,7 +227,6 @@
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />
-    <Compile Include="ViewModels\NotifyPropertyChangedHelper.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
@@ -398,11 +397,11 @@
   </Target>
   -->
   <Target Name="AfterCompile">
-  <GetAssemblyIdentity AssemblyFiles="$(ProjectDir)obj\$(ConfigurationName)\$(TargetFileName)">
-     <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-  </GetAssemblyIdentity>
-  <PropertyGroup>
-    <ApplicationVersion>%(AssemblyInfo.Version)</ApplicationVersion>
-  </PropertyGroup>
-</Target>
+    <GetAssemblyIdentity AssemblyFiles="$(ProjectDir)obj\$(ConfigurationName)\$(TargetFileName)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <ApplicationVersion>%(AssemblyInfo.Version)</ApplicationVersion>
+    </PropertyGroup>
+  </Target>
 </Project>

@@ -12,8 +12,6 @@ namespace MiniPie.Core {
         Task Initialize();
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
-        string GetSongName();
-        string GetArtistName();
         Status GetStatus();
         void PausePlay();
         void NextTrack();
