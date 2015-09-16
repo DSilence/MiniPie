@@ -24,7 +24,6 @@ branches:
         secret_access_key:
             secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
         bucket:minipie.sleepymaniac.com
-        set_public: true
         folder: clickonceinstalldevelop
         artifact: MiniPie
     after_build:
