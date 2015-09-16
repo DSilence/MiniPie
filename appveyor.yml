@@ -23,7 +23,7 @@ branches:
             secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
         secret_access_key:
             secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-        bucket:minipie.sleepymaniac.com
+        bucket: minipie.sleepymaniac.com
         folder: clickonceinstalldevelop
         artifact: MiniPie
     after_build:
@@ -37,7 +37,7 @@ branches:
             secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
         secret_access_key:
             secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-        bucket:minipie.sleepymaniac.com
+        bucket: minipie.sleepymaniac.com
         set_public: true
         folder: 'clickonceinstallmaster'
         artifact: MiniPie
