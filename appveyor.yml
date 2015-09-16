@@ -13,24 +13,19 @@ before_build:
 artifacts:
     - path: MiniPie\bin\Release\app.publish\
       name: MiniPie
-environment:
-  access_key_id:
-    secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
-  secret_access_key:
-    secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-  bucket:
-    secure: Xg+cojV5dvMUTuq58e7bNRakbUTz3K0Rk6HDtJgvo3U=
 
 branches:
     only:
       - develop
     deploy:
         provider: S3
-        access_key_id:'{access_key_id}'
-        secret_access_key:'{secret_access_key}'
-        bucket:'{bucket}'
+        access_key_id:
+            secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
+        secret_access_key:
+            secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
+        bucket:minipie.sleepymaniac.com
         set_public: true
-        folder: 'clickonceinstalldevelop'
+        folder: clickonceinstalldevelop
         artifact: MiniPie
     after_build:
     - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstalldevelop/"
@@ -39,9 +34,11 @@ branches:
       - master
     deploy:
         provider: S3
-        access_key_id:'{access_key_id}'
-        secret_access_key:'{secret_access_key}'
-        bucket:'{bucket}'
+        access_key_id:
+            secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
+        secret_access_key:
+            secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
+        bucket:minipie.sleepymaniac.com
         set_public: true
         folder: 'clickonceinstallmaster'
         artifact: MiniPie
