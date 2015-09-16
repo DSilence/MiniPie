@@ -1,0 +1,6 @@
+version: 0.0.2.{build}
+configuration: Release
+before_build:
+  - nuget restore
+build:
+	verbosity: minimal
