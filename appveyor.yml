@@ -14,6 +14,8 @@ before_build:
 artifacts:
     - path: MiniPie\bin\Release\app.publish\
       name: MiniPie
+    - path: MiniPie\bin\Release\
+      name: Binaries
 deploy:
   - provider: AzureBlob
     storage_account_name: minipie
