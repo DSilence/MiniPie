@@ -40,7 +40,7 @@ deploy:
         branch: master
 after_build:
         - ps: MSBuild MiniPie.sln /p:Platform="Any CPU" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /property:GenerateManifests=true /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/" /p:UpdateUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
-        notifications:
+notifications:
   - provider: Slack
     auth_token:
       secure: l9d2Z7yxqHY6S1Iom6FANSPbVpIcz0zes2lw6DmedTdqfgJRf10nVXSRp2YAMwVy
