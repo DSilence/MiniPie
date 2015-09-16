@@ -1,16 +1,16 @@
 version: 0.0.2.{build}
-    configuration: Release
-    assembly_info:
+configuration: Release
+assembly_info:
       patch: true
       file: '**\AssemblyInfoCommon.*'
       assembly_version: '{version}'
       assembly_file_version: '{version}'
       assembly_informational_version: '{version}'
-    build:
-        verbosity: minimal
-    before_build:
-      - nuget restore
-    artifacts:
+build:
+    verbosity: minimal
+before_build:
+    - nuget restore
+artifacts:
     - path: MiniPie\bin\Release\app.publish\
       name: MiniPie
 environment:
