@@ -4,9 +4,9 @@ platform: Any CPU
 assembly_info:
       patch: true
       file: '**\AssemblyInfoCommon.*'
-      assembly_version: '{version}'
-      assembly_file_version: '{version}'
-      assembly_informational_version: '{version}'
+      assembly_version: $(appveyor_build_version)
+      assembly_file_version: $(appveyor_build_version)
+      assembly_informational_version: $(appveyor_build_version)
 build:
     verbosity: minimal
 before_build:
