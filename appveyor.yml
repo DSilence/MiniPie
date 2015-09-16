@@ -4,3 +4,5 @@ build:
     verbosity: minimal
 before_build:
   - nuget restore
+after_build:
+- MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /property:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION"
