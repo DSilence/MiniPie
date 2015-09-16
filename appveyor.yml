@@ -14,24 +14,27 @@ artifacts:
     - path: MiniPie\bin\Release\app.publish\
       name: MiniPie
 deploy:
-      - provider: S3
-        access_key_id:
-            secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
-        secret_access_key:
-            secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-        bucket: minipie.sleepymaniac.com
-        folder: clickonceinstalldevelop
+    - provider: AzureBlob
+        storage_account_name: minipie
+        storage_access_key:
+            secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
+        container: clickonceinstalldevelop
+        folder:''
         artifact: MiniPie
+        unzip: true
         on:
-            branch: develop
-      - provider: S3
-        access_key_id:
-            secure: +YynSlCJvAP/MRHvC3lD+LEBf/N3hKTrwqpYvP6WS5c=
-        secret_access_key:
-            secure: 5Xj9KpQtVwPKMEtsrYcN58meEfgscTNYxPqim4aj/K8ABp/VCEydZDzh7A6Y8EZI
-        bucket: minipie.sleepymaniac.com
-        set_public: true
-        folder: 'clickonceinstallmaster'
+           branch: develop
+
+    - provider: AzureBlob
+        storage_account_name: minipie
+        storage_access_key:
+            secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
+        container: clickonceinstallmaster
+        folder:''
         artifact: MiniPie
+        unzip: true
+        on:
+           branch: master
+      
 after_build:
-        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.sleepymaniac.com.s3.amazonaws.com/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
+        - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="http://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
