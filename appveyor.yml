@@ -6,3 +6,6 @@ before_build:
   - nuget restore
 after_build:
 - ps: MSBuild MiniPie.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /t:Publish /property:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION"
+artifacts:
+- path: MiniPie\bin\Release\app.publish\
+  name: MiniPie
