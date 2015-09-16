@@ -8,6 +8,7 @@ assembly_info:
       assembly_file_version: $(appveyor_build_version)
       assembly_informational_version: $(appveyor_build_version)
 build:
+    project: MiniPie.sln
     verbosity: minimal
 before_build:
     - nuget restore
