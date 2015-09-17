@@ -4,8 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,16 +13,15 @@ using Newtonsoft.Json;
 namespace MiniPie.Core.SpotifyWeb
 {
     //TODO move all web api associated stuff here(album art, etc.)
-    public class SpotifyWebApi
+    public class SpotifyWebApi : ISpotifyWebApi
     {
         private readonly HttpClient _client = new HttpClient();
         private readonly HttpClient _authClient = new HttpClient();
         private readonly ILog _log;
         private const string _spotifyApiUrl = "https://api.spotify.com/v1/";
         private const string _redirectUrl = "minipie://callback";
-        private Token _spotifyToken;
-        private AppSettings _appSettings;
-        private Timer _timer;
+        private readonly AppSettings _appSettings;
+        private readonly Timer _timer;
 
         public event EventHandler TokenUpdated;
 
@@ -55,7 +52,7 @@ namespace MiniPie.Core.SpotifyWeb
         public async Task<User> GetProfile()
         {
             var response = await _client.GetStringAsync(_spotifyProfileUri);
-            User user = await JsonConvert.DeserializeObjectAsync<User>(response);
+            User user = await Helper.DeserializeObjectAsync<User>(response);
             return user;
         }
 
@@ -66,7 +63,7 @@ namespace MiniPie.Core.SpotifyWeb
                 var albumId = uri.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries).Last();
                 //Modified to use spotify WEB API
                 var lines = await _client.GetStringAsync(new Uri(_albumsUri, albumId));
-                var album = await JsonConvert.DeserializeObjectAsync<Models.Album>(lines);
+                var album = await Helper.DeserializeObjectAsync<Models.Album>(lines);
                 return album.Images[1].Url;
             }
             catch (WebException webException)
@@ -133,7 +130,24 @@ namespace MiniPie.Core.SpotifyWeb
             }
         }
 
-        private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming user-read-private user-read-birthdate user-read-email";
+        private const string GetTrackInfoUrl = _spotifyApiUrl + "tracks?ids={0}";
+        public async Task<IList<Models.Track>> GetTrackInfo(IList<string> trackIds)
+        {
+            try
+            {
+                var url = string.Format(GetTrackInfoUrl, string.Join(",", trackIds));
+                var response = await _client.GetStringAsync(url);
+                var tracks = await Helper.DeserializeObjectAsync<TrackCollection>(response);
+                return tracks.Tracks;
+            }
+            catch (Exception exc)
+            {
+                _log.WarnException("Failed to retrieve track info", exc);
+            }
+            return null;
+        } 
+
+        private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming";
         private const string loginQueryFormat =
             "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}";
         public Uri BuildLoginQuery()
@@ -150,7 +164,7 @@ namespace MiniPie.Core.SpotifyWeb
             _client.DefaultRequestHeaders.Authorization = null;
         }
 
-        private const string tokenQueryFormat = "https://accounts.spotify.com/api/token";
+        private const string TokenQueryFormat = "https://accounts.spotify.com/api/token";
 
         public async Task CreateToken(string response)
         {
@@ -169,11 +183,13 @@ namespace MiniPie.Core.SpotifyWeb
                 {
                     return;
                 }
-                var parameters = new Dictionary<string, string>();
-                parameters.Add("grant_type", grantType.GetDescription());
-                parameters.Add("redirect_uri", _redirectUrl);
-                parameters.Add("client_id", AppContracts.ClientId);
-                parameters.Add("client_secret", AppContracts.ClientSecret);
+                var parameters = new Dictionary<string, string>
+                {
+                    {"grant_type", grantType.GetDescription()},
+                    {"redirect_uri", _redirectUrl},
+                    {"client_id", AppContracts.ClientId},
+                    {"client_secret", AppContracts.ClientSecret}
+                };
                 if (grantType == GrantType.AuthorizationCode)
                 {
                     parameters.Add("code", refreshToken);
@@ -182,9 +198,9 @@ namespace MiniPie.Core.SpotifyWeb
                 {
                     parameters.Add("refresh_token", refreshToken);
                 }
-                var postResult = await _authClient.PostAsync(tokenQueryFormat, new FormUrlEncodedContent(parameters));
+                var postResult = await _authClient.PostAsync(TokenQueryFormat, new FormUrlEncodedContent(parameters));
                 var stringResult = await postResult.Content.ReadAsStringAsync();
-                var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
+                var token = await Helper.DeserializeObjectAsync<Token>(stringResult);
                 if (token != null)
                 {
                     if (grantType == GrantType.RefreshToken)
@@ -217,5 +233,28 @@ namespace MiniPie.Core.SpotifyWeb
             }
             
         }
+
+        private const string IsTrackSavedFormat = _spotifyApiUrl + "me/tracks/contains?ids={0}";
+        public async Task<IList<bool>> IsTracksSaved(IList<string> trackIds)
+        {
+            var url = string.Format(IsTrackSavedFormat, string.Join(",", trackIds));
+            var result = await _client.GetStringAsync(url);
+            return await Helper.DeserializeObjectAsync<IList<bool>>(result);
+        }
+
+        private const string MyMusicAddFormat = _spotifyApiUrl + "me/tracks";
+        public async Task AddToMyMusic(IList<string> trackIds)
+        {
+            var url = MyMusicAddFormat;
+            var result = await _client.PutAsync(url, 
+                new StringContent(await Helper.SerializeObjectAsync(trackIds)));
+        }
+
+        private const string MyMusicDeleteFormat = MyMusicAddFormat + "?ids={0}";
+        public async Task RemoveFromMyMusic(IList<string> trackIds)
+        {
+            var url = string.Format(MyMusicDeleteFormat, string.Join(",", trackIds));
+            var result = await _client.DeleteAsync(url);
+        } 
     }
 }

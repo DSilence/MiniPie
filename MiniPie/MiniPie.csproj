@@ -17,6 +17,8 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>..\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -27,12 +29,12 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://minipie.blob.core.windows.net/clickonceinstallalpha/</InstallUrl>
-    <UpdateUrl>https://minipie.blob.core.windows.net/clickonceinstallalpha/</UpdateUrl>
+    <InstallUrl>https://minipie.blob.core.windows.net/clickonceinstdevelop/</InstallUrl>
+    <UpdateUrl>https://minipie.blob.core.windows.net/clickonceinstalldevelop/</UpdateUrl>
     <PublisherName>Dzmitry Safarau</PublisherName>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>0.0.2.3</ApplicationVersion>
+    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationVersion>0.0.2.8</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -87,6 +89,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>MiniPie.Entry</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -100,8 +105,25 @@
       <HintPath>..\packages\Unofficial.Blend.Interactivity.1.0.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Conventions, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PropertyChanged, Version=1.50.3.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyChanged.Fody.1.50.3\lib\dotnet\PropertyChanged.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -154,18 +176,40 @@
     <Compile Include="Controls\CircularProgressButton\ProgressButton.xaml.cs">
       <DependentUpon>ProgressButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NotifyIcon\BalloonIcon.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\BalloonFlags.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\IconDataMembers.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\IconState.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\MouseEvent.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\NotifyCommand.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\NotifyIconData.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\NotifyIconVersion.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\Point.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\SystemInfo.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\TrayInfo.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\WinApi.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\WindowClass.cs" />
+    <Compile Include="Controls\NotifyIcon\Interop\WindowMessageSink.cs" />
+    <Compile Include="Controls\NotifyIcon\PopupActivationMode.cs" />
+    <Compile Include="Controls\NotifyIcon\RoutedEventHelper.cs" />
+    <Compile Include="Controls\NotifyIcon\TaskbarIcon.cs" />
+    <Compile Include="Controls\NotifyIcon\TaskbarIcon.Declarations.cs" />
+    <Compile Include="Controls\NotifyIcon\Util.cs" />
     <Compile Include="Converter\ApplicationSizeConverter.cs" />
     <Compile Include="Converter\BoolInvertedConverter.cs" />
     <Compile Include="Converter\BoolToLoginTextConverter.cs" />
     <Compile Include="Converter\CircularProgressButton\ProgressToAngleConverter.cs" />
     <Compile Include="Converter\EnumToLocalizedStringConverter.cs" />
     <Compile Include="Converter\KeyCodeToReadableStringConverter.cs" />
+    <Compile Include="Converter\PlaylistMenuItemsConverter.cs" />
     <Compile Include="Converter\VisibilityConverter.cs" />
     <Compile Include="Controls\ImageButton.cs" />
+    <Compile Include="Entry.cs" />
     <Compile Include="IFixedPosition.cs" />
     <Compile Include="Interactivity\BindingListener.cs" />
     <Compile Include="Interactivity\DataEventTrigger.cs" />
     <Compile Include="IToggleVisibility.cs" />
+    <Compile Include="JsonPersister.cs" />
     <Compile Include="Localization\ManagedMarkupExtension.cs" />
     <Compile Include="Localization\MarkupExtensionManager.cs" />
     <Compile Include="Localization\ResourceEnumConverter.cs" />
@@ -173,19 +217,17 @@
     <Compile Include="Localization\UICultureExtension.cs" />
     <Compile Include="Models\HotKey.cs" />
     <Compile Include="Models\HotKeyOperations.cs" />
-    <Compile Include="NamedPipe.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="TinyBootstrapper.cs" />
-    <Compile Include="TinyIoC.cs" />
+    <Compile Include="SingleInstanceManager.cs" />
     <Compile Include="ToggleVisibilityEventArgs.cs" />
-    <Compile Include="UriProtocolManager.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />
+    <Compile Include="ViewModels\PlaylistItemViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
@@ -236,6 +278,14 @@
     <Resource Include="Images\Player\prev-mouseover.png" />
     <Resource Include="Images\Player\prev-normal.png" />
     <Resource Include="Images\Player\prev-pressed.png" />
+    <Resource Include="Images\Player\add-mouseover.png" />
+    <Resource Include="Images\Player\add-normal.png" />
+    <Resource Include="Images\Player\remove-mouseover.png" />
+    <Resource Include="Images\Player\remove-normal.png" />
+    <Resource Include="FodyWeavers.xml" />
+    <Content Include="MiniPieHelper.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -331,6 +381,15 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Fody.1.29.3\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\dotnet\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\dotnet\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets'))" />
+  </Target>
+  <Import Project="..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets" Condition="Exists('..\packages\PropertyChanged.Fody.1.50.3\build\dotnet\PropertyChanged.Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -338,4 +397,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterCompile">
+    <GetAssemblyIdentity AssemblyFiles="$(ProjectDir)obj\$(ConfigurationName)\$(TargetFileName)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <ApplicationVersion>%(AssemblyInfo.Version)</ApplicationVersion>
+    </PropertyGroup>
+  </Target>
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Caliburn.Micro;
 using Infralution.Localization.Wpf;
 using MiniPie.Core;
@@ -17,51 +18,63 @@ namespace MiniPie.ViewModels {
         private readonly ISpotifyController _spotifyController;
         private readonly ILog _Logger;
         private readonly HotKeyViewModel _hotKeyViewModel;
+        private readonly AutorunService _autorunService;
 
-        public SettingsViewModel(AppSettings settings, AppContracts contracts, 
+        public SettingsViewModel(AppContracts contracts, 
             ICoverService coverService, ILog logger, HotKeyViewModel hotKeyViewModel, 
-            ISpotifyController spotifyController) 
+            ISpotifyController spotifyController, AutorunService autorunService, JsonPersister<AppSettings> persister) 
         {
-            _Settings = settings;
+            _Settings = persister.Instance;
             _Contracts = contracts;
             _CoverService = coverService;
             _Logger = logger;
             _hotKeyViewModel = hotKeyViewModel;
             _spotifyController = spotifyController;
+            _autorunService = autorunService;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
             UpdateLoggedIn();
+            //TODO custom decorator would be ideal here
+            this.PropertyChanged += (sender, args) =>
+            {
+                persister.Persist();
+            };
         }
 
         public bool AlwaysOnTop {
             get { return _Settings.AlwaysOnTop; }
-            set { _Settings.AlwaysOnTop = value; NotifyOfPropertyChange(); }
+            set
+            {
+                _Settings.AlwaysOnTop = value; 
+                //TODO move this code somewhere
+                Application.Current.MainWindow.Topmost = true;
+            }
         }
 
         public bool StartWithWindows {
             get { return _Settings.StartWithWindows; }
-            set { _Settings.StartWithWindows = value; NotifyOfPropertyChange(); }
+            set { _Settings.StartWithWindows = value; _autorunService.ValidateAutorun();}
         }
 
         public bool HideIfSpotifyClosed {
             get { return _Settings.HideIfSpotifyClosed; }
-            set { _Settings.HideIfSpotifyClosed = value; NotifyOfPropertyChange(); }
+            set { _Settings.HideIfSpotifyClosed = value;}
         }
 
         public bool DisableAnimations {
             get { return _Settings.DisableAnimations; }
-            set { _Settings.DisableAnimations = value; NotifyOfPropertyChange(); }
+            set { _Settings.DisableAnimations = value;}
         }
 
         public bool StartMinimized
         {
             get { return _Settings.StartMinimized; }
-            set { _Settings.StartMinimized = value; NotifyOfPropertyChange(); }
+            set { _Settings.StartMinimized = value;}
         }
 
         public Language Language
         {
-            get { return _Settings.Language ?? (_Settings.Language = LanguageHelper.English); }
+            get { return _Settings.Language; }
             set
             {
                 _Settings.Language = value;
@@ -71,33 +84,19 @@ namespace MiniPie.ViewModels {
                     Thread.CurrentThread.CurrentUICulture = value.CultureInfo;
                     ResxExtension.UpdateAllTargets();
                 }
-                NotifyOfPropertyChange();
             }
         }
 
-        public ObservableCollection<Language> Languages
-        {
-            get
-            {
-                return new ObservableCollection<Language>(LanguageHelper.Languages);
-            }
-        } 
+        public ObservableCollection<Language> Languages => new ObservableCollection<Language>(LanguageHelper.Languages);
 
-        private bool _CanClearCache = true;
-        public bool CanClearCache {
-            get { return _CanClearCache; }
-            set { _CanClearCache = value; NotifyOfPropertyChange(); }
-        }
+        public bool CanClearCache { get; set; }
 
         private string _CacheSize;
-        public string CacheSize {
-            get { return _CacheSize; }
-            set { _CacheSize = value; NotifyOfPropertyChange(); }
-        }
+        public string CacheSize { get; set; }
 
         public ApplicationSize ApplicationSize {
             get { return _Settings.ApplicationSize; }			
-            set { _Settings.ApplicationSize = value; NotifyOfPropertyChange(); }
+            set { _Settings.ApplicationSize = value;}
         }
 
         public void ClearCache() {
@@ -116,18 +115,7 @@ namespace MiniPie.ViewModels {
             get { return _hotKeyViewModel; }
         }
 
-        private bool _loginChecking;
-
-        public bool LoginChecking
-        {
-            get { return _loginChecking; }
-            set
-            {
-                _loginChecking = value;
-                NotifyOfPropertyChange();
-                NotifyOfPropertyChange(() => LoginStatus);
-            }
-        }
+        public bool LoginChecking { get; set; }
 
 
         public async void UpdateLoggedIn()
@@ -154,7 +142,7 @@ namespace MiniPie.ViewModels {
 
         public void Login()
         {
-            var processStartInfo = new ProcessStartInfo("MiniPie.exe", "registerUri");
+            var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "registerUri");
             processStartInfo.Verb = "runas";
             processStartInfo.CreateNoWindow = true;
             processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -190,12 +178,7 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        private bool _loggedIn;
-        public bool LoggedIn
-        {
-            get { return _loggedIn; }
-            set { _loggedIn = value; NotifyOfPropertyChange(); }
-        }
+        public bool LoggedIn { get; set; }
 
 
         public Uri BuildLoginQuery()

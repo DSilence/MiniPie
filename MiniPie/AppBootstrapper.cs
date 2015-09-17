@@ -1,33 +1,33 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
-using Action = System.Action;
+using MiniPie.Views;
+using Ninject;
+using Ninject.Extensions.Conventions;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
-    public sealed class AppBootstrapper : TinyBootstrapper<ShellViewModel> {
+    public sealed class AppBootstrapper : BootstrapperBase {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
         private JsonPersister<AppSettings> _SettingsPersistor;
         private ILog _log;
-        private bool _secondInstance;
         private SpotifyWebApi _spotifyWebApi;
         private SpotifyController _spotifyController;
         private SpotifyLocalApi _spotifyLocalApi;
+        private readonly IKernel _kernel = new StandardKernel();
 
-        public AppBootstrapper()
+        public AppBootstrapper():base(true)
         {
         }
 
@@ -36,87 +36,92 @@ namespace MiniPie {
             base.OnStartup(sender, e);
 
             _log.Info("Starting");
-            if(Process.GetProcessesByName("MiniPie").Length > 1)
-            {
-                //signal existing app via named pipes
-                _secondInstance = true;
-            }
-            else
-            {
-                _log.Info("First Application");
-                var namedPipeString = new NamedPipe<string>(NamedPipe<string>.NameTypes.PipeType1);
-                namedPipeString.OnRequest += async s =>
-                {
-                    await Container.Resolve<SpotifyWebApi>().CreateToken(s);
-                    var processStartInfo = new ProcessStartInfo("MiniPie.exe", "unregisterUri");
-                    processStartInfo.Verb = "runas";
-                    processStartInfo.CreateNoWindow = true;
-                    processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    Process.Start(processStartInfo);
-                };
-                namedPipeString.Start();
-                Container.Register(namedPipeString);
-            }
+            DisplayRootViewFor<ShellViewModel>();
+        }
+
+        protected override object GetInstance(Type service, string key)
+        {
+            return _kernel.Get(service, key);
+        }
+
+        protected override IEnumerable<object> GetAllInstances(Type service)
+        {
+            return _kernel.GetAll(service);
+        }
+
+        protected override void BuildUp(object instance)
+        {
+            _kernel.Inject(instance);
+        }
+
+        public async void ProcessTokenUpdate(string input)
+        {
+            await _kernel.Get<ISpotifyWebApi>().CreateToken(input);
+            var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "unregisterUri");
+            processStartInfo.Verb = "runas";
+            processStartInfo.CreateNoWindow = true;
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            Process.Start(processStartInfo);
         }
 
         protected override void Configure() {
-            base.Configure();
-
             _Contracts = new AppContracts();
 
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
+            _kernel.Bind<JsonPersister<AppSettings>>().ToConstant(_SettingsPersistor).InSingletonScope();
+            _kernel.Bind<AppContracts>().ToConstant(_Contracts).InSingletonScope();
             _Settings = _SettingsPersistor.Instance;
-            if (_Settings.Language != null)
-            {
-                Thread.CurrentThread.CurrentCulture = _Settings.Language.CultureInfo;
-                Thread.CurrentThread.CurrentUICulture = _Settings.Language.CultureInfo;
-            }
-
-            Container.Register<AppContracts>(_Contracts);
-            Container.Register<AppSettings>(_Settings);
+            _kernel.Bind<AppSettings>().ToConstant(_Settings).InSingletonScope();
+            
             _log = new ProductionLogger();
-            Container.Register<ILog>(_log);
-            Container.Register<AutorunService>(new AutorunService(Container.Resolve<ILog>(), _Settings, _Contracts));
-            Container.Register<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.Bind<ILog>().ToConstant(_log).InSingletonScope();
 
-            _spotifyLocalApi = new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings);
-            Container.Register(_spotifyLocalApi);
-            _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
-            Container.Register(_spotifyWebApi);
-            _spotifyController = new SpotifyController(Container.Resolve<ILog>(),
-                Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>());
-            Container.Register<ISpotifyController>(_spotifyController);
-            Container.Register<ICoverService>(
-                new CoverService(
-                    string.IsNullOrEmpty(_Settings.CacheFolder)
-                        ? Directory.GetCurrentDirectory()
-                        : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyWebApi>()));
+            _kernel.Bind<AutorunService>()
+                .ToConstant(new AutorunService(_log, _Settings, _Contracts))
+                .InSingletonScope();
+            _kernel.Bind<IWindowManager>().ToConstant(new AppWindowManager(_Settings)).InSingletonScope();
+            _kernel.Bind<IEventAggregator>().To<EventAggregator>();
+
+            _spotifyLocalApi = new SpotifyLocalApi(_log, _Contracts, _Settings);
+            _kernel.Bind<ISpotifyLocalApi>().ToConstant(_spotifyLocalApi).InSingletonScope();
+            _spotifyWebApi = new SpotifyWebApi(_log, _Settings);
+            _kernel.Bind<ISpotifyWebApi>().ToConstant(_spotifyWebApi).InSingletonScope();
+            _spotifyController = new SpotifyController(_log,
+                _spotifyLocalApi, _spotifyWebApi);
+            _kernel.Bind<ISpotifyController>().ToConstant(_spotifyController).InSingletonScope();
+            _kernel.Bind<ICoverService>().ToConstant(new CoverService(
+                string.IsNullOrEmpty(_Settings.CacheFolder)
+                    ? Directory.GetCurrentDirectory()
+                    : _Settings.CacheFolder, _log, _spotifyWebApi)).InSingletonScope();
 
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
-            var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());
-            Container.Register<KeyManager>(keyManager);
+            var keyManager = new KeyManager(_spotifyController, _log);
+            _kernel.Bind<KeyManager>().ToConstant(keyManager).InSingletonScope();
             if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
             {
                 keyManager.RegisterHotKeys(_Settings.HotKeys);
             }
+
+            _kernel.Bind(
+                x => x.FromThisAssembly().SelectAllClasses().InNamespaceOf(typeof (ShellViewModel), typeof(ShellView)).BindToSelf());
+            base.Configure();
         }
 
         public async Task ConfigurationInitialize()
         {
             await _spotifyWebApi.Initialize();
-            await _spotifyController.Initialize();
             await _spotifyLocalApi.Initialize();
-
+            await _spotifyController.Initialize();
         }
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
                 
-            _SettingsPersistor.Dispose();
-            foreach (var keyManager in Container.ResolveAll<KeyManager>())
+            foreach (var keyManager in _kernel.GetAll<KeyManager>())
             {
                 keyManager.Dispose();
             }
+            _kernel.Dispose();
         }
     }
 }

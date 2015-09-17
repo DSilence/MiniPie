@@ -13,7 +13,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
 namespace MiniPie.Core.SpotifyLocal {
-    public class SpotifyLocalApi {
+    public class SpotifyLocalApi : ISpotifyLocalApi
+    {
 
         #region LICENSE
 
@@ -147,7 +148,7 @@ namespace MiniPie.Core.SpotifyLocal {
         public async Task<Status> Play()
         {
             var a = await SendLocalRequest("remote/play.json?uri=" + Uri, true, true, -1);
-            var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
             return d.FirstOrDefault();
         }
 
@@ -155,7 +156,7 @@ namespace MiniPie.Core.SpotifyLocal {
         public async Task<Status> Resume()
         {
             var a = await SendLocalRequest("remote/pause.json?pause=false", true, true, -1);
-            var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
             return d.FirstOrDefault();
         }
 
@@ -163,9 +164,16 @@ namespace MiniPie.Core.SpotifyLocal {
         public async Task<Status> Pause()
         {
             var a = await SendLocalRequest("remote/pause.json?pause=true", true, true, -1);
-            var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
+            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
             return d.FirstOrDefault();
         }
+
+        public async Task<Status> Queue(string url)
+        {
+            var a = await SendLocalRequest("remote/play.json?uri=" + url + "?action=queue", true, true, -1);
+            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
+            return d.FirstOrDefault();
+        } 
 
         public async Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, int wait = -1)
         {
@@ -187,7 +195,7 @@ namespace MiniPie.Core.SpotifyLocal {
                 response = await _Client.SendAsync(message, token);
             }
             var stringResponse = await response.Content.ReadAsStringAsync();
-            var resultStatus = JsonConvert.DeserializeObject<Status>(stringResponse);
+            var resultStatus = await Helper.DeserializeObjectAsync<Status>(stringResponse);
             return resultStatus;
         }
 

@@ -4,13 +4,11 @@
              xmlns:miniPie="clr-namespace:MiniPie"
              xmlns:converter="clr-namespace:MiniPie.Converter"
              xmlns:ctrl="clr-namespace:MiniPie.Controls"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             Startup="App_OnStartup">
+             xmlns:system="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <miniPie:AppBootstrapper x:Key="bootstrapper"/>
                     <converter:VisibilityConverter x:Key="VisibilityConverter" />
                     <converter:ApplicationSizeConverter x:Key="ApplicationSizeConverter" />
                     <converter:BoolInvertedConverter x:Key="BoolInvertedConverter"/>

@@ -12,8 +12,6 @@ namespace MiniPie.Core {
         Task Initialize();
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
-        string GetSongName();
-        string GetArtistName();
         Status GetStatus();
         void PausePlay();
         void NextTrack();
@@ -29,5 +27,10 @@ namespace MiniPie.Core {
         void Logout();
         Task<IList<Playlist>> GetPlaylists();
         Task AddToPlaylist(string playlistId, string trackUrls);
+        Task<IList<SpotifyWeb.Models.Track>> GetTrackInfo(IList<string> trackIds);
+        Task AddToQueue(IList<string> songUrls);
+        Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
+        Task AddToMyMusic(IList<string> trackIds);
+        Task RemoveFromMyMusic(IList<string> trackIds);
     }
 }

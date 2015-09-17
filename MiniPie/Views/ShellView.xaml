@@ -14,6 +14,7 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
              xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
+             xmlns:taskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
              mc:Ignorable="d" 
              MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
@@ -101,6 +102,16 @@
             <!--In reality this is a color for second ellipse-->
             <Setter Property="Foreground" Value="#6B6870"></Setter>
         </Style>
+        <taskbarNotification:TaskbarIcon x:Key="NotifyIcon"
+                                         IconSource="..\App.ico"
+                                         ToolTipText="{Binding TrackFriendlyName}"
+                                         TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
+                                         TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp"
+                                         >
+            <taskbarNotification:TaskbarIcon.ContextMenu>
+                <controls:MiniPieContextMenu x:Name="TaskbarContextMenu"/>
+            </taskbarNotification:TaskbarIcon.ContextMenu>
+        </taskbarNotification:TaskbarIcon>
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.MouseEnter">
@@ -129,7 +140,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
-            <Border Grid.Row="0" Background="#000000">
+            <Border Grid.Row="0" Background="#000000" Drop="AlbumArt_OnDrop" AllowDrop="True">
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding CoverImage}" />
@@ -153,7 +164,8 @@
                                                   ImageSource="/Images/Player/prev-normal.png"
                                                   ImageSourcePressed="/Images/Player/prev-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
-                                                  ToolTip="plays the previous track" />
+                                                  ToolTip="plays the previous track" 
+                                                  Visibility="{Binding CanPlayPrevious, Converter={StaticResource VisibilityConverter}}"/>
                                 <circularProgressButton1:PropgressButton 
                                                                          RenderOptions.BitmapScalingMode="HighQuality"
                                                                          cal:Message.Attach="[Event Click] = [Action PlayPause]"
@@ -165,14 +177,15 @@
                                                   ImageSource="/Images/Player/next-normal.png"
                                                   ImageSourcePressed="/Images/Player/next-pressed.png"
                                                   ImageSourceMouseOver="/Images/Player/next-mouseover.png"
-                                                  ToolTip="plays the next track" />
+                                                  ToolTip="plays the next track" 
+                                                  Visibility="{Binding CanPlayNext, Converter={StaticResource VisibilityConverter}}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
                 </Border>
             </Border>
 
-            <StackPanel Background="#282828" Name="TitlePanel" Grid.Row="1"  Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}" ClipToBounds="True">
+            <StackPanel AllowDrop="True" Drop="TitlePanel_OnDrop"  Background="#282828" Name="TitlePanel" Grid.Row="1"  Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}" ClipToBounds="True">
                 <Canvas Margin="5" Height="8">
                     <TextBlock Name="CurrentTrack" FontSize="12" Canvas.Top="-3"
                            ToolTip="{Binding CurrentTrack}" TextTrimming="None"
@@ -200,11 +213,30 @@
                         </TextBlock.Triggers>
                     </TextBlock>
                 </Canvas>
-                
-                <TextBlock Margin="5" Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
+                <Grid UseLayoutRounding="True" Margin="5"> 
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
+                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15" Height="15" 
+                                          x:Name="AddToMyMusic"
+                                      ImageSource="/Images/Player/add-normal.png"
+                                      ImageSourceNormal="/Images/Player/add-normal.png"
+                                      ImageSourceMouseOver="/Images/Player/add-mouseover.png"
+                                      HorizontalAlignment="Right"
+                                      Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"
+                                      />
+                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15" Height="15" 
+                                          x:Name="RemoveFromMyMusic"
+                                      ImageSource="/Images/Player/remove-normal.png"
+                                      ImageSourceNormal="/Images/Player/remove-normal.png"
+                                      ImageSourceMouseOver="/Images/Player/remove-mouseover.png"
+                                      HorizontalAlignment="Right"
+                                      Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}}"
+                                      />
+                </Grid>
             </StackPanel>
-            
         </Grid>
     </Border>
-    
 </UserControl>

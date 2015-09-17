@@ -23,7 +23,7 @@ namespace MiniPie.Core {
          */
 
         public event EventHandler SpotifyExited;
-        protected event EventHandler TrackChanged;
+        public event EventHandler TrackChanged;
         public event EventHandler TrackStatusChanged;
         public event EventHandler SpotifyOpened;
         public event EventHandler TokenUpdated;
@@ -69,15 +69,15 @@ namespace MiniPie.Core {
         private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
         private readonly ILog _Logger;
-        private readonly SpotifyLocalApi _localApi;
-        private readonly SpotifyWebApi _spotifyWebApi;
+        private readonly ISpotifyLocalApi _localApi;
+        private readonly ISpotifyWebApi _spotifyWebApi;
 
         private Process _SpotifyProcess;
         private Thread _BackgroundChangeTracker;
         private Timer _songStatusWatcher;
         private Status _CurrentTrackInfo;
 
-        public SpotifyController(ILog logger, SpotifyLocalApi localApi, SpotifyWebApi spotifyWebApi) {
+        public SpotifyController(ILog logger, ISpotifyLocalApi localApi, ISpotifyWebApi spotifyWebApi) {
             _Logger = logger;
             _localApi = localApi;
             _spotifyWebApi = spotifyWebApi;
@@ -246,7 +246,7 @@ namespace MiniPie.Core {
             }
         }
 
-        private void ProcessTrackInfo(Status newTrackInfo)
+        protected internal void ProcessTrackInfo(Status newTrackInfo)
         {
             if (_CurrentTrackInfo == null || _CurrentTrackInfo.track == null ||
                             _CurrentTrackInfo.track.track_resource == null ||
@@ -255,19 +255,19 @@ namespace MiniPie.Core {
             {
                 _CurrentTrackInfo = newTrackInfo;
                 OnTrackChanged();
-                _songStatusWatcher.Change(
+                _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
             else
             {
                 _CurrentTrackInfo = newTrackInfo;
                 OnTrackTimerChanged();
-                _songStatusWatcher.Change(
+                _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
         }
 
-        private int GetDelayForPlaybackUpdate(double playPosition)
+        protected internal int GetDelayForPlaybackUpdate(double playPosition)
         {
             int i = (int) playPosition;
             double fract = playPosition - i;
@@ -299,20 +299,6 @@ namespace MiniPie.Core {
                 //In case of an error it's better to return true instead of false, because this makes MiniPie unusable if there is something wrong with Windows.
                 return true;
             }
-        }
-
-        public string GetSongName() {
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.track != null && _CurrentTrackInfo.track.track_resource != null)
-                return _CurrentTrackInfo.track.track_resource.name;
-
-            return string.Empty;
-        }
-
-        public string GetArtistName() {
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.track != null && _CurrentTrackInfo.track.artist_resource != null)
-                return _CurrentTrackInfo.track.artist_resource.name;
-
-            return string.Empty;
         }
 
         public Status GetStatus() {
@@ -421,10 +407,38 @@ namespace MiniPie.Core {
             await _spotifyWebApi.AddToPlaylist(playlistId, trackUrls);
         }
 
+        public async Task<IList<SpotifyWeb.Models.Track>> GetTrackInfo(IList<string> trackIds)
+        {
+            return await _spotifyWebApi.GetTrackInfo(trackIds);
+        }
+
+        public async Task AddToQueue(IList<string> songUrls)
+        {
+            foreach (var song in songUrls)
+            {
+                await _localApi.Queue(song);
+            }
+        }
+
+        public async Task<IList<bool>> IsTracksSaved(IList<string> trackIds)
+        {
+            return await _spotifyWebApi.IsTracksSaved(trackIds);
+        }
+
+        public async Task AddToMyMusic(IList<string> trackIds)
+        {
+            await _spotifyWebApi.AddToMyMusic(trackIds);
+        }
+
+        public async Task RemoveFromMyMusic(IList<string> trackIds)
+        {
+            await _spotifyWebApi.RemoveFromMyMusic(trackIds);
+        }
+
         public void Dispose()
         {
-            _songStatusWatcher.Dispose();
-            if(_BackgroundChangeTracker.IsAlive)
+            _songStatusWatcher?.Dispose();
+            if(_BackgroundChangeTracker != null && _BackgroundChangeTracker.IsAlive)
                 _BackgroundChangeTracker.Abort();
         }
     }

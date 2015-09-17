@@ -5,15 +5,37 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
-			 wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
-             mc:Ignorable="d">
-        <MenuItem Name="Artist" Header="{Binding CurrentArtist}" IsEnabled="False"/>
+             xmlns:converter="clr-namespace:MiniPie.Converter"
+             wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
+             mc:Ignorable="d"
+             Name="MiniPieMenu">
+    <ContextMenu.Resources>
+        <converter:PlaylistMenuItemsConverter x:Key="PlaylistMenuItemsConverter"/>
+    </ContextMenu.Resources>
+    <MenuItem Name="Artist" Header="{Binding CurrentArtist}" IsEnabled="False"/>
     <MenuItem Name="Song" Header="{Binding CurrentTrack}" IsEnabled="False" />
     <MenuItem Header="{wpf:Resx App_CopyTrack}">
         <MenuItem Header="{wpf:Resx App_CopyTrackName}" cal:Message.Attach="[Event Click] = [Action CopyTrackName]" />
         <MenuItem Header="{wpf:Resx App_CopySpotifyLink}" cal:Message.Attach="[Event Click] = [Action CopySpotifyLink]" />
     </MenuItem>
-    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}"/>
+    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}" >
+        <MenuItem.Resources>
+            <Style TargetType="MenuItem">
+                <Setter Property="Command" Value="{Binding Command}" />
+            </Style>
+        </MenuItem.Resources>
+        <MenuItem.ItemTemplate>
+            <DataTemplate DataType="MenuItem">
+                <TextBlock Background="Transparent" Text="{Binding Name}" />
+            </DataTemplate>
+        </MenuItem.ItemTemplate>
+        <MenuItem.ItemsSource>
+            <MultiBinding Converter="{StaticResource PlaylistMenuItemsConverter}">
+                <Binding Path="Playlists"/>
+                <Binding Path="DataContext" ElementName="MiniPieMenu"/>
+            </MultiBinding>
+        </MenuItem.ItemsSource>
+    </MenuItem>
     <Separator />
         <MenuItem Header="{wpf:Resx App_PlayPause}"
                   cal:Message.Attach="[Event Click] = [Action PlayPause]" />
