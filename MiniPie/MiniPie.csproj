@@ -227,7 +227,6 @@
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />
-    <Compile Include="ViewModels\NotifyPropertyChangedHelper.cs" />
     <Compile Include="ViewModels\PlaylistItemViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
