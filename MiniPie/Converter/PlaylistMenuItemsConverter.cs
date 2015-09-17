@@ -5,8 +5,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Expression.Interactivity.Core;
 using MiniPie.Core.SpotifyWeb.Models;
 using MiniPie.ViewModels;
 
@@ -22,20 +24,20 @@ namespace MiniPie.Converter
             {
                 return null;
             }
-            var result = new List<MenuItem>(playlists.Count);
+            var result = new List<PlaylistItemViewModel>(playlists.Count);
             foreach (var playlist in playlists)
             {
-                var menuItem = new MenuItem
+                var menuItem = new PlaylistItemViewModel
                 {
-                    Header = playlist.Name,
-                };
-                menuItem.Click += (sender, args) =>
-                {
-                    viewModel.AddToPlaylist(playlist.Id);
+                    Name = playlist.Name,
+                    Action = () =>
+                    {
+                        viewModel.AddToPlaylist(playlist.Id);
+                    }
                 };
                 result.Add(menuItem);
             }
-            return result;
+            return new ObservableCollection<PlaylistItemViewModel>(result);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

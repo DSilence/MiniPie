@@ -217,7 +217,7 @@ namespace MiniPie.ViewModels {
                 HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
                 var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
                 var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
-                var trackFriendlyName = string.Format(_songFriendlyNameFormat, CurrentArtist, CurrentTrack);
+                var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
 
                 TrackUrl = status.track.track_resource.location.og;
                 SpotifyUri = status.track.track_resource.uri;
@@ -299,7 +299,7 @@ namespace MiniPie.ViewModels {
                     trackInfo.Select(
                         track =>
                             string.Format(_songFriendlyNameFormat,
-                                track.Artists.First(), track.Name));
+                                track.Artists.First().Name, track.Name));
                 var result = string.Join(Environment.NewLine, niceNames);
                 Clipboard.SetText(result);
             }

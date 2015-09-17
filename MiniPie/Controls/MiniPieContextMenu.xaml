@@ -18,7 +18,17 @@
         <MenuItem Header="{wpf:Resx App_CopyTrackName}" cal:Message.Attach="[Event Click] = [Action CopyTrackName]" />
         <MenuItem Header="{wpf:Resx App_CopySpotifyLink}" cal:Message.Attach="[Event Click] = [Action CopySpotifyLink]" />
     </MenuItem>
-    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}">
+    <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}" >
+        <MenuItem.Resources>
+            <Style TargetType="MenuItem">
+                <Setter Property="Command" Value="{Binding Command}" />
+            </Style>
+        </MenuItem.Resources>
+        <MenuItem.ItemTemplate>
+            <DataTemplate DataType="MenuItem">
+                <TextBlock Background="Transparent" Text="{Binding Name}" />
+            </DataTemplate>
+        </MenuItem.ItemTemplate>
         <MenuItem.ItemsSource>
             <MultiBinding Converter="{StaticResource PlaylistMenuItemsConverter}">
                 <Binding Path="Playlists"/>
