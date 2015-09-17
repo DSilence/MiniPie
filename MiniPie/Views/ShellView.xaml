@@ -219,7 +219,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
-                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="HighQuality" Width="15" Height="15" 
+                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15" Height="15" 
                                           x:Name="AddToMyMusic"
                                       ImageSource="/Images/Player/add-normal.png"
                                       ImageSourceNormal="/Images/Player/add-normal.png"
@@ -227,7 +227,7 @@
                                       HorizontalAlignment="Right"
                                       Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"
                                       />
-                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="HighQuality" Width="15" Height="15" 
+                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15" Height="15" 
                                           x:Name="RemoveFromMyMusic"
                                       ImageSource="/Images/Player/remove-normal.png"
                                       ImageSourceNormal="/Images/Player/remove-normal.png"

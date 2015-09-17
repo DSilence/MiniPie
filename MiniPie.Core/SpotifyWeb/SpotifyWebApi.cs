@@ -147,7 +147,7 @@ namespace MiniPie.Core.SpotifyWeb
             return null;
         } 
 
-        private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming user-read-private user-read-birthdate user-read-email";
+        private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming";
         private const string loginQueryFormat =
             "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}";
         public Uri BuildLoginQuery()
