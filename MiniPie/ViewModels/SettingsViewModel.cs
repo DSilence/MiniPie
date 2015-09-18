@@ -89,9 +89,8 @@ namespace MiniPie.ViewModels {
 
         public ObservableCollection<Language> Languages => new ObservableCollection<Language>(LanguageHelper.Languages);
 
-        public bool CanClearCache { get; set; }
+        public bool CanClearCache { get; set; } = true;
 
-        private string _CacheSize;
         public string CacheSize { get; set; }
 
         public ApplicationSize ApplicationSize {
