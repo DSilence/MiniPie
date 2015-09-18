@@ -16,5 +16,10 @@ namespace MiniPie.ViewModels
         public Action Action { get; set; }
 
         public ActionCommand Command => new ActionCommand(Action);
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

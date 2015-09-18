@@ -8,7 +8,8 @@
              xmlns:converter="clr-namespace:MiniPie.Converter"
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d"
-             Name="MiniPieMenu">
+             Name="MiniPieMenu"
+             Style="{StaticResource MetroContextMenu}">
     <ContextMenu.Resources>
         <converter:PlaylistMenuItemsConverter x:Key="PlaylistMenuItemsConverter"/>
     </ContextMenu.Resources>
@@ -20,15 +21,10 @@
     </MenuItem>
     <MenuItem Name="AddToPlaylist" Header="{wpf:Resx App_AddToPlaylist}" >
         <MenuItem.Resources>
-            <Style TargetType="MenuItem">
+            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                 <Setter Property="Command" Value="{Binding Command}" />
             </Style>
         </MenuItem.Resources>
-        <MenuItem.ItemTemplate>
-            <DataTemplate DataType="MenuItem">
-                <TextBlock Background="Transparent" Text="{Binding Name}" />
-            </DataTemplate>
-        </MenuItem.ItemTemplate>
         <MenuItem.ItemsSource>
             <MultiBinding Converter="{StaticResource PlaylistMenuItemsConverter}">
                 <Binding Path="Playlists"/>
