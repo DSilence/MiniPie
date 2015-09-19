@@ -19,10 +19,6 @@ namespace MiniPie {
             public int topHeight;
             public int bottomHeight;
         }
-        [DllImport("dwmapi.dll", PreserveSig = true)]
-        static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-        [DllImport("dwmapi.dll")]
-        static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref Margins pMarInset);
 
         private readonly AppSettings _Settings;
 
