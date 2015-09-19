@@ -52,15 +52,6 @@ namespace MiniPie {
             window.WindowStyle = WindowStyle.None;
             window.ResizeMode = ResizeMode.NoResize;
             window.ShowInTaskbar = false;
-            window.SourceInitialized += (o, e) => {
-                                            if (!Helper.IsWindows7)
-                                                return;
-                                            var helper = new WindowInteropHelper(window);
-                                            var val = 2;
-                                            DwmSetWindowAttribute(helper.Handle, 2, ref val, 4);
-                                            var m = new Margins { bottomHeight = -1, leftWidth = -1, rightWidth = -1, topHeight = -1 };
-                                            DwmExtendFrameIntoClientArea(helper.Handle, ref m);
-                                        };
             window.MouseLeftButtonDown += (o, e) => window.DragMove();
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
 using MiniPie.Core;
@@ -270,7 +271,7 @@ namespace MiniPie.ViewModels {
         private async void UpdatePlaylists()
         {
             var newPlaylists = await _SpotifyController.GetPlaylists();
-            if (Playlists == null ||!newPlaylists.SequenceEqual(Playlists))
+            if (Playlists == null ||!(await Task.Run(() => newPlaylists.SequenceEqual(Playlists))))
             {
                 Playlists = new ObservableCollection<Playlist>(newPlaylists);
             }

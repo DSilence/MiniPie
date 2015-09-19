@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -98,6 +100,19 @@ namespace MiniPie.Core
                     return result;
                 }
             });
+        }
+
+        public static bool NiceSequenceEqual<TSource>(IEnumerable<TSource> first, IEnumerable<TSource> second)
+        {
+            if (first == null)
+            {
+                if (second == null)
+                {
+                    return true;
+                }
+                return false;
+            }
+            return first.SequenceEqual(second);
         }
     }
 }

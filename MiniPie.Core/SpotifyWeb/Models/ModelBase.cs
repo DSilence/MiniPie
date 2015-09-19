@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace MiniPie.Core.SpotifyWeb.Models
 {
@@ -15,7 +16,7 @@ namespace MiniPie.Core.SpotifyWeb.Models
         {
             return string.Equals(Id, other.Id) && string.Equals(Href, other.Href) &&
                    Equals(ExternalUrls, other.ExternalUrls) && Equals(Followers, other.Followers) &&
-                   string.Equals(Url, other.Url) && Equals(Images, other.Images);
+                   string.Equals(Url, other.Url) && Helper.NiceSequenceEqual(Images, other.Images);
         }
 
         public override bool Equals(object obj)
