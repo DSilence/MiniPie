@@ -9,6 +9,7 @@ using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
 using Ninject;
+using Action = System.Action;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
@@ -31,7 +32,7 @@ namespace MiniPie.ViewModels {
         public event EventHandler CoverDisplayFadeIn;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
-            ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, ILog logger, IKernel kernel) {
+            ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, ILog logger, IKernel kernel, AppBootstrapper bootstrapper) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
@@ -50,6 +51,14 @@ namespace MiniPie.ViewModels {
 
             //TODO more app sizes
             ApplicationSize = ApplicationSize.Medium;
+            bootstrapper.Initialized += Initialized;
+        }
+
+        private void Initialized(object sender, EventArgs eventArgs)
+        {
+            var bootstrapper = (AppBootstrapper)sender;
+            bootstrapper.Initialized -= Initialized;
+            Loading = false;
         }
 
         protected override void OnViewLoaded(object view) {
@@ -94,6 +103,7 @@ namespace MiniPie.ViewModels {
         public string TrackFriendlyName { get; set; }
         public bool IsTrackSaved { get; set; }
         public string TrackId { get; set; }
+        public bool Loading { get; set; } = true;
         #endregion
 
         public void ShowSettings() {

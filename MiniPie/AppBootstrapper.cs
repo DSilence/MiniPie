@@ -27,6 +27,8 @@ namespace MiniPie {
         private SpotifyLocalApi _spotifyLocalApi;
         private readonly IKernel _kernel = new StandardKernel();
 
+        public event EventHandler Initialized;
+
         public AppBootstrapper():base(true)
         {
         }
@@ -66,7 +68,7 @@ namespace MiniPie {
 
         protected override void Configure() {
             _Contracts = new AppContracts();
-
+            _kernel.Bind<AppBootstrapper>().ToConstant(this).InSingletonScope();
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
             _kernel.Bind<JsonPersister<AppSettings>>().ToConstant(_SettingsPersistor).InSingletonScope();
             _kernel.Bind<AppContracts>().ToConstant(_Contracts).InSingletonScope();
@@ -112,6 +114,7 @@ namespace MiniPie {
             await _spotifyWebApi.Initialize();
             await _spotifyLocalApi.Initialize();
             await _spotifyController.Initialize();
+            Initialized?.Invoke(this, null);
         }
 
         protected override void OnExit(object sender, EventArgs e) {

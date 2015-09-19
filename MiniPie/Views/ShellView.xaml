@@ -15,6 +15,7 @@
              xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
              xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
              xmlns:taskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
+             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
@@ -139,8 +140,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
-            <Border Grid.Row="0" Background="#000000" Drop="AlbumArt_OnDrop" AllowDrop="True">
+            <controls1:ProgressRing Grid.Row="0" IsActive="{Binding Loading}" Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}}" />
+            <Border Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}" Grid.Row="0" Background="#000000" Drop="AlbumArt_OnDrop" AllowDrop="True">
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding CoverImage}" />
