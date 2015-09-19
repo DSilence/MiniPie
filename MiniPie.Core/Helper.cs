@@ -101,18 +101,5 @@ namespace MiniPie.Core
                 }
             });
         }
-
-        public static bool NiceSequenceEqual<TSource>(IEnumerable<TSource> first, IEnumerable<TSource> second)
-        {
-            if (first == null)
-            {
-                if (second == null)
-                {
-                    return true;
-                }
-                return false;
-            }
-            return first.SequenceEqual(second);
-        }
     }
 }
