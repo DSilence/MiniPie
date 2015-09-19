@@ -105,8 +105,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
         }
 
-        private double scalingFactor = double.NaN;
-
         #endregion
 
         #region Construction

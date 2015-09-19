@@ -26,8 +26,7 @@ namespace MiniPie.Views
     /// </summary>
     public partial class ShellView : UserControl
     {
-        private TaskbarIcon _notifyIcon;
-        private MenuItem[] _menuItems;
+        private readonly TaskbarIcon _notifyIcon;
 
         public ShellView()
         {

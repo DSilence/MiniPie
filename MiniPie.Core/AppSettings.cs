@@ -31,7 +31,6 @@ namespace MiniPie.Core {
 
         public List<WindowPosition> Positions { get; set; }
 
-        private ApplicationSize _ApplicationSize;
         [JsonProperty]
         public ApplicationSize ApplicationSize { get; set; }
         [JsonProperty]
