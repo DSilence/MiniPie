@@ -194,7 +194,7 @@ namespace MiniPie.Core {
                         {
                             if (newTrackInfo.error != null)
                             {
-                                if ((newTrackInfo.error.message.Contains("Invalid Csrf updateToken") ||
+                                if ((newTrackInfo.error.message.Contains("Invalid Csrf") ||
                                      newTrackInfo.error.message.Contains("OAuth updateToken") ||
                                      newTrackInfo.error.message.Contains("Expired OAuth token")))
                                 {

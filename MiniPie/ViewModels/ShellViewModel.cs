@@ -359,14 +359,30 @@ namespace MiniPie.ViewModels {
 
         public async void AddToMyMusic()
         {
-            await _SpotifyController.AddToMyMusic(new[] {TrackId});
             IsTrackSaved = true;
+            try
+            {
+                await _SpotifyController.AddToMyMusic(new[] {TrackId});
+            }
+            catch (Exception e)
+            {
+                IsTrackSaved = false;
+                _Logger.WarnException("Failed to add track", e);
+            }
         }
 
         public async void RemoveFromMyMusic()
         {
-            await _SpotifyController.RemoveFromMyMusic(new[] {TrackId});
             IsTrackSaved = false;
+            try
+            {
+                await _SpotifyController.RemoveFromMyMusic(new[] {TrackId});
+            }
+            catch (Exception e)
+            {
+                IsTrackSaved = true;
+                _Logger.WarnException("Failed to remove track", e);
+            }
         }
     }
 }
