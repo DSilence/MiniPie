@@ -292,7 +292,7 @@ namespace MiniPie.ViewModels {
             return null;
         }
 
-        public async void CopyTracksInfo(IList<string> trackUrls)
+        public async Task<string> CopyTracksInfo(IList<string> trackUrls)
         {
             try
             {
@@ -312,12 +312,14 @@ namespace MiniPie.ViewModels {
                             string.Format(_songFriendlyNameFormat,
                                 track.Artists.First().Name, track.Name));
                 var result = string.Join(Environment.NewLine, niceNames);
-                Clipboard.SetText(result);
+                return result;
+                
             }
             catch (Exception e)
             {
                 _Logger.WarnException("Failed to copy track info", e);
             }
+            return null;
         }
 
         public async void AddTracksToQueue(IList<string> trackUrls)

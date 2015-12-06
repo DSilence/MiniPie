@@ -179,12 +179,12 @@ namespace MiniPie.Views
             return new Size(formattedText.Width, formattedText.Height);
         }
 
-        private void TitlePanel_OnDrop(object sender, DragEventArgs e)
+        private async void TitlePanel_OnDrop(object sender, DragEventArgs e)
         {
             var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
             var urls = data.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
             //TODO url validation
-            ShellViewModel.CopyTracksInfo(urls);
+            Clipboard.SetText(await ShellViewModel.CopyTracksInfo(urls));
         }
 
         private void AlbumArt_OnDrop(object sender, DragEventArgs e)
