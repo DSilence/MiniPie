@@ -246,4 +246,7 @@
   <data name="App_AddToPlaylist" xml:space="preserve">
     <value>Add To Playlist</value>
   </data>
+  <data name="Settings_PauseWhenLocked" xml:space="preserve">
+    <value>Pause music when screen is locked.</value>
+  </data>
 </root>

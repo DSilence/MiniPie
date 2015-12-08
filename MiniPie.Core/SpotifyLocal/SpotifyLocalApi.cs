@@ -194,9 +194,13 @@ namespace MiniPie.Core.SpotifyLocal {
                 var token = cancellationTokenSource.Token;
                 response = await _Client.SendAsync(message, token);
             }
-            var stringResponse = await response.Content.ReadAsStringAsync();
-            var resultStatus = await Helper.DeserializeObjectAsync<Status>(stringResponse);
-            return resultStatus;
+            if (response.IsSuccessStatusCode)
+            {
+                var stringResponse = await response.Content.ReadAsStringAsync();
+                var resultStatus = await Helper.DeserializeObjectAsync<Status>(stringResponse);
+                return resultStatus;
+            }
+            return null;
         }
 
         private void PopilateParameters(NameValueCollection query, 

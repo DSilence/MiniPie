@@ -140,8 +140,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <controls1:ProgressRing Grid.Row="0" IsActive="{Binding Loading}" Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}}" />
-            <Border Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}" Grid.Row="0" Background="#000000" Drop="AlbumArt_OnDrop" AllowDrop="True">
+            <controls1:ProgressRing Grid.Row="0" IsActive="{Binding Loading, Mode=OneWay}" Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+            <Border Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}, Mode=OneWay}" Grid.Row="0" Background="#000000" Drop="AlbumArt_OnDrop" AllowDrop="True">
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding CoverImage}" />

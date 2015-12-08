@@ -13,6 +13,8 @@ namespace MiniPie.Core {
         bool IsSpotifyOpen();
         bool IsSpotifyInstalled();
         Status GetStatus();
+        void Pause();
+        void Play();
         void PausePlay();
         void NextTrack();
         void PreviousTrack();
