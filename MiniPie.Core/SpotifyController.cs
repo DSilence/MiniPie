@@ -305,6 +305,20 @@ namespace MiniPie.Core {
             return _CurrentTrackInfo;
         }
 
+        public async void Pause()
+        {
+            if(_CurrentTrackInfo.playing)
+                await _localApi.Pause();
+        }
+
+        public async void Play()
+        {
+            if (!_CurrentTrackInfo.playing)
+            {
+                await _localApi.Resume();
+            }
+        }
+
         public async void PausePlay()
         {
             if (_CurrentTrackInfo.playing)

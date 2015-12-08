@@ -45,6 +45,7 @@
                 <CheckBox Content="{wpf:Resx Settings_AlwaysOnTop}" Name="AlwaysOnTop" />
                 <CheckBox Content="{wpf:Resx Settings_StartWithWindows}" Name="StartWithWindows" />
                 <CheckBox Content="{wpf:Resx Settings_StartMinimized}" Name="StartMinimized"/>
+                <CheckBox Content="{wpf:Resx Settings_PauseWhenLocked}" Name="PauseWhenComputerLocked"/>
                 <CheckBox Content="{wpf:Resx Settings_HideIfSpotifyClosed}" Name="HideIfSpotifyClosed" />
                 <CheckBox Content="{wpf:Resx Settings_DisableAnimations}" Name="DisableAnimations" />
                 <Grid Margin="0 5 0 0">

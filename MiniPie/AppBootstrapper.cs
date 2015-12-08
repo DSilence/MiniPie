@@ -27,8 +27,6 @@ namespace MiniPie {
         private SpotifyLocalApi _spotifyLocalApi;
         private readonly IKernel _kernel = new StandardKernel();
 
-        public event EventHandler Initialized;
-
         public AppBootstrapper():base(true)
         {
         }
@@ -114,7 +112,6 @@ namespace MiniPie {
             await _spotifyWebApi.Initialize();
             await _spotifyLocalApi.Initialize();
             await _spotifyController.Initialize();
-            Initialized?.Invoke(this, null);
         }
 
         protected override void OnExit(object sender, EventArgs e) {

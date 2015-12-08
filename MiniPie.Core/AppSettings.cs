@@ -43,5 +43,7 @@ namespace MiniPie.Core {
         public string CacheFolder { get; set; }
         [JsonProperty]
         public Token SpotifyToken { get; set; }
+        [JsonProperty]
+        public bool PauseWhenComputerLocked { get; set; }
     }
 }

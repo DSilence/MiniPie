@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
+using Microsoft.Win32;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
@@ -52,14 +53,23 @@ namespace MiniPie.ViewModels {
 
             //TODO more app sizes
             ApplicationSize = ApplicationSize.Medium;
-            bootstrapper.Initialized += Initialized;
+            SystemEvents.SessionSwitch += SystemEventsOnSessionSwitch;
         }
 
-        private void Initialized(object sender, EventArgs eventArgs)
+        private void SystemEventsOnSessionSwitch(object sender,
+            SessionSwitchEventArgs sessionSwitchEventArgs)
         {
-            var bootstrapper = (AppBootstrapper)sender;
-            bootstrapper.Initialized -= Initialized;
-            Loading = false;
+            if (_Settings.PauseWhenComputerLocked)
+            {
+                if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionLock)
+                {
+                    _SpotifyController.Pause();
+                }
+                else if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionUnlock)
+                {
+                    _SpotifyController.Play();
+                }
+            }
         }
 
         protected override void OnViewLoaded(object view) {
@@ -81,7 +91,7 @@ namespace MiniPie.ViewModels {
 
         protected override void OnDeactivate(bool close)
         {
-            base.OnDeactivate(close);
+            SystemEvents.SessionSwitch -= SystemEventsOnSessionSwitch;
         }
 
         #region Properties
@@ -104,7 +114,12 @@ namespace MiniPie.ViewModels {
         public string TrackFriendlyName { get; set; }
         public bool IsTrackSaved { get; set; }
         public string TrackId { get; set; }
-        public bool Loading { get; set; } = true;
+
+        public bool Loading
+        {
+            get { return string.IsNullOrEmpty(CurrentTrack); }
+        }
+
         #endregion
 
         public void ShowSettings() {
