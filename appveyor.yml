@@ -7,6 +7,9 @@ assembly_info:
       assembly_version: $(appveyor_build_version)
       assembly_file_version: $(appveyor_build_version)
       assembly_informational_version: $(appveyor_build_version)
+environment:
+    COVERALLS_REPO_TOKEN:  
+       secure: LG7HxPw5odlsFGoWXFnSpeZ2pK4FEPitMKUwYMMHih4rQtozH4hxQyrR+9us8LtI
 build:
     project: MiniPie.sln
     verbosity: minimal
@@ -46,3 +49,10 @@ notifications:
     auth_token:
       secure: l9d2Z7yxqHY6S1Iom6FANSPbVpIcz0zes2lw6DmedTdqfgJRf10nVXSRp2YAMwVy
     channel: appveyor
+test_script:
+  - cmd: packages\OpenCover.4.6.166\OpenCover.Console.exe -register:user -filter:"[*]*" -target:"packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" -targetargs:"/noshadow /domain:single /xml:xunit-results.xml MiniPie.Tests\bin\Release\MiniPie.Tests.dll -output:coverage.xml
+after_test:
+  - ps: >-
+      (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-results.xml))
+      $coveralls = (Resolve-Path "src/packages/coveralls.io.*/tools/coveralls.net.exe").ToString()
+      & $coveralls--opencover -i opencoverCoverage.xml --repoToken --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_JOB_ID
