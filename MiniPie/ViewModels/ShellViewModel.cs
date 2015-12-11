@@ -19,7 +19,6 @@ namespace MiniPie.ViewModels {
         private readonly IWindowManager _WindowManager;
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
-        private readonly IEventAggregator _EventAggregator;
         private readonly AppSettings _Settings;
         private readonly ILog _Logger;
         private readonly IKernel _kernel;
@@ -32,13 +31,13 @@ namespace MiniPie.ViewModels {
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
+        private bool _isPausedManually = true;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
-            ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, ILog logger, IKernel kernel, AppBootstrapper bootstrapper) {
+            ICoverService coverService, AppSettings settings, ILog logger, IKernel kernel) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
-            _EventAggregator = eventAggregator;
             _Settings = settings;
             _Logger = logger;
             _kernel = kernel;
@@ -63,11 +62,18 @@ namespace MiniPie.ViewModels {
             {
                 if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionLock)
                 {
-                    _SpotifyController.Pause();
+                    if (IsPlaying)
+                    {
+                        _SpotifyController.Pause();
+                        _isPausedManually = false;
+                    }
                 }
                 else if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionUnlock)
                 {
-                    _SpotifyController.Play();
+                    if (!_isPausedManually && !IsPlaying)
+                    {
+                        _SpotifyController.Play();
+                    }
                 }
             }
         }
@@ -133,6 +139,7 @@ namespace MiniPie.ViewModels {
         public void PlayPause() {
             if (CanPlayPause)
             {
+                _isPausedManually = true;
                 _SpotifyController.PausePlay();
             }
         }
@@ -235,6 +242,10 @@ namespace MiniPie.ViewModels {
                 var artist = status.track?.artist_resource?.name;
                 MaxProgress = status.track.length;
                 Progress = status.playing_position;
+                if (status.playing != IsPlaying && !status.playing)
+                {
+                    _isPausedManually = true;
+                }
                 IsPlaying = status.playing;
 
                 if (IsPlaying)
