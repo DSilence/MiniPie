@@ -7,6 +7,9 @@ assembly_info:
       assembly_version: $(appveyor_build_version)
       assembly_file_version: $(appveyor_build_version)
       assembly_informational_version: $(appveyor_build_version)
+environment:
+    COVERALLS_REPO_TOKEN:  
+       secure: LG7HxPw5odlsFGoWXFnSpeZ2pK4FEPitMKUwYMMHih4rQtozH4hxQyrR+9us8LtI
 build:
     project: MiniPie.sln
     verbosity: minimal
@@ -46,3 +49,8 @@ notifications:
     auth_token:
       secure: l9d2Z7yxqHY6S1Iom6FANSPbVpIcz0zes2lw6DmedTdqfgJRf10nVXSRp2YAMwVy
     channel: appveyor
+test_script:
+  - cmd: packages\OpenCover.4.6.166\tools\OpenCover.Console.exe -register:user -filter:+"[MiniPie*]* -[MiniPie.Tests]*" -target:packages\xunit.runner.console.2.1.0\tools\xunit.console.exe -targetargs:"MiniPie.Tests\bin\Release\MiniPie.Tests.dll -noshadow -appveyor -xml xunit-results.xml" -output:coverage.xml
+  - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-results.xml))
+after_test:
+  - cmd: packages\coveralls.io.1.3.4\tools\coveralls.net.exe --opencover coverage.xml
