@@ -3,7 +3,7 @@ using System.Security.RightsManagement;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
-using Moq;
+using NSubstitute;
 using Xunit;
 using Track = MiniPie.Core.SpotifyLocal.Track;
 
@@ -14,12 +14,11 @@ namespace MiniPie.Tests.Controller
         private SpotifyController _spotifyController;
         public SpotifyControllerTest()
         {
-            var localApi = Mock.Of<ISpotifyLocalApi>();
-            var spotifyWebApi = Mock.Of<ISpotifyWebApi>();
-            var log = Mock.Of<ILog>();
+            var localApi = Substitute.For<ISpotifyLocalApi>();
+            var spotifyWebApi = Substitute.For<ISpotifyWebApi>();
+            var log = Substitute.For<ILog>();
 
             _spotifyController = new SpotifyController(log, localApi, spotifyWebApi);
-
         }
 
         [Fact]

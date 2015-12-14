@@ -240,27 +240,30 @@ namespace MiniPie.ViewModels {
 
                 var track = status.track?.track_resource?.name;
                 var artist = status.track?.artist_resource?.name;
-                MaxProgress = status.track.length;
-                Progress = status.playing_position;
-                if (status.playing != IsPlaying && !status.playing)
+                if (status.track != null)
                 {
-                    _isPausedManually = true;
+                    MaxProgress = status.track.length;
+                    Progress = status.playing_position;
+                    if (status.playing != IsPlaying && !status.playing)
+                    {
+                        _isPausedManually = true;
+                    }
+                    IsPlaying = status.playing;
+
+                    if (IsPlaying)
+                        OnCoverDisplayFadeOut();
+
+                    HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
+                    var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
+                    var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+                    var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
+
+                    TrackUrl = status.track.track_resource?.location.og;
+                    SpotifyUri = status.track.track_resource?.uri;
+                    CurrentTrack = currentTrack;
+                    CurrentArtist = currentArtist;
+                    TrackFriendlyName = trackFriendlyName;
                 }
-                IsPlaying = status.playing;
-
-                if (IsPlaying)
-                    OnCoverDisplayFadeOut();
-
-                HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
-                var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
-                var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
-                var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
-
-                TrackUrl = status.track.track_resource.location.og;
-                SpotifyUri = status.track.track_resource.uri;
-                CurrentTrack = currentTrack;
-                CurrentArtist = currentArtist;
-                TrackFriendlyName = trackFriendlyName;
                 TrackId = GetTrackId(TrackUrl);
 
                 CanPlayPause = _SpotifyController.IsSpotifyOpen();
@@ -269,16 +272,24 @@ namespace MiniPie.ViewModels {
                 CanVolumeDown = _SpotifyController.IsSpotifyOpen();
                 CanVolumeUp = _SpotifyController.IsSpotifyOpen();
 
-                if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
+                if (_SpotifyController.IsSpotifyOpen() 
+                    && !string.IsNullOrEmpty(track) 
+                    && !string.IsNullOrEmpty(artist)) {
                     if(_Settings.DisableAnimations)
                         CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
-
-                    var coverUri = await _CoverService.FetchCover(status);
-                    if (string.IsNullOrEmpty(coverUri))
-                        coverUri = UnknownCoverUri;
-                    CoverImage = coverUri;
-                    if (IsPlaying)
-                        OnCoverDisplayFadeIn();
+                    try
+                    {
+                        var coverUri = await _CoverService.FetchCover(status);
+                        if (string.IsNullOrEmpty(coverUri))
+                            coverUri = UnknownCoverUri;
+                        CoverImage = coverUri;
+                        if (IsPlaying)
+                            OnCoverDisplayFadeIn();
+                    }
+                    catch (Exception e)
+                    {
+                        _Logger.WarnException("Failed to retrieve cover information with: " + e.Message, e);
+                    }
                 }
                 else {
                     CoverImage = NoCoverUri;
@@ -290,7 +301,7 @@ namespace MiniPie.ViewModels {
                 IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] { TrackId})).First();
             }
             catch (Exception exc) {
-                _Logger.FatalException("UpdateView() failed hard", exc);
+                _Logger.FatalException("UpdateView() failed hard with: " + exc.Message, exc);
             }
         }
 

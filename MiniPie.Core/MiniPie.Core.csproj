@@ -41,9 +41,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSCore">
-      <HintPath>..\packages\CSCore.1.0.0.0\lib\net35-client\CSCore.dll</HintPath>
-    </Reference>
     <Reference Include="Equals, Version=1.4.6.0, Culture=neutral, PublicKeyToken=15432f00798e61a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Equals.Fody.1.4.6.0\lib\dotnet\Equals.dll</HintPath>
       <Private>True</Private>

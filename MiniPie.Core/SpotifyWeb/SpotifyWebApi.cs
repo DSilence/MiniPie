@@ -173,7 +173,7 @@ namespace MiniPie.Core.SpotifyWeb
         }
 
         public async Task UpdateToken(string refreshToken, 
-            GrantType grantType = GrantType.AuthorizationCode)//string grantType="authorization_code")
+            GrantType grantType = GrantType.AuthorizationCode)
         {
             try
             {
