@@ -242,7 +242,7 @@ namespace MiniPie.Core {
                 }
             }
             catch (Exception exc) {
-                _Logger.FatalException("BackgroundChangeTrackerWork failed", exc);
+                _Logger.FatalException("BackgroundChangeTrackerWork failed with: "+ exc.Message, exc);
             }
         }
 

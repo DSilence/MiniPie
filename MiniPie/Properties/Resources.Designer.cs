@@ -232,6 +232,42 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string Enum_LockScreenBehavior_Disabled {
+            get {
+                return ResourceManager.GetString("Enum_LockScreenBehavior_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause when locked.
+        /// </summary>
+        public static string Enum_LockScreenBehavior_Pause {
+            get {
+                return ResourceManager.GetString("Enum_LockScreenBehavior_Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause when locked. Unpause when unlocked if paused by locking.
+        /// </summary>
+        public static string Enum_LockScreenBehavior_PauseUnpause {
+            get {
+                return ResourceManager.GetString("Enum_LockScreenBehavior_PauseUnpause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause when locked. Always unpause when unlocked.
+        /// </summary>
+        public static string Enum_LockScreenBehavior_PauseUnpauseAlways {
+            get {
+                return ResourceManager.GetString("Enum_LockScreenBehavior_PauseUnpauseAlways", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alt.
         /// </summary>
         public static string Enum_SupportedKeyModifiers_Alt {
@@ -385,6 +421,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lock screen behavior.
+        /// </summary>
+        public static string Settings_LockScreenBehavior {
+            get {
+                return ResourceManager.GetString("Settings_LockScreenBehavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Logged In.
         /// </summary>
         public static string Settings_LoggedIn {
@@ -417,15 +462,6 @@ namespace MiniPie.Properties {
         public static string Settings_NotLoggedIn {
             get {
                 return ResourceManager.GetString("Settings_NotLoggedIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pause music when screen is locked..
-        /// </summary>
-        public static string Settings_PauseWhenLocked {
-            get {
-                return ResourceManager.GetString("Settings_PauseWhenLocked", resourceCulture);
             }
         }
         

@@ -38,7 +38,7 @@ namespace MiniPie {
         public void Persist() {
             lock (_syncLock)
             {
-				File.WriteAllText(Path, JsonConvert.SerializeObject(_instance));
+                File.WriteAllText(Path, JsonConvert.SerializeObject(_instance));
             }
         }
 

@@ -11,7 +11,6 @@ using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
 using Ninject;
-using Action = System.Action;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
@@ -31,7 +30,7 @@ namespace MiniPie.ViewModels {
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
-        private bool _isPausedManually = true;
+        private bool _isLockPaused;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
             ICoverService coverService, AppSettings settings, ILog logger, IKernel kernel) {
@@ -58,22 +57,24 @@ namespace MiniPie.ViewModels {
         private void SystemEventsOnSessionSwitch(object sender,
             SessionSwitchEventArgs sessionSwitchEventArgs)
         {
-            if (_Settings.PauseWhenComputerLocked)
+            if (_Settings.LockScreenBehavior > 0)
             {
                 if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionLock)
                 {
                     if (IsPlaying)
                     {
                         _SpotifyController.Pause();
-                        _isPausedManually = false;
+                        _isLockPaused = true;
                     }
                 }
                 else if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionUnlock)
                 {
-                    if (!_isPausedManually && !IsPlaying)
+                    if ((_isLockPaused && !IsPlaying && _Settings.LockScreenBehavior == LockScreenBehavior.PauseUnpause)
+                        || (!IsPlaying && _Settings.LockScreenBehavior == LockScreenBehavior.PauseUnpauseAlways))
                     {
                         _SpotifyController.Play();
                     }
+                    _isLockPaused = false;
                 }
             }
         }
@@ -139,7 +140,7 @@ namespace MiniPie.ViewModels {
         public void PlayPause() {
             if (CanPlayPause)
             {
-                _isPausedManually = true;
+                _isLockPaused = true;
                 _SpotifyController.PausePlay();
             }
         }
@@ -240,27 +241,26 @@ namespace MiniPie.ViewModels {
 
                 var track = status.track?.track_resource?.name;
                 var artist = status.track?.artist_resource?.name;
-                MaxProgress = status.track.length;
-                Progress = status.playing_position;
-                if (status.playing != IsPlaying && !status.playing)
+                if (status.track != null)
                 {
-                    _isPausedManually = true;
+                    MaxProgress = status.track.length;
+                    Progress = status.playing_position;
+                    IsPlaying = status.playing;
+
+                    if (IsPlaying)
+                        OnCoverDisplayFadeOut();
+
+                    HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
+                    var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
+                    var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+                    var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
+
+                    TrackUrl = status.track.track_resource?.location.og;
+                    SpotifyUri = status.track.track_resource?.uri;
+                    CurrentTrack = currentTrack;
+                    CurrentArtist = currentArtist;
+                    TrackFriendlyName = trackFriendlyName;
                 }
-                IsPlaying = status.playing;
-
-                if (IsPlaying)
-                    OnCoverDisplayFadeOut();
-
-                HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
-                var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
-                var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
-                var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
-
-                TrackUrl = status.track.track_resource.location.og;
-                SpotifyUri = status.track.track_resource.uri;
-                CurrentTrack = currentTrack;
-                CurrentArtist = currentArtist;
-                TrackFriendlyName = trackFriendlyName;
                 TrackId = GetTrackId(TrackUrl);
 
                 CanPlayPause = _SpotifyController.IsSpotifyOpen();
@@ -269,16 +269,24 @@ namespace MiniPie.ViewModels {
                 CanVolumeDown = _SpotifyController.IsSpotifyOpen();
                 CanVolumeUp = _SpotifyController.IsSpotifyOpen();
 
-                if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
+                if (_SpotifyController.IsSpotifyOpen() 
+                    && !string.IsNullOrEmpty(track) 
+                    && !string.IsNullOrEmpty(artist)) {
                     if(_Settings.DisableAnimations)
                         CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
-
-                    var coverUri = await _CoverService.FetchCover(status);
-                    if (string.IsNullOrEmpty(coverUri))
-                        coverUri = UnknownCoverUri;
-                    CoverImage = coverUri;
-                    if (IsPlaying)
-                        OnCoverDisplayFadeIn();
+                    try
+                    {
+                        var coverUri = await _CoverService.FetchCover(status);
+                        if (string.IsNullOrEmpty(coverUri))
+                            coverUri = UnknownCoverUri;
+                        CoverImage = coverUri;
+                        if (IsPlaying)
+                            OnCoverDisplayFadeIn();
+                    }
+                    catch (Exception e)
+                    {
+                        _Logger.WarnException("Failed to retrieve cover information with: " + e.Message, e);
+                    }
                 }
                 else {
                     CoverImage = NoCoverUri;
@@ -290,7 +298,7 @@ namespace MiniPie.ViewModels {
                 IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] { TrackId})).First();
             }
             catch (Exception exc) {
-                _Logger.FatalException("UpdateView() failed hard", exc);
+                _Logger.FatalException("UpdateView() failed hard with: " + exc.Message, exc);
             }
         }
 

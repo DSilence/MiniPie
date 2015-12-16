@@ -246,7 +246,19 @@
   <data name="App_AddToPlaylist" xml:space="preserve">
     <value>Add To Playlist</value>
   </data>
-  <data name="Settings_PauseWhenLocked" xml:space="preserve">
-    <value>Pause music when screen is locked.</value>
+  <data name="Settings_LockScreenBehavior" xml:space="preserve">
+    <value>Lock screen behavior</value>
+  </data>
+  <data name="Enum_LockScreenBehavior_Disabled" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Enum_LockScreenBehavior_Pause" xml:space="preserve">
+    <value>Pause when locked</value>
+  </data>
+  <data name="Enum_LockScreenBehavior_PauseUnpause" xml:space="preserve">
+    <value>Pause when locked. Unpause when unlocked if paused by locking</value>
+  </data>
+  <data name="Enum_LockScreenBehavior_PauseUnpauseAlways" xml:space="preserve">
+    <value>Pause when locked. Always unpause when unlocked</value>
   </data>
 </root>

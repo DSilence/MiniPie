@@ -17,7 +17,6 @@ namespace MiniPie.ViewModels {
         private readonly ICoverService _CoverService;
         private readonly ISpotifyController _spotifyController;
         private readonly ILog _Logger;
-        private readonly HotKeyViewModel _hotKeyViewModel;
         private readonly AutorunService _autorunService;
 
         public SettingsViewModel(AppContracts contracts, 
@@ -28,16 +27,19 @@ namespace MiniPie.ViewModels {
             _Contracts = contracts;
             _CoverService = coverService;
             _Logger = logger;
-            _hotKeyViewModel = hotKeyViewModel;
+            HotKeyViewModel = hotKeyViewModel;
             _spotifyController = spotifyController;
             _autorunService = autorunService;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
             UpdateLoggedIn();
             //TODO custom decorator would be ideal here
-            this.PropertyChanged += (sender, args) =>
+            PropertyChanged += (sender, args) =>
             {
-                persister.Persist();
+                Task.Run(() =>
+                {
+                    persister.Persist();
+                });
             };
         }
 
@@ -72,12 +74,6 @@ namespace MiniPie.ViewModels {
             set { _Settings.StartMinimized = value;}
         }
 
-        public bool PauseWhenComputerLocked
-        {
-            get { return _Settings.PauseWhenComputerLocked; }
-            set { _Settings.PauseWhenComputerLocked = value; }
-        }
-
         public Language Language
         {
             get { return _Settings.Language; }
@@ -93,8 +89,16 @@ namespace MiniPie.ViewModels {
             }
         }
 
+        public LockScreenBehavior LockScreenBehavior
+        {
+            get { return _Settings.LockScreenBehavior; }
+            set { _Settings.LockScreenBehavior = value; }
+        }
+
         public ObservableCollection<Language> Languages 
             => new ObservableCollection<Language>(LanguageHelper.Languages);
+        public ObservableCollection<LockScreenBehavior> LockScreenBehaviors
+            => new ObservableCollection<LockScreenBehavior>(); 
 
         public bool CanClearCache { get; set; } = true;
 
@@ -116,10 +120,7 @@ namespace MiniPie.ViewModels {
             CanClearCache = false;
         }
 
-        public HotKeyViewModel HotKeyViewModel
-        {
-            get { return _hotKeyViewModel; }
-        }
+        public HotKeyViewModel HotKeyViewModel { get; }
 
         public bool LoginChecking { get; set; }
 
