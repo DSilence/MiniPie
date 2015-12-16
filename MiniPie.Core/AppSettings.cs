@@ -12,6 +12,7 @@ namespace MiniPie.Core {
             Positions = new List<WindowPosition>();
             ApplicationSize = ApplicationSize.Medium;
             Language = LanguageHelper.English;
+            LockScreenBehavior = LockScreenBehavior.Disabled;
         }
 
         [JsonProperty]
@@ -44,6 +45,6 @@ namespace MiniPie.Core {
         [JsonProperty]
         public Token SpotifyToken { get; set; }
         [JsonProperty]
-        public bool PauseWhenComputerLocked { get; set; }
+        public LockScreenBehavior LockScreenBehavior { get; set; }
     }
 }

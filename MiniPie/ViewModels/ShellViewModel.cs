@@ -11,7 +11,6 @@ using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
 using Ninject;
-using Action = System.Action;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
@@ -31,7 +30,7 @@ namespace MiniPie.ViewModels {
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
-        private bool _isPausedManually = true;
+        private bool _isLockPaused;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
             ICoverService coverService, AppSettings settings, ILog logger, IKernel kernel) {
@@ -58,22 +57,24 @@ namespace MiniPie.ViewModels {
         private void SystemEventsOnSessionSwitch(object sender,
             SessionSwitchEventArgs sessionSwitchEventArgs)
         {
-            if (_Settings.PauseWhenComputerLocked)
+            if (_Settings.LockScreenBehavior > 0)
             {
                 if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionLock)
                 {
                     if (IsPlaying)
                     {
                         _SpotifyController.Pause();
-                        _isPausedManually = false;
+                        _isLockPaused = true;
                     }
                 }
                 else if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionUnlock)
                 {
-                    if (!_isPausedManually && !IsPlaying)
+                    if ((_isLockPaused && !IsPlaying && _Settings.LockScreenBehavior == LockScreenBehavior.PauseUnpause)
+                        || (!IsPlaying && _Settings.LockScreenBehavior == LockScreenBehavior.PauseUnpauseAlways))
                     {
                         _SpotifyController.Play();
                     }
+                    _isLockPaused = false;
                 }
             }
         }
@@ -139,7 +140,7 @@ namespace MiniPie.ViewModels {
         public void PlayPause() {
             if (CanPlayPause)
             {
-                _isPausedManually = true;
+                _isLockPaused = true;
                 _SpotifyController.PausePlay();
             }
         }
@@ -244,10 +245,6 @@ namespace MiniPie.ViewModels {
                 {
                     MaxProgress = status.track.length;
                     Progress = status.playing_position;
-                    if (status.playing != IsPlaying && !status.playing)
-                    {
-                        _isPausedManually = true;
-                    }
                     IsPlaying = status.playing;
 
                     if (IsPlaying)
