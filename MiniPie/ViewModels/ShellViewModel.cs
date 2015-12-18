@@ -140,7 +140,6 @@ namespace MiniPie.ViewModels {
         public void PlayPause() {
             if (CanPlayPause)
             {
-                _isLockPaused = true;
                 _SpotifyController.PausePlay();
             }
         }
