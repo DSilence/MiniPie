@@ -188,13 +188,26 @@ namespace MiniPie.Core.SpotifyLocal {
             HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             int timeout = wait == -1 ? 1000 : 45000;
-            HttpResponseMessage response;
-            using (var cancellationTokenSource = new CancellationTokenSource(timeout))
+            HttpResponseMessage response = null;
+            var cancellationTokenSource = new CancellationTokenSource(timeout);
+            try
             {
                 var token = cancellationTokenSource.Token;
                 response = await _Client.SendAsync(message, token);
             }
-            if (response.IsSuccessStatusCode)
+            catch (TaskCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _Log.WarnException("Failed to send local request with: " + e.Message, e);
+            }
+            finally
+            {
+                cancellationTokenSource.Dispose();
+            }
+            if (response != null && response.IsSuccessStatusCode)
             {
                 var stringResponse = await response.Content.ReadAsStringAsync();
                 var resultStatus = await Helper.DeserializeObjectAsync<Status>(stringResponse);
