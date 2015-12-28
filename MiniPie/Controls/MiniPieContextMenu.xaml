@@ -9,10 +9,18 @@
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d"
              Name="MiniPieMenu"
-             Style="{StaticResource MetroContextMenu}">
+             BorderThickness="0">
     <ContextMenu.Resources>
         <converter:PlaylistMenuItemsConverter x:Key="PlaylistMenuItemsConverter"/>
+        <Style x:Key="MetroMenu" BasedOn="{StaticResource MetroMenu}" TargetType="{x:Type Menu}">
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
     </ContextMenu.Resources>
+    <ContextMenu.Style>
+        <Style BasedOn="{StaticResource MetroContextMenu}" TargetType="ContextMenu">
+            <Setter Property="Border.BorderThickness" Value="0"></Setter>
+        </Style>
+    </ContextMenu.Style>
     <MenuItem Name="Artist" Header="{Binding CurrentArtist}" IsEnabled="False"/>
     <MenuItem Name="Song" Header="{Binding CurrentTrack}" IsEnabled="False" />
     <MenuItem Header="{wpf:Resx App_CopyTrack}">

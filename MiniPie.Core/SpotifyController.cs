@@ -122,7 +122,7 @@ namespace MiniPie.Core {
         private async Task AttachToProcess() {
             _SpotifyProcess = null;
             _SpotifyProcess = Process.GetProcessesByName("spotify")
-                .FirstOrDefault(p => p.MainWindowHandle.ToInt32() > 0);
+                .FirstOrDefault(p => !string.IsNullOrEmpty(p.MainWindowTitle));
             if (_SpotifyProcess != null)
             {
                 //Renew updateToken for Spotify local api
@@ -132,6 +132,7 @@ namespace MiniPie.Core {
                 {
                     _SpotifyProcess = null;
                     _CurrentTrackInfo = null;
+                    _localRequestTokenSource?.Cancel();
                     OnSpotifyExited();
                 };
             }
@@ -158,6 +159,7 @@ namespace MiniPie.Core {
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
+        private CancellationTokenSource _localRequestTokenSource;
         //TODO code dupes
         private async void BackgroundChangeTrackerWork() {
             try
@@ -169,11 +171,12 @@ namespace MiniPie.Core {
                         //TODO this should be a bool field probably
                         int timeout = _CurrentTrackInfo == null ? -1 : 30;
                         Status newTrackInfo;
+                        _localRequestTokenSource = new CancellationTokenSource(timeout == -1 ? 1000 : 45000);
                         try
                         {
                             _Logger.Info("Started retrieving information from spotify, timeout is" + timeout);
                             newTrackInfo =
-                                await _localApi.SendLocalStatusRequest(true, true, timeout);
+                                await _localApi.SendLocalStatusRequest(true, true, _localRequestTokenSource.Token, timeout);
                             _Logger.Info("Finished retrieving information from spotify");
                         }
                         catch (TaskCanceledException)
@@ -184,6 +187,12 @@ namespace MiniPie.Core {
                             //nothing to do here
                             //if task was cancelled (e.g. spotify exited, just move on and wait for further stuff
                             continue;
+                        }
+                        finally
+                        {
+                            var tokenSource = _localRequestTokenSource;
+                            _localRequestTokenSource = null;
+                            tokenSource.Dispose();
                         }
                         if (newTrackInfo == null)
                         {
@@ -196,7 +205,7 @@ namespace MiniPie.Core {
                             {
                                 if ((newTrackInfo.error.message.Contains("Invalid Csrf") ||
                                      newTrackInfo.error.message.Contains("OAuth updateToken") ||
-                                     newTrackInfo.error.message.Contains("Expired OAuth token")))
+                                     newTrackInfo.error.message.Contains("Expired OAuth localRequestToken")))
                                 {
                                     //try to renew updateToken and retrieve status again
                                     _Logger.Info("Renew updateToken and try again");
@@ -248,10 +257,11 @@ namespace MiniPie.Core {
 
         protected internal void ProcessTrackInfo(Status newTrackInfo)
         {
+            var newTrackInfoUri = newTrackInfo?.track?.track_resource?.uri;
             if (_CurrentTrackInfo == null || _CurrentTrackInfo.track == null ||
                             _CurrentTrackInfo.track.track_resource == null ||
                             _CurrentTrackInfo.track.track_resource.uri
-                            != newTrackInfo.track.track_resource.uri)
+                            != newTrackInfoUri)
             {
                 _CurrentTrackInfo = newTrackInfo;
                 OnTrackChanged();

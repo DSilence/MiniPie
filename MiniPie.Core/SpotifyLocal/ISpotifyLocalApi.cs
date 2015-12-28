@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace MiniPie.Core.SpotifyLocal
 {
@@ -15,6 +16,6 @@ namespace MiniPie.Core.SpotifyLocal
         Task<Status> Queue(string url);
         Task RenewToken();
         Task<Status> Resume();
-        Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, int wait = -1);
+        Task<Status> SendLocalStatusRequest(bool oauth, bool cfid, CancellationToken token, int wait = -1);
     }
 }

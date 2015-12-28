@@ -12,11 +12,11 @@
                     <converter:VisibilityConverter x:Key="VisibilityConverter" />
                     <converter:ApplicationSizeConverter x:Key="ApplicationSizeConverter" />
                     <converter:BoolInvertedConverter x:Key="BoolInvertedConverter"/>
-                    
+
                     <Style TargetType="{x:Type Window}">
                         <Setter Property="TextOptions.TextFormattingMode" Value="Display"></Setter>
                     </Style>
-                    
+
                     <Style TargetType="{x:Type ctrl:ImageButton}">
                         <Setter Property="Background" Value="Transparent" />
                         <Setter Property="BorderThickness" Value="1" />

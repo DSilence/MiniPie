@@ -294,7 +294,10 @@ namespace MiniPie.ViewModels {
                 }
 
                 UpdatePlaylists();
-                IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] { TrackId})).First();
+                if (TrackId != null)
+                {
+                    IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] {TrackId})).First();
+                }
             }
             catch (Exception exc) {
                 _Logger.FatalException("UpdateView() failed hard with: " + exc.Message, exc);
@@ -317,6 +320,10 @@ namespace MiniPie.ViewModels {
 
         private string GetTrackId(string trackUrl)
         {
+            if (trackUrl == null)
+            {
+                return null;
+            }
             var match = Regex.Match(trackUrl, TrackPattern);
             if (match.Groups.Count > 0)
             {
