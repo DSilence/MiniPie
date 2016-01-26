@@ -411,11 +411,6 @@ namespace MiniPie.Core {
             return _spotifyWebApi.BuildLoginQuery();
         }
 
-        public async Task UpdateToken(string token)
-        {
-            await _spotifyWebApi.UpdateToken(token);
-        }
-
         public void Logout()
         {
             _spotifyWebApi.Logout();

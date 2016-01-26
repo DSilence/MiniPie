@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -80,7 +81,18 @@ namespace MiniPie.Core
             return Task.Run(() => JsonConvert.SerializeObject(value));
         }
 
-        public static Task<T> DeserializeObjectAsync<T>(string value)
+        public static Task SerializeToStreamAsync<T>(T value, Stream stream)
+        {
+            return Task.Run(() =>
+            {
+                var sw = new StreamWriter(stream);
+                var serializer = new JsonSerializer();
+                serializer.Serialize(sw, value);
+                sw.Flush();
+            });
+        }
+
+        public static Task<T> DeserializeStringAsync<T>(string value)
         {
             return Task.Run(() => JsonConvert.DeserializeObject<T>(value));
         }

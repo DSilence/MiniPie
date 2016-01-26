@@ -29,7 +29,7 @@ namespace MiniPie.Tests
                 Value = "qwe"
             };
             var testSerialized = await Helper.SerializeObjectAsync(test);
-            var resulting = await Helper.DeserializeObjectAsync<ExternalUrl>(testSerialized);
+            var resulting = await Helper.DeserializeStringAsync<ExternalUrl>(testSerialized);
             Assert.Equal(test.Key, resulting.Key);
             Assert.Equal(test.Value, resulting.Value);
         }

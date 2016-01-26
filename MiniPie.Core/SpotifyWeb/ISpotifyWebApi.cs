@@ -18,7 +18,6 @@ namespace MiniPie.Core.SpotifyWeb
         Task<IList<Playlist>> GetUserPlaylists();
         Task Initialize();
         void Logout();
-        Task UpdateToken(string refreshToken, GrantType grantType = GrantType.AuthorizationCode);
 
         Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
         Task AddToMyMusic(IList<string> trackIds);

@@ -193,11 +193,6 @@ namespace MiniPie.ViewModels {
             return _spotifyController.BuildLoginQuery();
         }
 
-        public async Task UpdateToken(string token)
-        {
-            await _spotifyController.UpdateToken(token);
-        }
-
         protected override void OnActivate()
         {
             base.OnActivate();

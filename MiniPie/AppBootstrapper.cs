@@ -82,7 +82,7 @@ namespace MiniPie {
             _kernel.Bind<IWindowManager>().ToConstant(new AppWindowManager(_Settings)).InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>();
 
-            _spotifyLocalApi = new SpotifyLocalApi(_log, _Contracts, _Settings);
+            _spotifyLocalApi = new SpotifyLocalApi(_log, _Contracts);
             _kernel.Bind<ISpotifyLocalApi>().ToConstant(_spotifyLocalApi).InSingletonScope();
             _spotifyWebApi = new SpotifyWebApi(_log, _Settings);
             _kernel.Bind<ISpotifyWebApi>().ToConstant(_spotifyWebApi).InSingletonScope();

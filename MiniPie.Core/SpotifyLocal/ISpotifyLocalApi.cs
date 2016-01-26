@@ -7,7 +7,6 @@ namespace MiniPie.Core.SpotifyLocal
     {
         bool HasValidToken { get; }
         string Uri { get; set; }
-        int Wait { get; set; }
 
         Task<Cfid> GetCfid();
         Task Initialize();

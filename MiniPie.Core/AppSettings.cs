@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace MiniPie.Core {
     [JsonObject]
-    public sealed class AppSettings {
+    public class AppSettings {
 
         public AppSettings() {
             Positions = new List<WindowPosition>();

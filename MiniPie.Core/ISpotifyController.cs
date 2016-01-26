@@ -25,7 +25,6 @@ namespace MiniPie.Core {
         void AttachTrackStatusChangedHandler(EventHandler handler);
         Task<bool> IsUserLoggedIn();
         Uri BuildLoginQuery();
-        Task UpdateToken(string token);
         void Logout();
         Task<IList<Playlist>> GetPlaylists();
         Task AddToPlaylist(string playlistId, string trackUrls);

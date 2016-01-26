@@ -4,13 +4,11 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
 
 namespace MiniPie.Core.SpotifyLocal {
     public class SpotifyLocalApi : ISpotifyLocalApi
@@ -68,28 +66,21 @@ namespace MiniPie.Core.SpotifyLocal {
 
         private readonly HttpClient _Client;
         private readonly ILog _Log;
-        private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
         private string _Cfid;
         private string _OAuth;
 
         private const string playPositionJsonIndex = "playing_position\":";
 
-        private const string CoverSize = "300"; //valid sizes: 300, 640
-
         /// <summary>Initializes a new SpotifyAPI object which can be used to recieve</summary>
-        public SpotifyLocalApi(ILog log, AppContracts contracts, AppSettings settings) {
+        public SpotifyLocalApi(ILog log, AppContracts contracts) {
 
             //emulate the embed code [NEEDED]
             _Client = new HttpClient();
             _Client.DefaultRequestHeaders.Add("Origin", "https://embed.spotify.com");
             _Client.DefaultRequestHeaders.Referrer = new Uri("https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
             _Client.DefaultRequestHeaders.Add("User-Agent", "MiniPie");
-            /*if (_Client.Proxy != null)
-                _Client.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-                */
             _Log = log;
-            _Settings = settings;
             _Contracts = contracts;
         }
 
@@ -104,8 +95,8 @@ namespace MiniPie.Core.SpotifyLocal {
                 _OAuth = string.Empty;
                 _Cfid = string.Empty;
 
-                _OAuth = await GetOAuth();
-                _Cfid = (await GetCfid()).token;
+                _OAuth = await GetOAuth().ConfigureAwait(false);
+                _Cfid = (await GetCfid().ConfigureAwait(false)).token;
             }
             catch (Exception exc) {
                 _Log.WarnException("Failed to renew Spotify token", exc);
@@ -127,7 +118,7 @@ namespace MiniPie.Core.SpotifyLocal {
         /// <summary>Gets the 'CFID', a unique identifier for the current session. Note: It's required to get the CFID before making any other calls.</summary>
         public async Task<Cfid> GetCfid()
         {
-            var a = await SendLocalRequest("simplecsrf/token.json");
+            var a = await SendLocalRequest("simplecsrf/token.json").ConfigureAwait(false);
             var d = (List<Cfid>) JsonConvert.DeserializeObject(a, typeof (List<Cfid>));
             _Cfid = d[0].token;
             return d[0];
@@ -147,31 +138,31 @@ namespace MiniPie.Core.SpotifyLocal {
         /// <summary>Plays a certain URI and returns the status afterwards. Change SpotifyAPI.URI into the needed uri!</summary>
         public async Task<Status> Play()
         {
-            var a = await SendLocalRequest("remote/play.json?uri=" + Uri, true, true, -1);
-            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
+            var a = await SendLocalRequest("remote/play.json?uri=" + Uri, true, true, -1).ConfigureAwait(false);
+            var d = await Helper.DeserializeStringAsync<List<Status>>(a);
             return d.FirstOrDefault();
         }
 
         /// <summary>Resume Spotify playback and return the status afterwards</summary>
         public async Task<Status> Resume()
         {
-            var a = await SendLocalRequest("remote/pause.json?pause=false", true, true, -1);
-            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
+            var a = await SendLocalRequest("remote/pause.json?pause=false", true, true, -1).ConfigureAwait(false);
+            var d = await Helper.DeserializeStringAsync<List<Status>>(a);
             return d.FirstOrDefault();
         }
 
         /// <summary>Pause Spotify playback and return the status afterwards</summary>
         public async Task<Status> Pause()
         {
-            var a = await SendLocalRequest("remote/pause.json?pause=true", true, true, -1);
-            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
+            var a = await SendLocalRequest("remote/pause.json?pause=true", true, true, -1).ConfigureAwait(false);
+            var d = await Helper.DeserializeStringAsync<List<Status>>(a);
             return d.FirstOrDefault();
         }
 
         public async Task<Status> Queue(string url)
         {
-            var a = await SendLocalRequest("remote/play.json?uri=" + url + "?action=queue", true, true, -1);
-            var d = await Helper.DeserializeObjectAsync<List<Status>>(a);
+            var a = await SendLocalRequest("remote/play.json?uri=" + url + "?action=queue", true, true, -1).ConfigureAwait(false);
+            var d = await Helper.DeserializeStringAsync<List<Status>>(a);
             return d.FirstOrDefault();
         } 
 
@@ -192,7 +183,7 @@ namespace MiniPie.Core.SpotifyLocal {
             
             try
             {
-                response = await _Client.SendAsync(message, token);
+                response = await _Client.SendAsync(message, token).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
@@ -202,13 +193,10 @@ namespace MiniPie.Core.SpotifyLocal {
             {
                 _Log.WarnException("Failed to send local request with: " + e.Message, e);
             }
-            finally
-            {
-            }
             if (response != null && response.IsSuccessStatusCode)
             {
-                var stringResponse = await response.Content.ReadAsStringAsync();
-                var resultStatus = await Helper.DeserializeObjectAsync<Status>(stringResponse);
+                var stringResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var resultStatus = await Helper.DeserializeStringAsync<Status>(stringResponse).ConfigureAwait(false);
                 return resultStatus;
             }
             return null;
@@ -219,7 +207,6 @@ namespace MiniPie.Core.SpotifyLocal {
         {
             query["_"] = TimeStamp.ToString();
 
-            //var parameters = "?&ref=&cors=&_=" + TimeStamp;
             if (oauth)
                 query["oauth"] = _OAuth;
             if (cfid)
@@ -231,42 +218,21 @@ namespace MiniPie.Core.SpotifyLocal {
                 query["returnon"] = "login,logout,play,pause,error,ap";
             }
         }
-
-        int _Wait = -1;
-        /// <summary>
-        /// Please see <seealso cref="LastStatus"/> for more information
-        /// </summary>
-        public int Wait {
-            get {
-                return _Wait;
-            }
-            set {
-                _Wait = value;
-            }
-        }
-
+        
         /// <summary>Recieves a OAuth key from the Spotify site</summary>
-        private async Task<string> GetOAuth() {
-            var lines = (await _Client.GetStringAsync("https://embed.spotify.com/openplay/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt"))
-                                     .Replace(" ", "")
-                                     .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var l in
-                    from line in lines
-                    where line.StartsWith("tokenData")
-                    select line.Split(new[] { "'" }, StringSplitOptions.None))
-                return l[1];
-
-            throw new Exception("Could not find OAuth token");
+        private async Task<string> GetOAuth()
+        {
+            var token =
+                await
+                    Helper.DeserializeStringAsync<Token>(
+                        await _Client.GetStringAsync("https://open.spotify.com/token").ConfigureAwait(false))
+                        .ConfigureAwait(false);
+            return token.TokenValue;
         }
 
 
-        private async Task<string> SendLocalRequest(string request) {
-            return await SendLocalRequest(request, false, false, -1);
-        }
-
-        private async Task<string> SendLocalRequest(string request, bool oauth, bool cfid) {
-            return await SendLocalRequest(request, oauth, cfid, -1);
+        private Task<string> SendLocalRequest(string request) {
+            return SendLocalRequest(request, false, false, -1);
         }
 
         private async Task<string> SendLocalRequest(string request, bool oauth, bool cfid, int wait) {
@@ -287,7 +253,7 @@ namespace MiniPie.Core.SpotifyLocal {
             var requestUri = _Contracts.SpotifyLocalHost + request + parameters;
             var response = string.Empty;
             try {
-                response = await _Client.GetStringAsync(requestUri);
+                response = await _Client.GetStringAsync(requestUri).ConfigureAwait(false);
                 response = "[ " + response + " ]";
             }
             catch (Exception wExc)
@@ -304,7 +270,7 @@ namespace MiniPie.Core.SpotifyLocal {
                         _Log.WarnException("Failed to start the Spotify webhelper", exc);
                         throw new Exception("Could not launch SpotifyWebHelper. Your installation of Spotify might be corrupt or you might not have Spotify installed", exc);
                     }
-                    return _Client.GetStringAsync(requestUri).Result;
+                    return await _Client.GetStringAsync(requestUri).ConfigureAwait(false);
                 }
 
                 //spotifywebhelper is running but we still can't connect, wtf?!
@@ -312,14 +278,5 @@ namespace MiniPie.Core.SpotifyLocal {
             }
             return response;
         }
-
-        /// <summary>Recieves client version information. Doesn't require a OAuth/CFID</summary>
-        /*public ClientVersion ClientVersion {
-            get {
-                var a = SendLocalRequest("service/version.json?service=remote");
-                var d = (List<ClientVersion>)JsonConvert.DeserializeObject(a, typeof(List<ClientVersion>));
-                return d.FirstOrDefault();
-            }
-        }*/
     }
 }

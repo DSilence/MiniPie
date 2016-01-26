@@ -67,6 +67,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -85,7 +86,7 @@
     <Compile Include="CoverService.cs" />
     <Compile Include="Enums\LockScreenBehavior.cs" />
     <Compile Include="Enums\SupportedKeyModifiers.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="SpotifyWeb\Extensions\StringExtensions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="HotKeyManager\HotKey.cs" />
     <Compile Include="HotKeyManager\KeyManager.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="SpotifyWeb\Models\Track.cs" />
     <Compile Include="SpotifyWeb\Models\TrackCollection.cs" />
     <Compile Include="SpotifyWeb\Models\User.cs" />
+    <Compile Include="SpotifyWeb\SpotifyHttpClient.cs" />
     <Compile Include="SpotifyWeb\SpotifyWebApi.cs" />
     <Compile Include="SpotifyWeb\Token.cs" />
     <Compile Include="WindowPosition.cs" />

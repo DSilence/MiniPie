@@ -68,6 +68,12 @@ namespace MiniPie.Core.SpotifyLocal {
         public bool running { get; set; }
     }
 
+    public class Token
+    {
+        [JsonProperty("t")]
+        public string TokenValue { get; set; }
+    }
+
 
     public class Error {
         [JsonProperty("type")]

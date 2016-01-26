@@ -84,6 +84,7 @@
     <Compile Include="Controller\SpotifyControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpotifyHelperTest.cs" />
+    <Compile Include="SpotifyWeb\SpotifyWebApiTest.cs" />
     <Compile Include="ViewModels\ShellViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
