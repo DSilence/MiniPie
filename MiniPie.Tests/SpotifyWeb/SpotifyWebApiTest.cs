@@ -211,7 +211,7 @@ namespace MiniPie.Tests.SpotifyWeb
             Assert.Equal(actualCount, target);
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             System.Threading.CancellationToken cancellationToken)
         {
             if (_fakeResponses.ContainsKey(request.RequestUri))
@@ -219,11 +219,11 @@ namespace MiniPie.Tests.SpotifyWeb
                 var response = _fakeResponses[request.RequestUri];
                 response = new KeyValuePair<HttpResponseMessage, int>(response.Key, response.Value + 1);
                 _fakeResponses[request.RequestUri] = response;
-                return response.Key;
+                return Task.FromResult(response.Key);
             }
             else
             {
-                return new HttpResponseMessage(HttpStatusCode.NotFound) {RequestMessage = request};
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) {RequestMessage = request});
             }
         }
     }
