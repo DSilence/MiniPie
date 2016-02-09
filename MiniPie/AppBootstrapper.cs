@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using MiniPie.Core;
@@ -11,8 +12,7 @@ using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
 using MiniPie.Views;
-using Ninject;
-using Ninject.Extensions.Conventions;
+using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
@@ -25,7 +25,7 @@ namespace MiniPie {
         private SpotifyWebApi _spotifyWebApi;
         private SpotifyController _spotifyController;
         private SpotifyLocalApi _spotifyLocalApi;
-        private readonly IKernel _kernel = new StandardKernel();
+        private readonly Container _kernel = new Container();
 
         public AppBootstrapper():base(true)
         {
@@ -41,22 +41,32 @@ namespace MiniPie {
 
         protected override object GetInstance(Type service, string key)
         {
-            return _kernel.Get(service, key);
+            return _kernel.GetInstance(service);
         }
 
         protected override IEnumerable<object> GetAllInstances(Type service)
         {
-            return _kernel.GetAll(service);
+            return new List<object>
+            {
+                _kernel.GetInstance(service)
+            };
+            //No real need to resolve all
+            /*
+            IServiceProvider provider = _kernel;
+            Type collectionType = typeof(IEnumerable<>).MakeGenericType(service);
+            var services = (IEnumerable<object>)provider.GetService(collectionType);
+            return services ?? Enumerable.Empty<object>();*/
         }
 
         protected override void BuildUp(object instance)
         {
-            _kernel.Inject(instance);
+            var registration = _kernel.GetRegistration(instance.GetType(), true);
+            registration.Registration.InitializeInstance(instance);
         }
 
         public async void ProcessTokenUpdate(string input)
         {
-            await _kernel.Get<ISpotifyWebApi>().CreateToken(input);
+            await _kernel.GetInstance<ISpotifyWebApi>().CreateToken(input);
             var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "unregisterUri");
             processStartInfo.Verb = "runas";
             processStartInfo.CreateNoWindow = true;
@@ -66,44 +76,53 @@ namespace MiniPie {
 
         protected override void Configure() {
             _Contracts = new AppContracts();
-            _kernel.Bind<AppBootstrapper>().ToConstant(this).InSingletonScope();
+            _kernel.RegisterSingleton(this);
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
-            _kernel.Bind<JsonPersister<AppSettings>>().ToConstant(_SettingsPersistor).InSingletonScope();
-            _kernel.Bind<AppContracts>().ToConstant(_Contracts).InSingletonScope();
+            _kernel.RegisterSingleton(_SettingsPersistor);
+            _kernel.RegisterSingleton(_Contracts);
             _Settings = _SettingsPersistor.Instance;
-            _kernel.Bind<AppSettings>().ToConstant(_Settings).InSingletonScope();
+            _kernel.RegisterSingleton(_Settings);
             
             _log = new ProductionLogger();
-            _kernel.Bind<ILog>().ToConstant(_log).InSingletonScope();
+            _kernel.RegisterSingleton(_log);
 
-            _kernel.Bind<AutorunService>()
-                .ToConstant(new AutorunService(_log, _Settings, _Contracts))
-                .InSingletonScope();
-            _kernel.Bind<IWindowManager>().ToConstant(new AppWindowManager(_Settings)).InSingletonScope();
-            _kernel.Bind<IEventAggregator>().To<EventAggregator>();
+            _kernel.RegisterSingleton(new AutorunService(_log, _Settings, _Contracts));
+            _kernel.RegisterSingleton<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.Register<IEventAggregator, EventAggregator>();
 
             _spotifyLocalApi = new SpotifyLocalApi(_log, _Contracts);
-            _kernel.Bind<ISpotifyLocalApi>().ToConstant(_spotifyLocalApi).InSingletonScope();
+            _kernel.RegisterSingleton<ISpotifyLocalApi>(_spotifyLocalApi);
             _spotifyWebApi = new SpotifyWebApi(_log, _Settings);
-            _kernel.Bind<ISpotifyWebApi>().ToConstant(_spotifyWebApi).InSingletonScope();
+            _kernel.RegisterSingleton<ISpotifyWebApi>(_spotifyWebApi);
             _spotifyController = new SpotifyController(_log,
                 _spotifyLocalApi, _spotifyWebApi);
-            _kernel.Bind<ISpotifyController>().ToConstant(_spotifyController).InSingletonScope();
-            _kernel.Bind<ICoverService>().ToConstant(new CoverService(
+            _kernel.RegisterSingleton<ISpotifyController>(_spotifyController);
+            _kernel.RegisterSingleton<ICoverService>(new CoverService(
                 string.IsNullOrEmpty(_Settings.CacheFolder)
                     ? Directory.GetCurrentDirectory()
-                    : _Settings.CacheFolder, _log, _spotifyWebApi)).InSingletonScope();
+                    : _Settings.CacheFolder, _log, _spotifyWebApi));
 
             //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
             var keyManager = new KeyManager(_spotifyController, _log);
-            _kernel.Bind<KeyManager>().ToConstant(keyManager).InSingletonScope();
+            _kernel.RegisterSingleton(keyManager);
             if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
             {
                 keyManager.RegisterHotKeys(_Settings.HotKeys);
             }
 
-            _kernel.Bind(
-                x => x.FromThisAssembly().SelectAllClasses().InNamespaceOf(typeof (ShellViewModel), typeof(ShellView)).BindToSelf());
+            var classes =
+                Assembly.GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(
+                        type =>
+                            type.IsPublic && (
+                            type.Namespace == typeof (ShellViewModel).Namespace ||
+                            type.Namespace == typeof (ShellView).Namespace))
+                    .ToList();
+            foreach (var @class in classes)
+            {
+                _kernel.Register(@class);
+            }
             base.Configure();
         }
 
@@ -117,7 +136,7 @@ namespace MiniPie {
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
                 
-            foreach (var keyManager in _kernel.GetAll<KeyManager>())
+            foreach (var keyManager in _kernel.GetAllInstances<KeyManager>())
             {
                 keyManager.Dispose();
             }

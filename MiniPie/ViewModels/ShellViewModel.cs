@@ -10,7 +10,7 @@ using Microsoft.Win32;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
-using Ninject;
+using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie.ViewModels {
@@ -20,7 +20,7 @@ namespace MiniPie.ViewModels {
         private readonly ICoverService _CoverService;
         private readonly AppSettings _Settings;
         private readonly ILog _Logger;
-        private readonly IKernel _kernel;
+        private readonly Container _kernel;
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
         private const string TrackPattern = @".*\/\/open\.spotify\.com\/track\/(.*)";
@@ -33,7 +33,7 @@ namespace MiniPie.ViewModels {
         private bool _isLockPaused;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
-            ICoverService coverService, AppSettings settings, ILog logger, IKernel kernel) {
+            ICoverService coverService, AppSettings settings, ILog logger, Container kernel) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
@@ -83,7 +83,7 @@ namespace MiniPie.ViewModels {
             base.OnViewLoaded(view);
 
             if (!_SpotifyController.IsSpotifyInstalled())
-                _WindowManager.ShowDialog(_kernel.Get<NoSpotifyViewModel>());
+                _WindowManager.ShowDialog(_kernel.GetInstance<NoSpotifyViewModel>());
 
             if (_Settings.StartMinimized)
             {
@@ -130,11 +130,11 @@ namespace MiniPie.ViewModels {
         #endregion
 
         public void ShowSettings() {
-            _WindowManager.ShowDialog(_kernel.Get<SettingsViewModel>());
+            _WindowManager.ShowDialog(_kernel.GetInstance<SettingsViewModel>());
         }
 
         public void ShowAbout() {
-            _WindowManager.ShowDialog(_kernel.Get<AboutViewModel>());
+            _WindowManager.ShowDialog(_kernel.GetInstance<AboutViewModel>());
         }
 
         public void PlayPause() {

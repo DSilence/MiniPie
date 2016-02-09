@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
+             xmlns:converter="clr-namespace:MiniPie.Converter"
              mc:Ignorable="d"
              MinWidth="350"
              MaxWidth="450"
