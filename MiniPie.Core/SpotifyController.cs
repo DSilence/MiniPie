@@ -8,7 +8,6 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Win32;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
@@ -203,9 +202,9 @@ namespace MiniPie.Core {
                         {
                             if (newTrackInfo.error != null)
                             {
-                                if ((newTrackInfo.error.message.Contains("Invalid Csrf") ||
-                                     newTrackInfo.error.message.Contains("OAuth updateToken") ||
-                                     newTrackInfo.error.message.Contains("Expired OAuth localRequestToken")))
+                                if (newTrackInfo.error.message.Contains("Invalid Csrf") ||
+                                    newTrackInfo.error.message.Contains("OAuth updateToken") ||
+                                    newTrackInfo.error.message.Contains("Expired OAuth localRequestToken"))
                                 {
                                     //try to renew updateToken and retrieve status again
                                     _Logger.Info("Renew updateToken and try again");

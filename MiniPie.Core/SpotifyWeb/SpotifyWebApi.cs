@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using MiniPie.Core.SpotifyWeb.Models;
-using Newtonsoft.Json;
 
 namespace MiniPie.Core.SpotifyWeb
 {
