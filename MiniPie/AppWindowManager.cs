@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -61,8 +62,16 @@ namespace MiniPie {
             var savedPosition = _Settings.Positions.FirstOrDefault(p => p.WindowId == wndId);
             if (savedPosition != null) {
                 wnd.WindowStartupLocation = WindowStartupLocation.Manual;
-                wnd.Top = savedPosition.Top;
-                wnd.Left = savedPosition.Left;
+                if (IsValidView(savedPosition.Left, savedPosition.Top))
+                {
+                    wnd.Top = savedPosition.Top;
+                    wnd.Left = savedPosition.Left;
+                }
+                else
+                {
+                    wnd.Top = 300;
+                    wnd.Left = 300;
+                }
             }
             else
                 wnd.WindowStartupLocation = wnd.Owner != null
@@ -85,6 +94,21 @@ namespace MiniPie {
                                savedPosition.Top = ((Window) o).Top;
                                savedPosition.Left = ((Window) o).Left;
                            };
+        }
+
+        public bool IsValidView(double savedLeft, double savedTop)
+        {
+            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+            {
+                
+                var bounds = screen.Bounds;
+                //leave at least 100 pixels
+                if (savedLeft >= bounds.Left && savedLeft + 100 <= bounds.Right && savedTop >= bounds.Top &&
+                    savedTop + 100 <= bounds.Bottom)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

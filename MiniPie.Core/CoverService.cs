@@ -16,14 +16,14 @@ namespace MiniPie.Core {
 
         private const string CacheFileNameTemplate = "{0}.jpg";
         private readonly string _CacheDirectory;
-        private readonly SpotifyWebApi _webApi;
+        private readonly ISpotifyWebApi _webApi;
         private readonly ILog _Logger;
         private HttpClient _client = new HttpClient();
         
         private const int MaxFileCount = 500;
 
         public CoverService(string cacheRootDirectory,
-            ILog logger, SpotifyWebApi webApi)
+            ILog logger, ISpotifyWebApi webApi)
         {
             _CacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
             _Logger = logger;

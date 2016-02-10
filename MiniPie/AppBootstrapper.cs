@@ -22,9 +22,6 @@ namespace MiniPie {
         private AppContracts _Contracts;
         private JsonPersister<AppSettings> _SettingsPersistor;
         private ILog _log;
-        private SpotifyWebApi _spotifyWebApi;
-        private SpotifyController _spotifyController;
-        private SpotifyLocalApi _spotifyLocalApi;
         private readonly Container _kernel = new Container();
 
         public AppBootstrapper():base(true)
@@ -90,25 +87,15 @@ namespace MiniPie {
             _kernel.RegisterSingleton<IWindowManager>(new AppWindowManager(_Settings));
             _kernel.Register<IEventAggregator, EventAggregator>();
 
-            _spotifyLocalApi = new SpotifyLocalApi(_log, _Contracts);
-            _kernel.RegisterSingleton<ISpotifyLocalApi>(_spotifyLocalApi);
-            _spotifyWebApi = new SpotifyWebApi(_log, _Settings);
-            _kernel.RegisterSingleton<ISpotifyWebApi>(_spotifyWebApi);
-            _spotifyController = new SpotifyController(_log,
-                _spotifyLocalApi, _spotifyWebApi);
-            _kernel.RegisterSingleton<ISpotifyController>(_spotifyController);
-            _kernel.RegisterSingleton<ICoverService>(new CoverService(
-                string.IsNullOrEmpty(_Settings.CacheFolder)
-                    ? Directory.GetCurrentDirectory()
-                    : _Settings.CacheFolder, _log, _spotifyWebApi));
-
-            //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
-            var keyManager = new KeyManager(_spotifyController, _log);
-            _kernel.RegisterSingleton(keyManager);
-            if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
-            {
-                keyManager.RegisterHotKeys(_Settings.HotKeys);
-            }
+            _kernel.RegisterSingleton<ISpotifyLocalApi, SpotifyLocalApi>();
+            _kernel.RegisterSingleton<ISpotifyWebApi, SpotifyWebApi>();
+            _kernel.RegisterSingleton<ISpotifyController, SpotifyController>();
+            //new CoverService(
+            _kernel.RegisterSingleton<ICoverService>(() => new CoverService(string.IsNullOrEmpty(_Settings.CacheFolder)
+                ? Directory.GetCurrentDirectory()
+                : _Settings.CacheFolder, _log, _kernel.GetInstance<ISpotifyWebApi>()));
+            
+            _kernel.RegisterSingleton<KeyManager>();
 
             var classes =
                 Assembly.GetExecutingAssembly()
@@ -124,23 +111,24 @@ namespace MiniPie {
                 _kernel.Register(@class);
             }
             base.Configure();
+            
         }
 
         public async Task ConfigurationInitialize()
         {
-            await _spotifyWebApi.Initialize();
-            await _spotifyLocalApi.Initialize();
-            await _spotifyController.Initialize();
+            if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
+            {
+                _kernel.GetInstance<KeyManager>().RegisterHotKeys(_Settings.HotKeys);
+            }
+            await _kernel.GetInstance<ISpotifyWebApi>().Initialize().ConfigureAwait(false);
+            await _kernel.GetInstance<ISpotifyLocalApi>().Initialize().ConfigureAwait(false);
+            await _kernel.GetInstance<ISpotifyController>().Initialize().ConfigureAwait(false);
         }
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
-                
-            foreach (var keyManager in _kernel.GetAllInstances<KeyManager>())
-            {
-                keyManager.Dispose();
-            }
-            _kernel.Dispose();
+            _SettingsPersistor.Dispose();
+            _kernel.Dispose();    
         }
     }
 }
