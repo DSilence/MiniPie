@@ -15,6 +15,7 @@ namespace MiniPie.Core.SpotifyWeb.Models
         public Followers Followers { get; set; }
         [JsonProperty("uri")]
         public string Uri { get; set; }
+        [JsonProperty("images")]
         public IList<Image> Images { get; set; }
     }
 }

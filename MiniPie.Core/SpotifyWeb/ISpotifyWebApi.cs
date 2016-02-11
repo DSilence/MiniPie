@@ -12,7 +12,8 @@ namespace MiniPie.Core.SpotifyWeb
         Task AddToPlaylist(string playlistId, string trackUrls);
         Uri BuildLoginQuery();
         Task CreateToken(string response);
-        Task<string> GetArt(string uri);
+        Task<string> GetAlbumArt(string uri);
+        Task<string> GetTrackArt(string uri);
         Task<User> GetProfile();
         Task<IList<Models.Track>> GetTrackInfo(IList<string> trackIds);
         Task<IList<Playlist>> GetUserPlaylists();

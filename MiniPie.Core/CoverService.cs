@@ -51,7 +51,7 @@ namespace MiniPie.Core {
         }
 
         public async Task<string> FetchCover(Status trackStatus) {
-            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (trackStatus.track.album_resource.uri).ToSHA1()));
+            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, trackStatus.track.track_resource.uri.ToSHA1()));
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
@@ -66,8 +66,8 @@ namespace MiniPie.Core {
                         throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.error.message,
                                                           trackStatus.error.type));
 
-                    if (trackStatus.track != null && trackStatus.track.album_resource != null) {
-                        var coverUrl = await _webApi.GetArt(trackStatus.track.album_resource.uri);
+                    if (trackStatus.track != null && trackStatus.track.track_resource != null) {
+                        var coverUrl = await _webApi.GetTrackArt(trackStatus.track.track_resource.uri);
                         if (!string.IsNullOrEmpty(coverUrl))
                             return await DownloadAndSaveImage(coverUrl, cachedFileName);
                     }
@@ -87,9 +87,9 @@ namespace MiniPie.Core {
         {
             using (var fs = File.Create(destination))
             {
-                using (var rs = await _client.GetStreamAsync(url))
+                using (var rs = await _client.GetStreamAsync(url).ConfigureAwait(false))
                 {
-                    await rs.CopyToAsync(fs);
+                    await rs.CopyToAsync(fs).ConfigureAwait(false);
                     CleanupCache();
                 }
             }

@@ -11,7 +11,6 @@ using MiniPie.Core.SpotifyWeb.Models;
 
 namespace MiniPie.Core.SpotifyWeb
 {
-    //TODO move all web api associated stuff here(album art, etc.)
     public class SpotifyWebApi : ISpotifyWebApi
     {
         private SpotifyHttpClient _client;
@@ -31,6 +30,7 @@ namespace MiniPie.Core.SpotifyWeb
         private const string IsTrackSavedFormat = "me/tracks/contains?ids={0}";
         private const string MyMusicAddFormat = "me/tracks";
         private const string MyMusicDeleteFormat = MyMusicAddFormat + "?ids={0}";
+        private const string TrackInfoUrl = "tracks/{0}";
         #endregion
 
         public event EventHandler TokenUpdated;
@@ -69,13 +69,13 @@ namespace MiniPie.Core.SpotifyWeb
                 RedirectUrl, Guid.NewGuid(), scopeEncoded));
             return loginUri;
         }
-
+        
         public Task<User> GetProfile()
         {
             return _client.DoGetAsync<User>(SpotifyProfileUri);
         }
 
-        public async Task<string> GetArt(string uri)
+        public async Task<string> GetAlbumArt(string uri)
         {
             var albumId = uri.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries).Last();
             var album = await _client.DoGetAsync<Models.Album>(string.Format(_albumsUri, albumId));
@@ -85,6 +85,18 @@ namespace MiniPie.Core.SpotifyWeb
             }
             throw new ApplicationException("Failed to retrieve art url");
         }
+
+        public async Task<string> GetTrackArt(string uri)
+        {
+            var trackId = uri.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries).Last();
+            var track = await _client.DoGetAsync<Models.Track>(string.Format(TrackInfoUrl, trackId));
+            if (track?.Album?.Images != null && track.Album?.Images?.Count > 1)
+            {
+                return track.Album.Images[1].Url;
+            }
+            throw new ApplicationException("Failed to retrieve art url");
+        }
+
 
         public async Task<IList<Playlist>> GetUserPlaylists()
         {
