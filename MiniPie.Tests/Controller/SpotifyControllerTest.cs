@@ -2,6 +2,7 @@
 using System.Security.RightsManagement;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyNative;
 using MiniPie.Core.SpotifyWeb;
 using NSubstitute;
 using Xunit;
@@ -16,9 +17,10 @@ namespace MiniPie.Tests.Controller
         {
             var localApi = Substitute.For<ISpotifyLocalApi>();
             var spotifyWebApi = Substitute.For<ISpotifyWebApi>();
+            var spotifyNativeApi = Substitute.For<ISpotifyNativeApi>();
             var log = Substitute.For<ILog>();
 
-            _spotifyController = new SpotifyController(log, localApi, spotifyWebApi);
+            _spotifyController = new SpotifyController(log, localApi, spotifyWebApi, spotifyNativeApi);
         }
 
         [Fact]

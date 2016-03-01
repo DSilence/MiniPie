@@ -9,6 +9,7 @@ using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyNative;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.ViewModels;
 using MiniPie.Views;
@@ -89,6 +90,7 @@ namespace MiniPie {
 
             _kernel.RegisterSingleton<ISpotifyLocalApi, SpotifyLocalApi>();
             _kernel.RegisterSingleton<ISpotifyWebApi, SpotifyWebApi>();
+            _kernel.RegisterSingleton<ISpotifyNativeApi, SpotifyNativeApi>();
             _kernel.RegisterSingleton<ISpotifyController, SpotifyController>();
             //new CoverService(
             _kernel.RegisterSingleton<ICoverService>(() => new CoverService(string.IsNullOrEmpty(_Settings.CacheFolder)

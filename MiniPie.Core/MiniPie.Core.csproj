@@ -86,6 +86,8 @@
     <Compile Include="CoverService.cs" />
     <Compile Include="Enums\LockScreenBehavior.cs" />
     <Compile Include="Enums\SupportedKeyModifiers.cs" />
+    <Compile Include="SpotifyNative\ISpotifyNativeApi.cs" />
+    <Compile Include="SpotifyNative\SpotifyNativeApi.cs" />
     <Compile Include="SpotifyWeb\Extensions\StringExtensions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="HotKeyManager\HotKey.cs" />

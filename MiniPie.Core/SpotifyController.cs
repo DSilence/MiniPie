@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyNative;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.Core.SpotifyWeb.Models;
 using Timer = System.Threading.Timer;
@@ -27,59 +26,27 @@ namespace MiniPie.Core {
         public event EventHandler SpotifyOpened;
         public event EventHandler TokenUpdated;
 
-        #region Win32Imports
-
-        private const int SW_RESTORE = 9;
-        private const int MINIMIZED_STATE = 2;
-
-
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("user32.dll")]
-        static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
-
-        [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        private struct WINDOWPLACEMENT
-        {
-            public int length;
-            public int flags;
-            public int showCmd;
-            public Point ptMinPosition;
-            public Point ptMaxPosition;
-            public Point rcNormalPosition;
-        }
-        #endregion
-
-        const int KeyMessage = 0x319;
-        private const uint WM_COMMAND = 0x0111;
-
-        private const long NexttrackKey = 0xB0000L;
-        private const long PreviousKey = 0xC0000L;
-        private const long VolumeUpKey = 0x10079L;
-        private const long VolumeDownKey = 0x1007AL;
-
         private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
         private readonly ILog _Logger;
         private readonly ISpotifyLocalApi _localApi;
         private readonly ISpotifyWebApi _spotifyWebApi;
 
-        private Process _SpotifyProcess;
+        private Process SpotifyProcess
+        {
+            get { return _spotifyNativeApi.SpotifyProcess; }
+            set { _spotifyNativeApi.SpotifyProcess = value; }
+        }
         private Thread _BackgroundChangeTracker;
         private Timer _songStatusWatcher;
         private Status _CurrentTrackInfo;
+        private ISpotifyNativeApi _spotifyNativeApi;
 
-        public SpotifyController(ILog logger, ISpotifyLocalApi localApi, ISpotifyWebApi spotifyWebApi) {
+        public SpotifyController(ILog logger, ISpotifyLocalApi localApi, ISpotifyWebApi spotifyWebApi, ISpotifyNativeApi spotifyNativeApi) {
             _Logger = logger;
             _localApi = localApi;
             _spotifyWebApi = spotifyWebApi;
+            _spotifyNativeApi = spotifyNativeApi;
         }
 
         public async Task Initialize()
@@ -119,17 +86,17 @@ namespace MiniPie.Core {
         }
 
         private async Task AttachToProcess() {
-            _SpotifyProcess = null;
-            _SpotifyProcess = Process.GetProcessesByName("spotify")
+            SpotifyProcess = null;
+            SpotifyProcess = Process.GetProcessesByName("spotify")
                 .FirstOrDefault(p => !string.IsNullOrEmpty(p.MainWindowTitle));
-            if (_SpotifyProcess != null)
+            if (SpotifyProcess != null)
             {
                 //Renew updateToken for Spotify local api
-                await _localApi.RenewToken();
-                _SpotifyProcess.EnableRaisingEvents = true;
-                _SpotifyProcess.Exited += (o, e) =>
+                await _localApi.RenewToken().ConfigureAwait(false);
+                SpotifyProcess.EnableRaisingEvents = true;
+                SpotifyProcess.Exited += (o, e) =>
                 {
-                    _SpotifyProcess = null;
+                    SpotifyProcess = null;
                     _CurrentTrackInfo = null;
                     _localRequestTokenSource?.Cancel();
                     OnSpotifyExited();
@@ -165,7 +132,7 @@ namespace MiniPie.Core {
             {
                 while (true)
                 {
-                    if (_SpotifyProcess != null)
+                    if (SpotifyProcess != null)
                     {
                         //TODO this should be a bool field probably
                         int timeout = _CurrentTrackInfo == null ? -1 : 30;
@@ -241,7 +208,7 @@ namespace MiniPie.Core {
                         Thread.Sleep(1000);
                         //wait for spotify to reopen
                         await AttachToProcess();
-                        if (_SpotifyProcess != null)
+                        if (SpotifyProcess != null)
                         {
                             OnSpotifyOpenend();
                         }
@@ -256,11 +223,13 @@ namespace MiniPie.Core {
 
         protected internal void ProcessTrackInfo(Status newTrackInfo)
         {
-            var newTrackInfoUri = newTrackInfo?.track?.track_resource?.uri;
-            if (_CurrentTrackInfo == null || _CurrentTrackInfo.track == null ||
-                            _CurrentTrackInfo.track.track_resource == null ||
-                            _CurrentTrackInfo.track.track_resource.uri
-                            != newTrackInfoUri)
+            if (newTrackInfo == null)
+            {
+                return;
+            }
+            var newTrackInfoUri = newTrackInfo.track?.track_resource?.uri;
+            if (_CurrentTrackInfo?.track?.track_resource == null || _CurrentTrackInfo.track.track_resource.uri
+                != newTrackInfoUri)
             {
                 _CurrentTrackInfo = newTrackInfo;
                 OnTrackChanged();
@@ -285,7 +254,7 @@ namespace MiniPie.Core {
         }
 
         public bool IsSpotifyOpen() {
-            return _SpotifyProcess != null;
+            return SpotifyProcess != null;
         }
 
         public bool IsSpotifyInstalled() {
@@ -340,41 +309,31 @@ namespace MiniPie.Core {
             }
         }
 
-        public void NextTrack() {
-            if(_SpotifyProcess != null)
-                PostMessage(_SpotifyProcess.MainWindowHandle, KeyMessage, IntPtr.Zero, new IntPtr(NexttrackKey));
+        public void NextTrack()
+        {
+            _spotifyNativeApi.NextTrack();
         }
 
-        public void PreviousTrack() {
-            if (_SpotifyProcess != null)
-                PostMessage(_SpotifyProcess.MainWindowHandle, KeyMessage, IntPtr.Zero, new IntPtr(PreviousKey));
+        public void PreviousTrack()
+        {
+            _spotifyNativeApi.PreviousTrack();
         }
 
-        public void VolumeUp() {
-            if (_SpotifyProcess != null)
-                PostMessage(_SpotifyProcess.MainWindowHandle, WM_COMMAND, new IntPtr(VolumeUpKey), IntPtr.Zero);
+        public void VolumeUp()
+        {
+            _spotifyNativeApi.VolumeUp();
         }
 
-        public void VolumeDown() {
-            if (_SpotifyProcess != null)
-                PostMessage(_SpotifyProcess.MainWindowHandle, WM_COMMAND, new IntPtr(VolumeDownKey), IntPtr.Zero);
+        public void VolumeDown()
+        {
+            _spotifyNativeApi.VolumeDown();
         }
 
         public void OpenSpotify()
         {
-            if (_SpotifyProcess != null)
-            {
-                WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
-                IntPtr handle = _SpotifyProcess.MainWindowHandle;
-                GetWindowPlacement(handle, ref placement);
-                if (placement.showCmd == MINIMIZED_STATE)
-                {
-                    ShowWindowAsync(handle, SW_RESTORE);
-                    
-                }
-                SetForegroundWindow(handle);
-            }
+            _spotifyNativeApi.OpenSpotify();
         }
+
 
         public void AttachTrackChangedHandler(EventHandler handler)
         {
