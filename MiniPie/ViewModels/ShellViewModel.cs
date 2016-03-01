@@ -293,10 +293,14 @@ namespace MiniPie.ViewModels {
                         OnCoverDisplayFadeIn();
                 }
 
-                UpdatePlaylists();
-                if (TrackId != null)
+                var tokenPresent = _Settings.SpotifyToken != null;
+                if (tokenPresent)
                 {
-                    IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] {TrackId})).First();
+                    UpdatePlaylists();
+                    if (TrackId != null)
+                    {
+                        IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] {TrackId})).First();
+                    }
                 }
             }
             catch (Exception exc) {

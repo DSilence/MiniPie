@@ -124,24 +124,31 @@ namespace MiniPie.Core.SpotifyWeb
                 result = await SendAsync(request).ConfigureAwait(false);
                 if (result.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    //reauthenticate and try again
-                    await Authenticate(_settings.SpotifyToken.RefreshToken, GrantType.RefreshToken)
-                        .ConfigureAwait(false);
-                    result.Dispose();
-                    result = await SendAsync(request).ConfigureAwait(false);
+                    if (_settings.SpotifyToken != null)
+                    {
+                        //reauthenticate and try again
+                        await Authenticate(_settings.SpotifyToken.RefreshToken, GrantType.RefreshToken)
+                            .ConfigureAwait(false);
+
+                        result.Dispose();
+                        result = await SendAsync(request).ConfigureAwait(false);
+                    }
                 }
                 result.EnsureSuccessStatusCode();
+                return result;
             }
             catch (WebException webException)
             {
                 if (webException.Response != null && ((HttpWebResponse)webException.Response).StatusCode != HttpStatusCode.NotFound)
                     _log.WarnException("[WebException] Failed to send request to spotify web api:" + request.RequestUri + "; the error is:" + webException.Message, webException);
+                throw;
             }
             catch (Exception exc)
             {
                 _log.WarnException("Failed to process Spotify request:" + request.RequestUri + "; the error is:" + exc.Message, exc);
+                throw;
             }
-            return result;
+            return null;
         }
 
         public async Task Authenticate(string refreshToken,
