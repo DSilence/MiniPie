@@ -168,12 +168,12 @@ namespace MiniPie.Core.SpotifyLocal {
                     try
                     {
                         Process.Start(
-                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "Data", "SpotifyWebHelper.exe"));
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "SpotifyWebHelper.exe"));
+                        _log.Warn("Spotify web helper was stopped. Started web helper successfully");
                     }
                     catch (Exception exc)
                     {
                         _log.WarnException("Failed to start the Spotify webhelper", exc);
-                        throw new Exception("Could not launch SpotifyWebHelper. Your installation of Spotify might be corrupt or you might not have Spotify installed", exc);
                     }
                     response = await _client.GetStringAsync(requestUri).ConfigureAwait(false);
                 }
