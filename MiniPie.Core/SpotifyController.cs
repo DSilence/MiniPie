@@ -37,10 +37,11 @@ namespace MiniPie.Core {
             get { return _spotifyNativeApi.SpotifyProcess; }
             set { _spotifyNativeApi.SpotifyProcess = value; }
         }
-        private Thread _BackgroundChangeTracker;
+        private Task _backgroundChangeTracker;
+        private readonly CancellationTokenSource _backgroundChangeWorkerTokenSource = new CancellationTokenSource();
         private Timer _songStatusWatcher;
-        private Status _CurrentTrackInfo;
-        private ISpotifyNativeApi _spotifyNativeApi;
+        private Status _currentTrackInfo;
+        private readonly ISpotifyNativeApi _spotifyNativeApi;
 
         public SpotifyController(ILog logger, ISpotifyLocalApi localApi, ISpotifyWebApi spotifyWebApi, ISpotifyNativeApi spotifyNativeApi) {
             _Logger = logger;
@@ -66,23 +67,19 @@ namespace MiniPie.Core {
         private void SongTimerChanging(object state)
         {
             //every second increase the track time by 1
-            if (_CurrentTrackInfo != null && _CurrentTrackInfo.playing)
+            if (_currentTrackInfo != null && _currentTrackInfo.playing)
             {
-                _CurrentTrackInfo.playing_position = (int)_CurrentTrackInfo.playing_position + 1;
+                _currentTrackInfo.playing_position = (int)_currentTrackInfo.playing_position + 1;
                 OnTrackTimerChanged();
             }
         }
 
         private void JoinBackgroundProcess()
         {
-            if (_BackgroundChangeTracker != null && _BackgroundChangeTracker.IsAlive)
+            if (_backgroundChangeTracker != null && !_backgroundChangeTracker.IsCompleted)
                 return;
             
-            _BackgroundChangeTracker = new Thread(() =>
-            {
-                BackgroundChangeTrackerWork();
-            }) { IsBackground = true };
-            _BackgroundChangeTracker.Start();
+            _backgroundChangeTracker = Task.Run(() => BackgroundChangeTrackerWork(), _backgroundChangeWorkerTokenSource.Token);
         }
 
         private async Task AttachToProcess() {
@@ -97,7 +94,7 @@ namespace MiniPie.Core {
                 SpotifyProcess.Exited += (o, e) =>
                 {
                     SpotifyProcess = null;
-                    _CurrentTrackInfo = null;
+                    _currentTrackInfo = null;
                     _localRequestTokenSource?.Cancel();
                     OnSpotifyExited();
                 };
@@ -135,7 +132,7 @@ namespace MiniPie.Core {
                     if (SpotifyProcess != null)
                     {
                         //TODO this should be a bool field probably
-                        int timeout = _CurrentTrackInfo == null ? -1 : 30;
+                        int timeout = _currentTrackInfo == null ? -1 : 30;
                         Status newTrackInfo;
                         _localRequestTokenSource = new CancellationTokenSource(timeout == -1 ? 1000 : 45000);
                         try
@@ -148,7 +145,7 @@ namespace MiniPie.Core {
                         catch (TaskCanceledException)
                         {
                             _Logger.Info("Retrieving cancelled");
-                            _CurrentTrackInfo = null;
+                            _currentTrackInfo = null;
                             //TODO this is bad and dirt
                             //nothing to do here
                             //if task was cancelled (e.g. spotify exited, just move on and wait for further stuff
@@ -176,7 +173,7 @@ namespace MiniPie.Core {
                                     //try to renew updateToken and retrieve status again
                                     _Logger.Info("Renew updateToken and try again");
                                     await _localApi.RenewToken();
-                                    _CurrentTrackInfo = null;
+                                    _currentTrackInfo = null;
                                     continue;
                                 }
                                 else
@@ -190,14 +187,14 @@ namespace MiniPie.Core {
                         {
                             //TODO this should crash the application
                             _Logger.WarnException("Failed to retrieve trackinfo", exc);
-                            _CurrentTrackInfo = null;
+                            _currentTrackInfo = null;
                             Thread.Sleep(1000);
                             continue;
                         }
 
                         if (newTrackInfo.track == null)
                         {
-                            _CurrentTrackInfo = null;
+                            _currentTrackInfo = null;
                             continue;
                         }
 
@@ -228,17 +225,17 @@ namespace MiniPie.Core {
                 return;
             }
             var newTrackInfoUri = newTrackInfo.track?.track_resource?.uri;
-            if (_CurrentTrackInfo?.track?.track_resource == null || _CurrentTrackInfo.track.track_resource.uri
+            if (_currentTrackInfo?.track?.track_resource == null || _currentTrackInfo.track.track_resource.uri
                 != newTrackInfoUri)
             {
-                _CurrentTrackInfo = newTrackInfo;
+                _currentTrackInfo = newTrackInfo;
                 OnTrackChanged();
                 _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
             else
             {
-                _CurrentTrackInfo = newTrackInfo;
+                _currentTrackInfo = newTrackInfo;
                 OnTrackTimerChanged();
                 _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
@@ -280,18 +277,18 @@ namespace MiniPie.Core {
         }
 
         public Status GetStatus() {
-            return _CurrentTrackInfo;
+            return _currentTrackInfo;
         }
 
         public async void Pause()
         {
-            if(_CurrentTrackInfo.playing)
+            if(_currentTrackInfo.playing)
                 await _localApi.Pause();
         }
 
         public async void Play()
         {
-            if (!_CurrentTrackInfo.playing)
+            if (!_currentTrackInfo.playing)
             {
                 await _localApi.Resume();
             }
@@ -299,7 +296,7 @@ namespace MiniPie.Core {
 
         public async void PausePlay()
         {
-            if (_CurrentTrackInfo.playing)
+            if (_currentTrackInfo.playing)
             {
                 await _localApi.Pause();
             }
@@ -415,8 +412,10 @@ namespace MiniPie.Core {
         public void Dispose()
         {
             _songStatusWatcher?.Dispose();
-            if(_BackgroundChangeTracker != null && _BackgroundChangeTracker.IsAlive)
-                _BackgroundChangeTracker.Abort();
+            if(_backgroundChangeTracker != null && _backgroundChangeTracker.IsCompleted)
+                _backgroundChangeWorkerTokenSource.Cancel();
+
+            _backgroundChangeWorkerTokenSource.Dispose();
         }
     }
 }
