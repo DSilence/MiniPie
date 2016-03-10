@@ -32,7 +32,8 @@ namespace MiniPie.ViewModels {
                                                                 new ComponentData("http://jariz.nl", "Apache 2.0 License","Spotify local API"),
 																new ComponentData("http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files", "CPOL", "Resx Extention"), 
                                                                 new ComponentData("https://github.com/Fody/Fody", "MIT", "Fody"), 
-                                                                new ComponentData("http://www.codeproject.com/Articles/36468/WPF-NotifyIcon", "CPOL", "Hardcodet WPF NotifyIcon")
+                                                                new ComponentData("http://www.codeproject.com/Articles/36468/WPF-NotifyIcon", "CPOL", "Hardcodet WPF NotifyIcon"),
+                                                                new ComponentData("https://github.com/Squirrel/Squirrel.Windows", "Github license", "Squirrel.Windows"), 
                                                             });
         }
 

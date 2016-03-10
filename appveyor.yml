@@ -16,8 +16,10 @@ build:
 before_build:
     - nuget restore
 artifacts:
-    - path: MiniPie\bin\Release\app.publish\
+    - path: MiniPie\Releases\
       name: MiniPie
+    - path: MiniPie\Releases\Setup.exe
+      name: Installer
     - path: MiniPie\bin\Release\
       name: Binaries
 deploy:
@@ -25,7 +27,7 @@ deploy:
     storage_account_name: minipie
     storage_access_key:
         secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
-    container: clickonceinstalldevelop
+    container: installerdevelop
     folder: ''
     artifact: MiniPie
     unzip: true
@@ -36,14 +38,14 @@ deploy:
     storage_account_name: minipie
     storage_access_key:
         secure: eG3xtFKvu9udOtA68paUwEJUg70/fZZNL4mH52tUi0cU5gmp0fMzh1kah6CuQ0LyXbO/P+Ag4zurCho1fEhAPUfZ2SdW0XW2g0ZB95S+cnENTk96dBEsNDhFTYv7JF8/
-    container: clickonceinstallmaster
+    container: installermaster
     folder: ''
     artifact: MiniPie
     unzip: true
     on:
         branch: master
 after_build:
-        - ps: MSBuild MiniPie.sln /p:Platform="Any CPU" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /property:GenerateManifests=true /t:Publish /p:ApplicationVersion="$env:APPVEYOR_BUILD_VERSION" /p:InstallUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/" /p:UpdateUrl="https://minipie.blob.core.windows.net/clickonceinstall$env:APPVEYOR_REPO_BRANCH/"
+        - cmd: CreateInstaller.bat $(appveyor_build_version)
 notifications:
   - provider: Slack
     auth_token:

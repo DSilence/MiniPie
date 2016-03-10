@@ -11,6 +11,7 @@ using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyNative;
 using MiniPie.Core.SpotifyWeb;
+using MiniPie.Manager;
 using MiniPie.ViewModels;
 using MiniPie.Views;
 using SimpleInjector;
@@ -83,6 +84,7 @@ namespace MiniPie {
             
             _log = new ProductionLogger();
             _kernel.RegisterSingleton(_log);
+            _kernel.RegisterSingleton<UpdateManager>();
 
             _kernel.RegisterSingleton(new AutorunService(_log, _Settings, _Contracts));
             _kernel.RegisterSingleton<IWindowManager>(new AppWindowManager(_Settings));
@@ -125,6 +127,7 @@ namespace MiniPie {
             await _kernel.GetInstance<ISpotifyWebApi>().Initialize().ConfigureAwait(false);
             await _kernel.GetInstance<ISpotifyLocalApi>().Initialize().ConfigureAwait(false);
             await _kernel.GetInstance<ISpotifyController>().Initialize().ConfigureAwait(false);
+            _kernel.GetInstance<UpdateManager>().Initialize();
         }
 
         protected override void OnExit(object sender, EventArgs e) {

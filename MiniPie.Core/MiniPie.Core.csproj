@@ -17,7 +17,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>../minipie.snk</AssemblyOriginatorKeyFile>
@@ -86,6 +86,7 @@
     <Compile Include="CoverService.cs" />
     <Compile Include="Enums\LockScreenBehavior.cs" />
     <Compile Include="Enums\SupportedKeyModifiers.cs" />
+    <Compile Include="Enums\UpdatePreference.cs" />
     <Compile Include="SpotifyNative\ISpotifyNativeApi.cs" />
     <Compile Include="SpotifyNative\SpotifyNativeApi.cs" />
     <Compile Include="SpotifyWeb\Extensions\StringExtensions.cs" />

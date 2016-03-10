@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>MiniPie</id>
+        <version>0.0.2.12</version>
+        <title>MiniPie</title>
+        <authors>SleepyManiac</authors>
+        <owners>SleepyManiac</owners>
+        <licenseUrl>http://choosealicense.com/licenses/apache-2.0/#</licenseUrl>
+        <projectUrl>https://github.com/DSilence/MiniPie</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/DSilence/MiniPie/develop/MiniPie/App.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Spotify Miniplayer</description>
+        <copyright>Copyright 2016</copyright>
+        <tags>MiniPie Spotify Miniplayer</tags>
+    </metadata>
+    <files>
+        <file src="bin\Release\ru\MiniPie.resources.dll" target="lib\net45\ru\MiniPie.resources.dll" />
+        <file src="bin\Release\*.dll" target="lib\net45" />
+        <file src="bin\Release\MiniPie.exe" target="lib\net45\MiniPie.exe" />
+        <file src="bin\Release\MiniPie.exe.config" target="lib\net45\MiniPie.exe.config" />
+        <file src="..\MiniPieHelper\bin\Release\MiniPieHelper.exe" target="lib\net45\MiniPieHelper.exe" />
+        <file src="bin\Release\NLog.config" target="lib\net45\NLog.config" />
+    </files>
+</package>

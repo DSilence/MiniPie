@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualBasic.ApplicationServices;
 
-namespace MiniPie
+namespace MiniPie.Manager
 {
     public class SingleInstanceManager : WindowsFormsApplicationBase
     {

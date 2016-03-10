@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPie", "MiniPie\MiniPie.csproj", "{2D02C8B6-4A11-493F-8DF5-8441618A002F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D37D7C80-15BB-423F-A3BD-608F9723F8CC} = {D37D7C80-15BB-423F-A3BD-608F9723F8CC}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPie.Core", "MiniPie.Core\MiniPie.Core.csproj", "{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}"
 EndProject

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,7 +7,7 @@ using MiniPie.Core;
 using MiniPie.Core.Extensions;
 using MiniPie.ViewModels;
 
-namespace MiniPie {
+namespace MiniPie.Manager {
     public sealed class AppWindowManager : WindowManager {
 
         [StructLayout(LayoutKind.Sequential)]
