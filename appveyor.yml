@@ -45,7 +45,7 @@ deploy:
     on:
         branch: master
 after_build:
-        - cmd: CreateInstaller.bat $(appveyor_build_version)
+        - cmd: CreateInstaller.bat %appveyor_build_version%
 notifications:
   - provider: Slack
     auth_token:
