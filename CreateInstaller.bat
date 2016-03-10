@@ -17,7 +17,6 @@ SET "Replacement=        <version>%version%</version>"
     ECHO(!Line!
     ENDLOCAL
 ))>"%file%.new"
-TYPE "%file%.new"
 MOVE "%file%.new" "%file%"
 
 nuget pack MiniPie.nuspec
