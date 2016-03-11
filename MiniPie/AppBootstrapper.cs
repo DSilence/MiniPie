@@ -96,7 +96,7 @@ namespace MiniPie {
             _kernel.RegisterSingleton<ISpotifyController, SpotifyController>();
             //new CoverService(
             _kernel.RegisterSingleton<ICoverService>(() => new CoverService(string.IsNullOrEmpty(_Settings.CacheFolder)
-                ? Directory.GetCurrentDirectory()
+                ? _Contracts.SettingsLocation
                 : _Settings.CacheFolder, _log, _kernel.GetInstance<ISpotifyWebApi>()));
             
             _kernel.RegisterSingleton<KeyManager>();
