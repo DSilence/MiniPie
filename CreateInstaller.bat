@@ -25,4 +25,4 @@ for /r "..\packages" %%a in ('DIR *.* /B /O:-D') do (
 	if "%%~nxa"=="Squirrel.exe" set sq=%%~dpnxa
 	)
 
-%sq% --releasify MiniPie.%version%.nupkg
+%sq% --releasify MiniPie.%version%.nupkg -g .\Images\Loading.gif
