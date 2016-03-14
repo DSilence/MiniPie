@@ -27,7 +27,9 @@ namespace MiniPie.Manager
 
         public void Initialize()
         {
+#if !DEBUG
             _timer = new Timer(Callback, null, TimeSpan.FromSeconds(0.3), TimeSpan.FromMinutes(60));
+#endif
         }
 
         private async void Callback(object state)
@@ -54,7 +56,10 @@ namespace MiniPie.Manager
 
         public void Dispose()
         {
-            _timer.Dispose();
+            if (_timer != null)
+            {
+                _timer.Dispose();
+            }
         }
     }
 }
