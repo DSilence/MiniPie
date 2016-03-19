@@ -28,7 +28,7 @@ namespace MiniPie.Manager
         public void Initialize()
         {
 #if !DEBUG
-            _timer = new Timer(Callback, null, TimeSpan.FromSeconds(0.3), TimeSpan.FromMinutes(60));
+            _timer = new Timer(Callback, null, TimeSpan.FromSeconds(0.3), TimeSpan.FromMinutes(120));
 #endif
         }
 
