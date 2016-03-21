@@ -62,7 +62,7 @@ namespace MiniPie.Core.SpotifyWeb
         {
             using (var request = new HttpRequestMessage(HttpMethod.Delete, uri))
             {
-                using (var result = await ExecuteUnwrapping(request))
+                using (var result = await ExecuteUnwrapping(request).ConfigureAwait(false))
                 {
                     //Do nothing
                 }
@@ -131,7 +131,10 @@ namespace MiniPie.Core.SpotifyWeb
                             .ConfigureAwait(false);
 
                         result.Dispose();
-                        result = await SendAsync(request).ConfigureAwait(false);
+                        using (var messageCopy = CreateRequestCopy(request))
+                        {
+                            result = await SendAsync(messageCopy).ConfigureAwait(false);
+                        }
                     }
                 }
                 result.EnsureSuccessStatusCode();
@@ -149,6 +152,13 @@ namespace MiniPie.Core.SpotifyWeb
                 throw;
             }
             return null;
+        }
+
+        private HttpRequestMessage CreateRequestCopy(HttpRequestMessage message)
+        {
+            HttpRequestMessage copy = new HttpRequestMessage(message.Method, message.RequestUri);
+            copy.Content = message.Content;
+            return copy;
         }
 
         public async Task Authenticate(string refreshToken,
