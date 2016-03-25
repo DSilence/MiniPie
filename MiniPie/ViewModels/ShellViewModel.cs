@@ -305,6 +305,7 @@ namespace MiniPie.ViewModels {
             }
             catch (Exception exc) {
                 _Logger.FatalException("UpdateView() failed hard with: " + exc.Message, exc);
+                _Logger.Fatal(exc.StackTrace);
             }
         }
 
