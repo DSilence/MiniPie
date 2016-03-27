@@ -10,7 +10,7 @@ using MiniPie.Core.SpotifyWeb;
 using NSubstitute;
 using Xunit;
 
-namespace MiniPie.Tests.SpotifyWeb
+namespace MiniPie.Tests.Core.SpotifyWeb
 {
     public class SpotifyWebApiTest
     {

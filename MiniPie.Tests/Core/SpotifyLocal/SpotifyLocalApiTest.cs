@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyLocal;
 using NSubstitute;
 using Xunit;
 
-namespace MiniPie.Tests.SpotifyLocal
+namespace MiniPie.Tests.Core.SpotifyLocal
 {
     public class SpotifyLocalApiTest
     {

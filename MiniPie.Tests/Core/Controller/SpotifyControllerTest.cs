@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.RightsManagement;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyNative;
@@ -8,7 +7,7 @@ using NSubstitute;
 using Xunit;
 using Track = MiniPie.Core.SpotifyLocal.Track;
 
-namespace MiniPie.Tests.Controller
+namespace MiniPie.Tests.Core.Controller
 {
     public class SpotifyControllerTest: IDisposable
     {
