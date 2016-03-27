@@ -14,8 +14,8 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
              xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
-             xmlns:taskbarNotification="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
              xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:tb="http://www.hardcodet.net/taskbar"
              mc:Ignorable="d" 
              MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
              MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
@@ -103,16 +103,15 @@
             <!--In reality this is a color for second ellipse-->
             <Setter Property="Foreground" Value="#6B6870"></Setter>
         </Style>
-        <taskbarNotification:TaskbarIcon x:Key="NotifyIcon"
-                                         IconSource="..\App.ico"
-                                         ToolTipText="{Binding TrackFriendlyName}"
-                                         TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
-                                         TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp"
-                                         >
-            <taskbarNotification:TaskbarIcon.ContextMenu>
+        <tb:TaskbarIcon x:Key="NotifyIcon"
+                        IconSource="..\App.ico"
+                        ToolTipText="{Binding TrackFriendlyName}"
+                        TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
+                        TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp">
+            <tb:TaskbarIcon.ContextMenu>
                 <controls:MiniPieContextMenu x:Name="TaskbarContextMenu"/>
-            </taskbarNotification:TaskbarIcon.ContextMenu>
-        </taskbarNotification:TaskbarIcon>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.MouseEnter">
