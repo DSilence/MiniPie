@@ -163,8 +163,8 @@
       <HintPath>..\packages\squirrel.windows.1.2.5\lib\Net45\NuGet.Squirrel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PropertyChanged, Version=1.50.4.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
-      <HintPath>..\packages\PropertyChanged.Fody.1.50.4\lib\dotnet\PropertyChanged.dll</HintPath>
+    <Reference Include="PropertyChanged, Version=1.51.0.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyChanged.Fody.1.51.0\lib\dotnet\PropertyChanged.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
@@ -361,7 +361,9 @@
       <Name>MiniPie.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Attribute\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\cover.png" />
   </ItemGroup>
@@ -390,9 +392,7 @@
   <ItemGroup>
     <Resource Include="Images\LogoWhite.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Attribute\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
