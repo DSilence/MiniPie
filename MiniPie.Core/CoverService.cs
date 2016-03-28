@@ -89,14 +89,14 @@ namespace MiniPie.Core
         private async Task<string> DownloadAndSaveImage(string url, string destination)
         {
             await _client.DownloadFileTaskAsync(url, destination).ConfigureAwait(false);
-            CleanupCache();
+            await CleanupCache().ConfigureAwait(false);
 
             return destination;
         }
 
-        private async void CleanupCache()
+        private Task CleanupCache()
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 DirectoryInfo info = new DirectoryInfo(_cacheDirectory);
                 IEnumerable<FileInfo> files = info.GetFiles();
@@ -113,7 +113,7 @@ namespace MiniPie.Core
                         files = info.GetFiles();
                     }
                 }
-            }).ConfigureAwait(false);
+            });
         }
     }
 }
