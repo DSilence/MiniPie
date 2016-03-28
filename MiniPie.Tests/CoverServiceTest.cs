@@ -16,13 +16,12 @@ namespace MiniPie.Tests
     public class CoverServiceTest: IDisposable
     {
         private readonly CoverService _coverService;
-        private const string CoverTestDirectoryName = "CoverTest";
+        private readonly string CoverTestDirectoryName = Path.GetRandomFileName();
         private readonly ISpotifyWebApi _webApi = Substitute.For<ISpotifyWebApi>();
         private readonly ILog _log = Substitute.For<ILog>();
 
         public CoverServiceTest()
         {
-            Dispose();
             Directory.CreateDirectory(CoverTestDirectoryName);
             _coverService = new CoverService(CoverTestDirectoryName, _log, _webApi);
         }
@@ -78,7 +77,7 @@ namespace MiniPie.Tests
             var result2 = await _coverService.FetchCover(status);
             //Used cached value
             await _webApi.Received(0).GetTrackArt(uri);
-            Assert.Equal("CoverTest\\CoverCache\\a83c1a688201fcf3e304493ed0425fe602e45eb8.jpg", result);
+            Assert.Equal(CoverTestDirectoryName + "\\CoverCache\\a83c1a688201fcf3e304493ed0425fe602e45eb8.jpg", result);
             Assert.Equal(result, result2);
             
         }
