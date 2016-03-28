@@ -205,6 +205,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Waiting for spotify app.
+        /// </summary>
+        public static string App_WaitingForSpotify {
+            get {
+                return ResourceManager.GetString("App_WaitingForSpotify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Large.
         /// </summary>
         public static string Enum_ApplicationSize_Large {

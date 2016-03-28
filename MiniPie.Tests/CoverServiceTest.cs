@@ -92,7 +92,7 @@ namespace MiniPie.Tests
                     Directory.Delete(CoverTestDirectoryName, true);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Thread.Sleep(500);
                 if (Directory.Exists(CoverTestDirectoryName))

@@ -151,7 +151,6 @@ namespace MiniPie.Core.SpotifyWeb
                 _log.WarnException("Failed to process Spotify request:" + request.RequestUri + "; the error is:" + exc.Message, exc);
                 throw;
             }
-            return null;
         }
 
         private HttpRequestMessage CreateRequestCopy(HttpRequestMessage message)

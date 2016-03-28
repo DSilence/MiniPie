@@ -14,15 +14,15 @@ using MiniPie.Core.SpotifyWeb.Models;
 using Timer = System.Threading.Timer;
 
 namespace MiniPie.Core {
-    public class SpotifyController : ISpotifyController {
+    public class SpotifyController: ISpotifyController {
 
         /*
          SpotifyController uses code from https://github.com/ranveer5289/SpotifyNotifier-Windows and https://github.com/mscoolnerd/SpotifyLib
          */
 
         public event EventHandler SpotifyExited;
-        public event EventHandler TrackChanged;
-        public event EventHandler TrackStatusChanged;
+        public event EventHandler<EventArgs> TrackChanged;
+        public event EventHandler<EventArgs> TrackStatusChanged;
         public event EventHandler SpotifyOpened;
         public event EventHandler TokenUpdated;
 
@@ -32,7 +32,7 @@ namespace MiniPie.Core {
         private readonly ISpotifyLocalApi _localApi;
         private readonly ISpotifyWebApi _spotifyWebApi;
 
-        private Process SpotifyProcess
+        internal Process SpotifyProcess
         {
             get { return _spotifyNativeApi.SpotifyProcess; }
             set { _spotifyNativeApi.SpotifyProcess = value; }
@@ -40,8 +40,9 @@ namespace MiniPie.Core {
         private Task _backgroundChangeTracker;
         private readonly CancellationTokenSource _backgroundChangeWorkerTokenSource = new CancellationTokenSource();
         private Timer _songStatusWatcher;
-        private Status _currentTrackInfo;
+        protected internal Status CurrentTrackInfo;
         private readonly ISpotifyNativeApi _spotifyNativeApi;
+        protected internal int BackgroundDelay = 1000;
 
         public SpotifyController(ILog logger, ISpotifyLocalApi localApi, ISpotifyWebApi spotifyWebApi, ISpotifyNativeApi spotifyNativeApi) {
             _Logger = logger;
@@ -67,9 +68,9 @@ namespace MiniPie.Core {
         private void SongTimerChanging(object state)
         {
             //every second increase the track time by 1
-            if (_currentTrackInfo != null && _currentTrackInfo.playing)
+            if (CurrentTrackInfo != null && CurrentTrackInfo.playing)
             {
-                _currentTrackInfo.playing_position = (int)_currentTrackInfo.playing_position + 1;
+                CurrentTrackInfo.playing_position = (int)CurrentTrackInfo.playing_position + 1;
                 OnTrackTimerChanged();
             }
         }
@@ -79,7 +80,14 @@ namespace MiniPie.Core {
             if (_backgroundChangeTracker != null && !_backgroundChangeTracker.IsCompleted)
                 return;
             
-            _backgroundChangeTracker = Task.Run(() => BackgroundChangeTrackerWork(), _backgroundChangeWorkerTokenSource.Token);
+            _backgroundChangeTracker = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await BackgroundChangeTrackerWork().ConfigureAwait(false);
+                }
+                
+            }, _backgroundChangeWorkerTokenSource.Token);
         }
 
         private async Task AttachToProcess() {
@@ -94,7 +102,7 @@ namespace MiniPie.Core {
                 SpotifyProcess.Exited += (o, e) =>
                 {
                     SpotifyProcess = null;
-                    _currentTrackInfo = null;
+                    CurrentTrackInfo = null;
                     _localRequestTokenSource?.Cancel();
                     OnSpotifyExited();
                 };
@@ -124,97 +132,97 @@ namespace MiniPie.Core {
 
         private CancellationTokenSource _localRequestTokenSource;
         //TODO code dupes
-        private async void BackgroundChangeTrackerWork() {
+        internal async Task BackgroundChangeTrackerWork()
+        {
             try
             {
-                while (true)
+                if (SpotifyProcess != null)
                 {
-                    if (SpotifyProcess != null)
+                    //TODO this should be a bool field probably
+                    int timeout = CurrentTrackInfo == null ? -1 : 30;
+                    Status newTrackInfo;
+                    _localRequestTokenSource = new CancellationTokenSource(timeout == -1 ? 1000 : 45000);
+                    try
                     {
-                        //TODO this should be a bool field probably
-                        int timeout = _currentTrackInfo == null ? -1 : 30;
-                        Status newTrackInfo;
-                        _localRequestTokenSource = new CancellationTokenSource(timeout == -1 ? 1000 : 45000);
-                        try
+                        _Logger.Info("Started retrieving information from spotify, timeout is" + timeout);
+                        newTrackInfo =
+                            await
+                                _localApi.SendLocalStatusRequest(true, true, _localRequestTokenSource.Token, timeout).ConfigureAwait(false);
+                        _Logger.Info("Finished retrieving information from spotify");
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        _Logger.Info("Retrieving cancelled");
+                        CurrentTrackInfo = null;
+                        //TODO this is bad and dirt
+                        //nothing to do here
+                        //if task was cancelled (e.g. spotify exited, just move on and wait for further stuff
+                        return;
+                    }
+                    finally
+                    {
+                        var tokenSource = _localRequestTokenSource;
+                        _localRequestTokenSource = null;
+                        tokenSource.Dispose();
+                    }
+                    if (newTrackInfo == null)
+                    {
+                        _Logger.Warn("Failed to retrieve track info. Track info is empty");
+                        return;
+                    }
+                    try
+                    {
+                        if (newTrackInfo.error != null)
                         {
-                            _Logger.Info("Started retrieving information from spotify, timeout is" + timeout);
-                            newTrackInfo =
-                                await _localApi.SendLocalStatusRequest(true, true, _localRequestTokenSource.Token, timeout);
-                            _Logger.Info("Finished retrieving information from spotify");
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            _Logger.Info("Retrieving cancelled");
-                            _currentTrackInfo = null;
-                            //TODO this is bad and dirt
-                            //nothing to do here
-                            //if task was cancelled (e.g. spotify exited, just move on and wait for further stuff
-                            continue;
-                        }
-                        finally
-                        {
-                            var tokenSource = _localRequestTokenSource;
-                            _localRequestTokenSource = null;
-                            tokenSource.Dispose();
-                        }
-                        if (newTrackInfo == null)
-                        {
-                            //TODO not sure when it happens, should probably happen never
-                            throw new ApplicationException("Unable to retrieve track info");
-                        }
-                        try
-                        {
-                            if (newTrackInfo.error != null)
+                            if (newTrackInfo.error.message.Contains("Invalid Csrf") ||
+                                newTrackInfo.error.message.Contains("OAuth updateToken") ||
+                                newTrackInfo.error.message.Contains("Expired OAuth localRequestToken"))
                             {
-                                if (newTrackInfo.error.message.Contains("Invalid Csrf") ||
-                                    newTrackInfo.error.message.Contains("OAuth updateToken") ||
-                                    newTrackInfo.error.message.Contains("Expired OAuth localRequestToken"))
-                                {
-                                    //try to renew updateToken and retrieve status again
-                                    _Logger.Info("Renew updateToken and try again");
-                                    await _localApi.RenewToken();
-                                    _currentTrackInfo = null;
-                                    continue;
-                                }
-                                else
-                                {
-                                    throw new Exception(string.Format("Spotify API error: {0}",
-                                        newTrackInfo.error.message));
-                                }
+                                //try to renew updateToken and retrieve status again
+                                _Logger.Info("Renew updateToken and try again");
+                                await _localApi.RenewToken();
+                                CurrentTrackInfo = null;
+                                return;
+                            }
+                            else
+                            {
+                                throw new Exception(string.Format("Spotify API error: {0}",
+                                    newTrackInfo.error.message));
                             }
                         }
-                        catch (Exception exc)
-                        {
-                            //TODO this should crash the application
-                            _Logger.WarnException("Failed to retrieve trackinfo", exc);
-                            _currentTrackInfo = null;
-                            Thread.Sleep(1000);
-                            continue;
-                        }
-
-                        if (newTrackInfo.track == null)
-                        {
-                            _currentTrackInfo = null;
-                            continue;
-                        }
-
-                        ProcessTrackInfo(newTrackInfo);
                     }
-                    else
+                    catch (Exception exc)
                     {
-                        Thread.Sleep(1000);
-                        //wait for spotify to reopen
-                        await AttachToProcess();
-                        if (SpotifyProcess != null)
-                        {
-                            OnSpotifyOpenend();
-                        }
+                        //TODO this should crash the application
+                        _Logger.WarnException("Failed to retrieve trackinfo: " + exc.Message, exc);
+                        CurrentTrackInfo = null;
+                        Thread.Sleep(BackgroundDelay);
+                        return;
                     }
 
+                    if (newTrackInfo.track == null)
+                    {
+                        CurrentTrackInfo = null;
+                        return;
+                    }
+
+                    ProcessTrackInfo(newTrackInfo);
+                }
+                else
+                {
+                    Thread.Sleep(BackgroundDelay);
+                    //wait for spotify to reopen
+                    await AttachToProcess();
+                    if (SpotifyProcess != null)
+                    {
+                        OnSpotifyOpenend();
+                    }
                 }
             }
-            catch (Exception exc) {
-                _Logger.FatalException("BackgroundChangeTrackerWork failed with: "+ exc.Message, exc);
+            catch (Exception exc)
+            {
+                _Logger.FatalException("BackgroundChangeTrackerWork failed with: " + exc.Message, exc);
+                _Logger.Fatal(exc.StackTrace);
             }
         }
 
@@ -225,17 +233,17 @@ namespace MiniPie.Core {
                 return;
             }
             var newTrackInfoUri = newTrackInfo.track?.track_resource?.uri;
-            if (_currentTrackInfo?.track?.track_resource == null || _currentTrackInfo.track.track_resource.uri
+            if (CurrentTrackInfo?.track?.track_resource == null || CurrentTrackInfo.track.track_resource.uri
                 != newTrackInfoUri)
             {
-                _currentTrackInfo = newTrackInfo;
+                CurrentTrackInfo = newTrackInfo;
                 OnTrackChanged();
                 _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
             }
             else
             {
-                _currentTrackInfo = newTrackInfo;
+                CurrentTrackInfo = newTrackInfo;
                 OnTrackTimerChanged();
                 _songStatusWatcher?.Change(
                     GetDelayForPlaybackUpdate(newTrackInfo.playing_position), 1000);
@@ -254,76 +262,62 @@ namespace MiniPie.Core {
             return SpotifyProcess != null;
         }
 
-        public bool IsSpotifyInstalled() {
-            try {
-                //first try: the installation directory
-                var spotifyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                               "Spotify", "spotify.exe");
-                if (File.Exists(spotifyPath))
-                    return true;
-
-                //second try: look into the registry
-                var registryKey = Registry.CurrentUser.OpenSubKey(SpotifyRegistryKey, false);
-                if (registryKey != null && File.Exists((string) registryKey.GetValue("DisplayIcon", string.Empty)))
-                    return true; //looks good, return true
-
-                return false;
-            }
-            catch (Exception exc) {
-                _Logger.WarnException("Failed to detect if Spotify is installed or not :(", exc);
-                //In case of an error it's better to return true instead of false, because this makes MiniPie unusable if there is something wrong with Windows.
-                return true;
-            }
-        }
-
         public Status GetStatus() {
-            return _currentTrackInfo;
+            return CurrentTrackInfo;
         }
 
-        public async void Pause()
+        public Task Pause()
         {
-            if(_currentTrackInfo.playing)
-                await _localApi.Pause();
-        }
-
-        public async void Play()
-        {
-            if (!_currentTrackInfo.playing)
+            if (CurrentTrackInfo.playing)
             {
-                await _localApi.Resume();
+                return _localApi.Pause();
             }
+            return Task.FromResult(false);
         }
 
-        public async void PausePlay()
+        public Task Play()
         {
-            if (_currentTrackInfo.playing)
+            if (!CurrentTrackInfo.playing)
             {
-                await _localApi.Pause();
+                return _localApi.Resume();
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task PausePlay()
+        {
+            if (CurrentTrackInfo.playing)
+            {
+                return _localApi.Pause();
             }
             else
             {
-                await _localApi.Resume();
+                return _localApi.Resume();
             }
         }
 
-        public void NextTrack()
+        public Task NextTrack()
         {
             _spotifyNativeApi.NextTrack();
+            return Task.FromResult(false);
         }
 
-        public void PreviousTrack()
+        public Task PreviousTrack()
         {
             _spotifyNativeApi.PreviousTrack();
+            return Task.FromResult(false);
         }
 
-        public void VolumeUp()
+        public Task VolumeUp()
         {
             _spotifyNativeApi.VolumeUp();
+            return Task.FromResult(false);
         }
 
-        public void VolumeDown()
+        public Task VolumeDown()
         {
             _spotifyNativeApi.VolumeDown();
+            return Task.FromResult(false);
         }
 
         public void OpenSpotify()
@@ -331,14 +325,13 @@ namespace MiniPie.Core {
             _spotifyNativeApi.OpenSpotify();
         }
 
-
-        public void AttachTrackChangedHandler(EventHandler handler)
+        public void AttachTrackChangedHandler(EventHandler<EventArgs> handler)
         {
             TrackChanged += handler;
             OnTrackChanged();
         }
 
-        public void AttachTrackStatusChangedHandler(EventHandler handler)
+        public void AttachTrackStatusChangedHandler(EventHandler<EventArgs> handler)
         {
             TrackStatusChanged += handler;
         }

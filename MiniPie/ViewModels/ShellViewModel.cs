@@ -82,9 +82,6 @@ namespace MiniPie.ViewModels {
         protected override void OnViewLoaded(object view) {
             base.OnViewLoaded(view);
 
-            if (!_SpotifyController.IsSpotifyInstalled())
-                _WindowManager.ShowDialog(_kernel.GetInstance<NoSpotifyViewModel>());
-
             if (_Settings.StartMinimized)
             {
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
@@ -137,31 +134,31 @@ namespace MiniPie.ViewModels {
             _WindowManager.ShowDialog(_kernel.GetInstance<AboutViewModel>());
         }
 
-        public void PlayPause() {
+        public async void PlayPause() {
             if (CanPlayPause)
             {
-                _SpotifyController.PausePlay();
+                await _SpotifyController.PausePlay().ConfigureAwait(false);
             }
         }
 
-        public void PlayPrevious() {
+        public async void PlayPrevious() {
             if(CanPlayPrevious)
-                _SpotifyController.PreviousTrack();
+                await _SpotifyController.PreviousTrack().ConfigureAwait(false);
         }
 
-        public void PlayNext() {
+        public async void PlayNext() {
             if(CanPlayNext)
-                _SpotifyController.NextTrack();
+                await _SpotifyController.NextTrack().ConfigureAwait(false);
         }
 
-        public void VolumeUp() {
+        public async void VolumeUp() {
             if(CanVolumeUp)
-                _SpotifyController.VolumeUp();
+                await _SpotifyController.VolumeUp().ConfigureAwait(false);
         }
 
-        public void VolumeDown() {
+        public async void VolumeDown() {
             if(CanVolumeDown)
-                _SpotifyController.VolumeDown();
+                await _SpotifyController.VolumeDown().ConfigureAwait(false);
         }
 
         public void OpenSpotifyWindow()

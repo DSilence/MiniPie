@@ -261,4 +261,7 @@
   <data name="Enum_LockScreenBehavior_PauseUnpauseAlways" xml:space="preserve">
     <value>Pause when locked. Always unpause when unlocked</value>
   </data>
+  <data name="App_WaitingForSpotify" xml:space="preserve">
+    <value>Waiting for spotify app</value>
+  </data>
 </root>

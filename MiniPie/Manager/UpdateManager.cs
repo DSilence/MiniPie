@@ -13,7 +13,9 @@ namespace MiniPie.Manager
     public class UpdateManager: IDisposable
     {
         private readonly ILog _log;
+#pragma warning disable 649
         private Timer _timer;
+#pragma warning restore 649
         private static readonly Dictionary<UpdatePreference, string> UpdateUris = new Dictionary<UpdatePreference, string>
         {
             {UpdatePreference.Developer, "http://minipie.blob.core.windows.net/installerdevelop"},
