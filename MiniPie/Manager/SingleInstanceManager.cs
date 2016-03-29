@@ -89,13 +89,11 @@ namespace MiniPie.Manager
                 SquirrelAwareApp.HandleEvents(
                   onInitialInstall: v =>
                   {
+                      mgr.CreateShortcutForThisExe();
                       var register = RunAsAdmin("-register");
-                      register.Exited += (sender, args) =>
-                      {
-                          mgr.CreateShortcutForThisExe();
-                          Environment.Exit(0);
-                      };
                       register.Start();
+                      register.WaitForExit(50000);
+                      Environment.Exit(0);
                   },
                   onAppUpdate: v =>
                   {
@@ -104,13 +102,11 @@ namespace MiniPie.Manager
                   },
                   onAppUninstall: v =>
                   {
+                      mgr.RemoveShortcutForThisExe();
                       var register = RunAsAdmin("-unregister");
-                      register.Exited += (sender, args) =>
-                      {
-                          mgr.RemoveShortcutForThisExe();
-                          Environment.Exit(0);
-                      };
                       register.Start();
+                      register.WaitForExit();
+                      Environment.Exit(0);
                   },
                   onFirstRun: () =>
                   {
