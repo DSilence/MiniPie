@@ -80,6 +80,12 @@ namespace MiniPie.ViewModels {
             set { _Settings.UpdatePreference = value; }
         }
 
+        public bool SingleClickHide
+        {
+            get { return _Settings.SingleClickHide; }
+            set { _Settings.SingleClickHide = value; }
+        }
+
         public Language Language
         {
             get { return _Settings.Language; }

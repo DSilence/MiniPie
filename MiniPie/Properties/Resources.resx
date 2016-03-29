@@ -273,4 +273,7 @@
   <data name="Settings_ReleaseChannel" xml:space="preserve">
     <value>Update channel:</value>
   </data>
+  <data name="Settings_SingleClickHide" xml:space="preserve">
+    <value>Hide window by single click on track icon (not double click)</value>
+  </data>
 </root>

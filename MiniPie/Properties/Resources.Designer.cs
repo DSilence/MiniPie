@@ -511,6 +511,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide window by single click on track icon (not double click).
+        /// </summary>
+        public static string Settings_SingleClickHide {
+            get {
+                return ResourceManager.GetString("Settings_SingleClickHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start MiniPie minimized.
         /// </summary>
         public static string Settings_StartMinimized {

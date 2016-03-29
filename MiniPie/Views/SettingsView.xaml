@@ -46,6 +46,7 @@
                 <CheckBox Content="{wpf:Resx Settings_StartWithWindows}" Name="StartWithWindows" />
                 <CheckBox Content="{wpf:Resx Settings_StartMinimized}" Name="StartMinimized"/>
                 <CheckBox Content="{wpf:Resx Settings_DisableAnimations}" Name="DisableAnimations" />
+                <CheckBox Content="{wpf:Resx Settings_SingleClickHide}" Name="SingleClickHide"/>
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

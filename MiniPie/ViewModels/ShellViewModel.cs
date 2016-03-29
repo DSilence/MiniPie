@@ -177,27 +177,55 @@ namespace MiniPie.ViewModels {
         }
 
 
-        public void MinimizeMiniplayer()
+        public void HandleTrayMouseDoubleClick()
         {
             var window = Application.Current.MainWindow;
-            window.Visibility = Visibility.Hidden;
+            if (_Settings.SingleClickHide)
+            {
+                if (window.Visibility == Visibility.Hidden)
+                {
+                    ShowWindow(window);
+                }
+                else
+                {
+                    HideWindow(window);
+                }
+            }
+            else
+            {
+                HideWindow(window);
+            }
         }
 
-        public void MaximizeMiniplayer()
+        public void HandleTrayMouseClick()
         {
             var window = Application.Current.MainWindow;
+            if (_Settings.SingleClickHide)
+            {
+                if (window.Visibility == Visibility.Hidden)
+                {
+                    ShowWindow(window);
+                }
+                else
+                {
+                    HideWindow(window);
+                }
+            }
+            else
+            {
+                ShowWindow(window);
+            }
+        }
+
+        private void ShowWindow(Window window)
+        {
             window.Visibility = Visibility.Visible;
             window.Activate();
         }
 
-        internal void MinimizeMiniplayer(object sender, EventArgs e)
+        private void HideWindow(Window window)
         {
-            MinimizeMiniplayer();
-        }
-
-        internal void MaximizeMiniplayer(object sender, EventArgs args)
-        {
-            MaximizeMiniplayer();
+            window.Visibility = Visibility.Hidden;
         }
 
         public void Close()

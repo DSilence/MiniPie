@@ -178,12 +178,12 @@ namespace MiniPie.Views
 
         private void NotifyIcon_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.MinimizeMiniplayer();
+            ShellViewModel.HandleTrayMouseDoubleClick();
         }
 
         private void NotifyIcon_OnTrayLeftMouseUp(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.MaximizeMiniplayer();
+            ShellViewModel.HandleTrayMouseClick();
         }
     }
 }

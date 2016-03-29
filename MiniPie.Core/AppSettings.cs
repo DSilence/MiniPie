@@ -49,5 +49,7 @@ namespace MiniPie.Core {
         public LockScreenBehavior LockScreenBehavior { get; set; }
         [JsonProperty]
         public UpdatePreference UpdatePreference { get; set; }
+        [JsonProperty]
+        public bool SingleClickHide { get; set; }
     }
 }
