@@ -47,6 +47,7 @@ namespace MiniPie.Manager
 
         private void ProcessSquirrelStartup()
         {
+#if !DEBUG
             using (var mgr = new Squirrel.UpdateManager(string.Empty))
             {
                 // Note, in most of these scenarios, the app exits after this method
@@ -74,6 +75,7 @@ namespace MiniPie.Manager
                   {
                   });
             }
+#endif
         }
     }
 }

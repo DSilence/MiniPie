@@ -168,22 +168,22 @@ namespace MiniPie.Views
             Clipboard.SetText(await ShellViewModel.CopyTracksInfo(urls));
         }
 
-        private void AlbumArt_OnDrop(object sender, DragEventArgs e)
+        private async void AlbumArt_OnDrop(object sender, DragEventArgs e)
         {
             var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
             var urls = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             //TODO url validation
-            ShellViewModel.AddTracksToQueue(urls);
+            await ShellViewModel.AddTracksToQueue(urls);
         }
 
         private void NotifyIcon_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.HandleTrayMouseDoubleClick();
+            ShellViewModel.HandleTrayMouseDoubleClick(Application.Current.MainWindow);
         }
 
         private void NotifyIcon_OnTrayLeftMouseUp(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.HandleTrayMouseClick();
+            ShellViewModel.HandleTrayMouseClick(Application.Current.MainWindow);
         }
     }
 }

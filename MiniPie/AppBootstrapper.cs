@@ -59,8 +59,9 @@ namespace MiniPie {
 
         protected override void BuildUp(object instance)
         {
-            var registration = _kernel.GetRegistration(instance.GetType(), true);
-            registration.Registration.InitializeInstance(instance);
+            //Not using property injection
+            //var registration = _kernel.GetRegistration(instance.GetType(), true);
+            //registration.Registration.InitializeInstance(instance);
         }
 
         public async void ProcessTokenUpdate(string input)
@@ -83,6 +84,7 @@ namespace MiniPie {
 
             _kernel.RegisterSingleton(new AutorunService(_log, _Settings, _Contracts));
             _kernel.RegisterSingleton<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.RegisterSingleton<ClipboardManager>();
             _kernel.Register<IEventAggregator, EventAggregator>();
 
             _kernel.RegisterSingleton<ISpotifyLocalApi, SpotifyLocalApi>();

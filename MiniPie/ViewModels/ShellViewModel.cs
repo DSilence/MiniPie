@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
+using MiniPie.Manager;
 using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
@@ -21,6 +22,7 @@ namespace MiniPie.ViewModels {
         private readonly AppSettings _Settings;
         private readonly ILog _Logger;
         private readonly Container _kernel;
+        private readonly ClipboardManager _clipboardManager;
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
         private const string TrackPattern = @".*\/\/open\.spotify\.com\/track\/(.*)";
@@ -33,20 +35,21 @@ namespace MiniPie.ViewModels {
         private bool _isLockPaused;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
-            ICoverService coverService, AppSettings settings, ILog logger, Container kernel) {
+            ICoverService coverService, AppSettings settings, ILog logger, Container kernel, ClipboardManager clipboardManager) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
             _Settings = settings;
             _Logger = logger;
             _kernel = kernel;
+            _clipboardManager = clipboardManager;
             ApplicationSize = _Settings.ApplicationSize;
 
             CoverImage = NoCoverUri;
 
-            _SpotifyController.AttachTrackChangedHandler((o, e) => UpdateView());
-            _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
-            _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
+            _SpotifyController.AttachTrackChangedHandler(async (o, e) => await UpdateView().ConfigureAwait(false));
+            _SpotifyController.SpotifyOpened += async (o, e) => await SpotifyOpened().ConfigureAwait(false);
+            _SpotifyController.SpotifyExited += async (o, e) => await SpotifyExited().ConfigureAwait(false);
             _SpotifyController.AttachTrackStatusChangedHandler(SpotifyControllerOnTrackStatusChanged);
 
             //TODO more app sizes
@@ -134,29 +137,36 @@ namespace MiniPie.ViewModels {
             _WindowManager.ShowDialog(_kernel.GetInstance<AboutViewModel>());
         }
 
-        public async void PlayPause() {
+        public async Task PlayPause()
+        {
             if (CanPlayPause)
             {
                 await _SpotifyController.PausePlay().ConfigureAwait(false);
             }
         }
 
-        public async void PlayPrevious() {
-            if(CanPlayPrevious)
+        public async Task PlayPrevious()
+        {
+            if (CanPlayPrevious)
+            {
                 await _SpotifyController.PreviousTrack().ConfigureAwait(false);
+            }
         }
 
-        public async void PlayNext() {
-            if(CanPlayNext)
+        public async Task PlayNext()
+        {
+            if (CanPlayNext)
+            {
                 await _SpotifyController.NextTrack().ConfigureAwait(false);
+            }
         }
 
-        public async void VolumeUp() {
+        public async Task VolumeUp() {
             if(CanVolumeUp)
                 await _SpotifyController.VolumeUp().ConfigureAwait(false);
         }
 
-        public async void VolumeDown() {
+        public async Task VolumeDown() {
             if(CanVolumeDown)
                 await _SpotifyController.VolumeDown().ConfigureAwait(false);
         }
@@ -168,18 +178,16 @@ namespace MiniPie.ViewModels {
 
         public void CopyTrackName()
         {
-            Clipboard.SetText(TrackFriendlyName);
+            _clipboardManager.SetText(TrackFriendlyName);
         }
 
         public void CopySpotifyLink()
         {
-            Clipboard.SetText(TrackUrl);
+            _clipboardManager.SetText(TrackUrl);
         }
 
-
-        public void HandleTrayMouseDoubleClick()
+        public void HandleTrayMouseDoubleClick(UIElement window)
         {
-            var window = Application.Current.MainWindow;
             if (_Settings.SingleClickHide)
             {
                 if (window.Visibility == Visibility.Hidden)
@@ -197,9 +205,8 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        public void HandleTrayMouseClick()
+        public void HandleTrayMouseClick(UIElement window)
         {
-            var window = Application.Current.MainWindow;
             if (_Settings.SingleClickHide)
             {
                 if (window.Visibility == Visibility.Hidden)
@@ -217,34 +224,29 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        private void ShowWindow(Window window)
+        private void ShowWindow(UIElement window)
         {
             window.Visibility = Visibility.Visible;
-            window.Activate();
+            (window as Window)?.Activate();
         }
 
-        private void HideWindow(Window window)
+        private void HideWindow(UIElement window)
         {
             window.Visibility = Visibility.Hidden;
         }
 
-        public void Close()
-        {
-            this.TryClose();
-        }
-
-        private void SpotifyOpened() {
+        private Task SpotifyOpened() {
             if(_Settings.HideIfSpotifyClosed)
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
 
-            UpdateView();
+            return UpdateView();
         }
 
-        private void SpotifyExited() {
+        private Task SpotifyExited() {
             if(_Settings.HideIfSpotifyClosed)
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
 
-            UpdateView();
+            return UpdateView();
         }
 
         private void SpotifyControllerOnTrackStatusChanged(object sender, EventArgs eventArgs)
@@ -255,8 +257,10 @@ namespace MiniPie.ViewModels {
             IsPlaying = status.playing;
         }
 
-        private async void UpdateView() {
-            try {
+        internal async Task UpdateView()
+        {
+            try
+            {
                 var status = _SpotifyController.GetStatus();
                 if (status == null)
                 {
@@ -293,10 +297,11 @@ namespace MiniPie.ViewModels {
                 CanVolumeDown = _SpotifyController.IsSpotifyOpen();
                 CanVolumeUp = _SpotifyController.IsSpotifyOpen();
 
-                if (_SpotifyController.IsSpotifyOpen() 
-                    && !string.IsNullOrEmpty(track) 
-                    && !string.IsNullOrEmpty(artist)) {
-                    if(_Settings.DisableAnimations)
+                if (_SpotifyController.IsSpotifyOpen()
+                    && !string.IsNullOrEmpty(track)
+                    && !string.IsNullOrEmpty(artist))
+                {
+                    if (_Settings.DisableAnimations)
                         CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
                     try
                     {
@@ -312,7 +317,8 @@ namespace MiniPie.ViewModels {
                         _Logger.WarnException("Failed to retrieve cover information with: " + e.Message, e);
                     }
                 }
-                else {
+                else
+                {
                     CoverImage = NoCoverUri;
                     if (IsPlaying)
                         OnCoverDisplayFadeIn();
@@ -321,31 +327,32 @@ namespace MiniPie.ViewModels {
                 var tokenPresent = _Settings.SpotifyToken != null;
                 if (tokenPresent)
                 {
-                    UpdatePlaylists();
                     if (TrackId != null)
                     {
-                        IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] {TrackId})).First();
+                        IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] { TrackId })).First();
                     }
+                    await UpdatePlaylists().ConfigureAwait(false);
                 }
             }
-            catch (Exception exc) {
+            catch (Exception exc)
+            {
                 _Logger.FatalException("UpdateView() failed hard with: " + exc.Message, exc);
                 _Logger.Fatal(exc.StackTrace);
             }
         }
 
-        private async void UpdatePlaylists()
+        private async Task UpdatePlaylists()
         {
-            var newPlaylists = await _SpotifyController.GetPlaylists();
-            if (Playlists == null ||!(await Task.Run(() => newPlaylists.SequenceEqual(Playlists))))
+            var newPlaylists = await _SpotifyController.GetPlaylists().ConfigureAwait(false);
+            if (Playlists == null ||!newPlaylists.SequenceEqual(Playlists))
             {
                 Playlists = new ObservableCollection<Playlist>(newPlaylists);
             }
         }
 
-        public async void AddToPlaylist(string id)
+        public async Task AddToPlaylist(string id)
         {
-            await _SpotifyController.AddToPlaylist(id, SpotifyUri);
+            await _SpotifyController.AddToPlaylist(id, SpotifyUri).ConfigureAwait(false);
         }
 
         private string GetTrackId(string trackUrl)
@@ -375,7 +382,7 @@ namespace MiniPie.ViewModels {
                         ids.Add(id);
                     }
                 }
-                var trackInfo = await _SpotifyController.GetTrackInfo(ids);
+                var trackInfo = await _SpotifyController.GetTrackInfo(ids).ConfigureAwait(false);
                 var niceNames =
                     trackInfo.Select(
                         track =>
@@ -392,11 +399,11 @@ namespace MiniPie.ViewModels {
             return null;
         }
 
-        public async void AddTracksToQueue(IList<string> trackUrls)
+        public async Task AddTracksToQueue(IList<string> trackUrls)
         {
             try
             {
-                await _SpotifyController.AddToQueue(trackUrls);
+                await _SpotifyController.AddToQueue(trackUrls).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -429,12 +436,12 @@ namespace MiniPie.ViewModels {
                                });
         }
 
-        public async void AddToMyMusic()
+        public async Task AddToMyMusic()
         {
             IsTrackSaved = true;
             try
             {
-                await _SpotifyController.AddToMyMusic(new[] {TrackId});
+                await _SpotifyController.AddToMyMusic(new[] {TrackId}).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -443,12 +450,12 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        public async void RemoveFromMyMusic()
+        public async Task RemoveFromMyMusic()
         {
             IsTrackSaved = false;
             try
             {
-                await _SpotifyController.RemoveFromMyMusic(new[] {TrackId});
+                await _SpotifyController.RemoveFromMyMusic(new[] {TrackId}).ConfigureAwait(false);
             }
             catch (Exception e)
             {

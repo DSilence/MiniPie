@@ -249,6 +249,7 @@
     <Compile Include="Localization\ResourceEnumConverter.cs" />
     <Compile Include="Localization\ResxExtension.cs" />
     <Compile Include="Localization\UICultureExtension.cs" />
+    <Compile Include="Manager\ClipboardManager.cs" />
     <Compile Include="Manager\UpdateManager.cs" />
     <Compile Include="Models\HotKey.cs" />
     <Compile Include="Models\HotKeyOperations.cs" />

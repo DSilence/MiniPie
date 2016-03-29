@@ -30,9 +30,9 @@ namespace MiniPie.Converter
                 var menuItem = new PlaylistItemViewModel
                 {
                     Name = playlist.Name,
-                    Action = () =>
+                    Action = async () =>
                     {
-                        viewModel.AddToPlaylist(playlist.Id);
+                        await viewModel.AddToPlaylist(playlist.Id);
                     }
                 };
                 result.Add(menuItem);
