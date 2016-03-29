@@ -1,6 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using Microsoft.VisualBasic.ApplicationServices;
+using NuGet;
 using Squirrel;
 using StartupEventArgs = Microsoft.VisualBasic.ApplicationServices.StartupEventArgs;
 
@@ -18,6 +23,7 @@ namespace MiniPie.Manager
 
         protected override bool OnStartup(StartupEventArgs eventArgs)
         {
+            ProcessAdminArguments(eventArgs.CommandLine);
             ProcessSquirrelStartup();
             // First time _application is launched
             _commandLine = eventArgs.CommandLine;
@@ -29,6 +35,7 @@ namespace MiniPie.Manager
 
         protected override void OnStartupNextInstance(StartupNextInstanceEventArgs eventArgs)
         {
+            ProcessAdminArguments(eventArgs.CommandLine);
             ProcessSquirrelStartup();
             // Subsequent launches
             base.OnStartupNextInstance(eventArgs);
@@ -37,6 +44,39 @@ namespace MiniPie.Manager
             if (code != null && !code.StartsWith("-"))
             {
                 _application?.Bootstrapper?.ProcessTokenUpdate(code);
+            }
+        }
+
+        private Process RunAsAdmin(string arguments)
+        {
+            var process = Process.GetCurrentProcess();
+            var fileName = process.MainModule.FileName;
+            var startInfo = new ProcessStartInfo(fileName)
+            {
+                Arguments = arguments,
+                Verb = "runas"
+            };
+            return new Process
+            {
+                StartInfo = startInfo
+            };
+        }
+
+        private void ProcessAdminArguments(IList<string> arguments)
+        {
+            if (arguments == null || arguments.IsEmpty())
+            {
+                return;
+            }
+            if (arguments.Contains("-register"))
+            {
+                UriProtocolManager.RegisterUrlProtocol();
+                Environment.Exit(0);
+            }
+            if (arguments.Contains("-unregister"))
+            {
+                UriProtocolManager.UnregisterUrlProtocol();
+                Environment.Exit(0);
             }
         }
 
@@ -49,20 +89,32 @@ namespace MiniPie.Manager
                 SquirrelAwareApp.HandleEvents(
                   onInitialInstall: v =>
                   {
-                      mgr.CreateShortcutForThisExe();
-                      Application.Current.Shutdown();
+                      var register = RunAsAdmin("-register");
+                      register.Exited += (sender, args) =>
+                      {
+                          mgr.CreateShortcutForThisExe();
+                          Environment.Exit(0);
+                      };
+                      register.Start();
                   },
                   onAppUpdate: v =>
                   {
                       mgr.CreateShortcutForThisExe();
-                      Application.Current.Shutdown();
+                      Environment.Exit(0);
                   },
                   onAppUninstall: v =>
                   {
-                      mgr.RemoveShortcutForThisExe();
-                      Application.Current.Shutdown();
+                      var register = RunAsAdmin("-unregister");
+                      register.Exited += (sender, args) =>
+                      {
+                          mgr.RemoveShortcutForThisExe();
+                          Environment.Exit(0);
+                      };
+                      register.Start();
                   },
-                  onFirstRun: () => {});
+                  onFirstRun: () =>
+                  {
+                  });
             }
         }
     }

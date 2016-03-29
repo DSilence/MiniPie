@@ -1,8 +1,9 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
 
-namespace MiniPieHelper
+namespace MiniPie
 {
     public static class UriProtocolManager
     {
@@ -20,7 +21,7 @@ namespace MiniPieHelper
                     rKey.SetValue("URL Protocol", "");
 
                     rKey = rKey.CreateSubKey(@"shell\open\command");
-                    rKey.SetValue("", "\"" + Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "MiniPie.exe") + "\" %1");
+                    rKey.SetValue("", "\"" + Process.GetCurrentProcess().MainModule.FileName + "\" %1");
                 }
             }
             else

@@ -259,6 +259,7 @@
     </Compile>
     <Compile Include="Manager\SingleInstanceManager.cs" />
     <Compile Include="ToggleVisibilityEventArgs.cs" />
+    <Compile Include="UriProtocolManager.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />

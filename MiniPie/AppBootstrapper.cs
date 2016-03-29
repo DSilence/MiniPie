@@ -66,11 +66,6 @@ namespace MiniPie {
         public async void ProcessTokenUpdate(string input)
         {
             await _kernel.GetInstance<ISpotifyWebApi>().CreateToken(input);
-            var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "unregisterUri");
-            processStartInfo.Verb = "runas";
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            Process.Start(processStartInfo);
         }
 
         protected override void Configure() {

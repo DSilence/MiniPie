@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>MiniPie</id>
-        <version>0.0.3.0</version>
+        <version>0.0.4.0</version>
         <title>MiniPie</title>
         <authors>SleepyManiac</authors>
         <owners>SleepyManiac</owners>
@@ -19,7 +19,6 @@
         <file src="bin\Release\*.dll" target="lib\net45" />
         <file src="bin\Release\MiniPie.exe" target="lib\net45\MiniPie.exe" />
         <file src="bin\Release\MiniPie.exe.config" target="lib\net45\MiniPie.exe.config" />
-        <file src="..\MiniPieHelper\bin\Release\MiniPieHelper.exe" target="lib\net45\MiniPieHelper.exe" />
         <file src="bin\Release\NLog.config" target="lib\net45\NLog.config" />
     </files>
 </package>

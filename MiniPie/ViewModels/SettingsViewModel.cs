@@ -149,17 +149,7 @@ namespace MiniPie.ViewModels {
 
         public void Login()
         {
-            var processStartInfo = new ProcessStartInfo("MiniPieHelper.exe", "registerUri");
-            processStartInfo.Verb = "runas";
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            using (var utils = new Process())
-            {
-                utils.StartInfo = processStartInfo;
-                utils.EnableRaisingEvents = true;
-                utils.Start();
-                Process.Start(BuildLoginQuery().ToString());
-            }
+            Process.Start(BuildLoginQuery().ToString());
         }
 
         public void Logout()
