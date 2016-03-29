@@ -74,6 +74,12 @@ namespace MiniPie.ViewModels {
             set { _Settings.StartMinimized = value;}
         }
 
+        public UpdatePreference UpdatePreference
+        {
+            get { return _Settings.UpdatePreference; }
+            set { _Settings.UpdatePreference = value; }
+        }
+
         public Language Language
         {
             get { return _Settings.Language; }

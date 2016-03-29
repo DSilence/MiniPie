@@ -313,6 +313,24 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pre-release.
+        /// </summary>
+        public static string Enum_UpdatePreference_Developer {
+            get {
+                return ResourceManager.GetString("Enum_UpdatePreference_Developer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stable.
+        /// </summary>
+        public static string Enum_UpdatePreference_Stable {
+            get {
+                return ResourceManager.GetString("Enum_UpdatePreference_Stable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show MiniPie always on top of other windows.
         /// </summary>
         public static string Settings_AlwaysOnTop {
@@ -471,6 +489,15 @@ namespace MiniPie.Properties {
         public static string Settings_NotLoggedIn {
             get {
                 return ResourceManager.GetString("Settings_NotLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update channel:.
+        /// </summary>
+        public static string Settings_ReleaseChannel {
+            get {
+                return ResourceManager.GetString("Settings_ReleaseChannel", resourceCulture);
             }
         }
         

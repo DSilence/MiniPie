@@ -57,10 +57,10 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Padding="0 0 5 0"
-                               Text="{x:Static Properties:Resources.Settings_ApplicationSize}" />
+                               Text="{x:Static Properties:Resources.Settings_ReleaseChannel}" />
                     <ComboBox Grid.Row="0" Grid.Column="1"
-                              ItemsSource="{Binding Source={x:Type enums:ApplicationSize}, Converter={StaticResource EnumToLocalizedStringConverter}}"
-                              SelectedItem="{Binding ApplicationSize, Converter={StaticResource EnumToLocalizedStringConverter}}" />
+                              ItemsSource="{Binding Source={x:Type enums:UpdatePreference}, Converter={StaticResource EnumToLocalizedStringConverter}}"
+                              SelectedItem="{Binding UpdatePreference, Converter={StaticResource EnumToLocalizedStringConverter}}" />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Padding="0 0 5 0"
                                Text="{x:Static Properties:Resources.Settings_Language}" />

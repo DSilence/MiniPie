@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
+using MiniPie.ViewModels;
 using Squirrel;
 
 namespace MiniPie.Manager
@@ -13,24 +14,22 @@ namespace MiniPie.Manager
     public class UpdateManager: IDisposable
     {
         private readonly ILog _log;
+        private readonly AppSettings _settings;
 #pragma warning disable 649
         private Timer _timer;
 #pragma warning restore 649
-        private static readonly Dictionary<UpdatePreference, string> UpdateUris = new Dictionary<UpdatePreference, string>
-        {
-            {UpdatePreference.Developer, "http://minipie.blob.core.windows.net/installerdevelop"},
-            {UpdatePreference.Stable, "http://minipie.blob.core.windows.net/installermaster"}
-        };
+        private const string GithubProjectUrl = "https://github.com/DSilence/MiniPie";
 
-        public UpdateManager(ILog log)
+        public UpdateManager(ILog log, AppSettings settings)
         {
             _log = log;
+            _settings = settings;
         }
 
         public void Initialize()
         {
 #if !DEBUG
-            _timer = new Timer(Callback, null, TimeSpan.FromSeconds(0.3), TimeSpan.FromMinutes(120));
+            _timer = new Timer(Callback, null, TimeSpan.FromSeconds(0.3), TimeSpan.FromMinutes(60));
 #endif
         }
 
@@ -39,8 +38,15 @@ namespace MiniPie.Manager
             Squirrel.UpdateManager manager = null;
             try
             {
+                if (_settings.UpdatePreference == UpdatePreference.Developer)
+                {
+                    manager = await Squirrel.UpdateManager.GitHubUpdateManager(GithubProjectUrl, null, null, null, true);
+                }
+                else
+                {
+                    manager = await Squirrel.UpdateManager.GitHubUpdateManager(GithubProjectUrl);
+                }
                 //workaround since update manager apparently sucks
-                manager = new Squirrel.UpdateManager(UpdateUris[UpdatePreference.Developer]);
                 await manager.UpdateApp().ConfigureAwait(false);
             }
             catch (Exception e)

@@ -264,4 +264,13 @@
   <data name="App_WaitingForSpotify" xml:space="preserve">
     <value>Waiting for spotify app</value>
   </data>
+  <data name="Enum_UpdatePreference_Developer" xml:space="preserve">
+    <value>Pre-release</value>
+  </data>
+  <data name="Enum_UpdatePreference_Stable" xml:space="preserve">
+    <value>Stable</value>
+  </data>
+  <data name="Settings_ReleaseChannel" xml:space="preserve">
+    <value>Update channel:</value>
+  </data>
 </root>
