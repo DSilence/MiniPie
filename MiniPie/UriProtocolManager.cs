@@ -7,15 +7,15 @@ namespace MiniPie
 {
     public static class UriProtocolManager
     {
-        public const string UrlProtocol = "minipie";
+        public const string UrlProtocol = "Software\\Classes\\minipie";
         public static void RegisterUrlProtocol()
         {
             UnregisterUrlProtocol();
 
-            RegistryKey rKey = Registry.ClassesRoot.OpenSubKey(UrlProtocol, true);
+            RegistryKey rKey = Registry.CurrentUser.OpenSubKey(UrlProtocol, true);
             if (rKey == null)
             {
-                using (rKey = Registry.ClassesRoot.CreateSubKey(UrlProtocol))
+                using (rKey = Registry.CurrentUser.CreateSubKey(UrlProtocol))
                 {
                     rKey.SetValue("", "URL:MiniPie Protocol");
                     rKey.SetValue("URL Protocol", "");
@@ -32,10 +32,10 @@ namespace MiniPie
 
         public static void UnregisterUrlProtocol()
         {
-            RegistryKey rKey = Registry.ClassesRoot.OpenSubKey(UrlProtocol, true);
+            RegistryKey rKey = Registry.CurrentUser.OpenSubKey(UrlProtocol, true);
             if (rKey != null)
             {
-                Registry.ClassesRoot.DeleteSubKeyTree(UrlProtocol);
+                Registry.CurrentUser.DeleteSubKeyTree(UrlProtocol);
                 rKey.Close();
             }
             
