@@ -278,7 +278,7 @@ namespace MiniPie.ViewModels {
                     if (IsPlaying)
                         OnCoverDisplayFadeOut();
 
-                    HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
+                    HasTrackInformation = !string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist);
                     var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
                     var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
                     var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
