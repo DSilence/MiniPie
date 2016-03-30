@@ -276,5 +276,24 @@ namespace MiniPie.Tests.ViewModels
             Assert.Equal(isOpen, _shellViewModel.CanVolumeDown);
             Assert.Equal(isOpen, _shellViewModel.CanVolumeUp);
         }
+
+        [Theory]
+        [InlineData(
+            "Version:0.9\r\nStartHTML:0000000128\r\nEndHTML:0000000600\r\nStartFragment:0000000164\r\nEndFragment:0000000564\r\nSourceURL:about:blank\r\n<html>\r\n<body>\r\n<!--StartFragment--><a href=\"https://open.spotify.com/track/46Z1ogcP9C9UxBD1aO2iRR\">Eula \u2013 Baroness</a><br><a href=\"https://open.spotify.com/track/5RROFztQ7ua0p9ttJ0U8nv\">Nothing's Gonna Hurt You Baby \u2013 Cigarettes After Sex</a><br><a href=\"https://open.spotify.com/track/2zQ2vKm9VslwOerYEWHtaF\">Together \u2013 Nordic Giants</a><br><a href=\"https://open.spotify.com/track/6bKTgXrEEnxHwgdunXJ9LU\">Lilitu \u2013 Blueneck</a><!--EndFragment-->\r\n</body>\r\n</html>", "Eula \u2013 Baroness\r\nNothing's Gonna Hurt You Baby \u2013 Cigarettes After Sex\r\nTogether \u2013 Nordic Giants\r\nLilitu \u2013 Blueneck")]
+        [InlineData("Version:0.9\r\nStartHTML:0000000128\r\nEndHTML:0000000277\r\nStartFragment:0000000164\r\nEndFragment:0000000241\r\nSourceURL:about:blank\r\n<html>\r\n<body>\r\n<!--StartFragment--><a href=\"https://open.spotify.com/artist/3KdXhEwbqFHfNfSk7L9E87\">Baroness</a><!--EndFragment-->\r\n</body>\r\n</html>", "Baroness")]
+        [InlineData("Version:0.9\r\nStartHTML:0000000128\r\nEndHTML:0000000282\r\nStartFragment:0000000164\r\nEndFragment:0000000246\r\nSourceURL:about:blank\r\n<html>\r\n<body>\r\n<!--StartFragment--><a href=\"https://open.spotify.com/album/4mSoz87AFyUIcZlCmwbI8s\">Yellow & Green</a><!--EndFragment-->\r\n</body>\r\n</html>\r\n", "Yellow & Green")]
+        public void TestCopyTrackInfoSuccess(string testString, string expected)
+        {
+            var actualResult = _shellViewModel.CopyTracksInfo(testString);
+            Assert.Equal(expected, actualResult);
+        }
+
+        [Fact]
+        public void TestCopyTrackInfoFailed()
+        {
+            string badData = "ThisIsBad";
+            Assert.Equal("", _shellViewModel.CopyTracksInfo(badData));
+            _log.Received(1).WarnException("Failed to copy track info", Arg.Any<Exception>());
+        }
     }
 }

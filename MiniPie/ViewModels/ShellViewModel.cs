@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 using Caliburn.Micro;
 using Microsoft.Win32;
 using MiniPie.Core;
@@ -13,6 +16,7 @@ using MiniPie.Core.SpotifyWeb.Models;
 using MiniPie.Manager;
 using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
+using Screen = Caliburn.Micro.Screen;
 
 namespace MiniPie.ViewModels {
     public sealed class ShellViewModel : Screen, IToggleVisibility {
@@ -369,34 +373,30 @@ namespace MiniPie.ViewModels {
             return null;
         }
 
-        public async Task<string> CopyTracksInfo(IList<string> trackUrls)
+        public string CopyTracksInfo(string data)
         {
             try
             {
-                List<string> ids = new List<string>();
-                foreach (var trackUrl in trackUrls)
-                {
-                    var id = GetTrackId(trackUrl);
-                    if (id != null)
-                    {
-                        ids.Add(id);
-                    }
-                }
-                var trackInfo = await _SpotifyController.GetTrackInfo(ids).ConfigureAwait(false);
-                var niceNames =
-                    trackInfo.Select(
-                        track =>
-                            string.Format(_songFriendlyNameFormat,
-                                track.Artists.First().Name, track.Name));
+                var bodyIndex = data.IndexOf("<body>", StringComparison.Ordinal);
+                var bodyEndIndicator = "</body>";
+                var bodyEndIndex = data.IndexOf(bodyEndIndicator, StringComparison.Ordinal);
+                var length = bodyEndIndex + bodyEndIndicator.Length - bodyIndex;
+                var body = data.Substring(bodyIndex, length);
+                body = body.Replace("<br>", "");
+                body = body.Replace("&", "&amp;");
+                body = body.Replace("'", "&apos;");
+                var element = XElement.Parse(body);
+                var links = element.Descendants("a");
+
+                var niceNames = links.Select(link => link.Value).ToList();
                 var result = string.Join(Environment.NewLine, niceNames);
                 return result;
-                
             }
             catch (Exception e)
             {
                 _Logger.WarnException("Failed to copy track info", e);
             }
-            return null;
+            return string.Empty;
         }
 
         public async Task AddTracksToQueue(IList<string> trackUrls)

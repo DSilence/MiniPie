@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -162,10 +163,9 @@ namespace MiniPie.Views
 
         private async void TitlePanel_OnDrop(object sender, DragEventArgs e)
         {
-            var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
-            var urls = data.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
-            //TODO url validation
-            Clipboard.SetText(await ShellViewModel.CopyTracksInfo(urls));
+            var data = Convert.ToString(e.Data.GetData(DataFormats.Html));
+            var viewModel = ShellViewModel;
+            Clipboard.SetText(await Task.Run(() => viewModel.CopyTracksInfo(data)));
         }
 
         private async void AlbumArt_OnDrop(object sender, DragEventArgs e)
