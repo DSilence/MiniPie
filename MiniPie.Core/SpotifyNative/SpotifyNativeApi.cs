@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -46,6 +47,26 @@ namespace MiniPie.Core.SpotifyNative
             public Point rcNormalPosition;
         }
         #endregion
+
+        public async Task AttachToProcess(Func<Process, Task> processFound, Action<Process> processExited)
+        {
+            SpotifyProcess = null;
+            SpotifyProcess = Process.GetProcessesByName("spotify")
+                .FirstOrDefault(p => !string.IsNullOrEmpty(p.MainWindowTitle));
+            if (SpotifyProcess != null)
+            {
+                await processFound(SpotifyProcess).ConfigureAwait(false);
+                //Renew updateToken for Spotify local api
+                
+                SpotifyProcess.EnableRaisingEvents = true;
+                SpotifyProcess.Exited += (o, e) =>
+                {
+                    processExited(SpotifyProcess);
+                    SpotifyProcess = null;
+                    
+                };
+            }
+        }
 
         public void NextTrack()
         {

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Windows.Interop;
 
-namespace MiniPie.Core.HotKeyManager
+namespace MiniPie.Core.SpotifyNative.HotKeyManager
 {
     public class HotKey : IDisposable
     {

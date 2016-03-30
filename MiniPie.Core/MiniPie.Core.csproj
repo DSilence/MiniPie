@@ -107,8 +107,8 @@
     <Compile Include="SpotifyNative\SpotifyNativeApi.cs" />
     <Compile Include="SpotifyWeb\Extensions\StringExtensions.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="HotKeyManager\HotKey.cs" />
-    <Compile Include="HotKeyManager\KeyManager.cs" />
+    <Compile Include="SpotifyNative\HotKeyManager\HotKey.cs" />
+    <Compile Include="SpotifyNative\HotKeyManager\KeyManager.cs" />
     <Compile Include="HotKeys.cs" />
     <Compile Include="ICoverService.cs" />
     <Compile Include="ILog.cs" />

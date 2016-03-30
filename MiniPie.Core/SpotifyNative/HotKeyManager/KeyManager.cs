@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MiniPie.Core.HotKeyManager
+namespace MiniPie.Core.SpotifyNative.HotKeyManager
 {
     public class KeyManager: IDisposable
     {

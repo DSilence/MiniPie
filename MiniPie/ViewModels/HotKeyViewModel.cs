@@ -5,7 +5,7 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
-using MiniPie.Core.HotKeyManager;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 
 namespace MiniPie.ViewModels
 {

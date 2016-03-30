@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using MiniPie.Core.HotKeyManager;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 
 namespace MiniPie.Core
 {

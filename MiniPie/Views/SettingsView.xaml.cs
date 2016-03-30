@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using MiniPie.Core.Enums;
-using MiniPie.Core.HotKeyManager;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 using MiniPie.ViewModels;
 
 namespace MiniPie.Views {
