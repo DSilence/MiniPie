@@ -10,8 +10,7 @@ namespace MiniPie.Core
         private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
 
-        private const string AutorunSettingsName = "StartWithWindows";
-        private const string Extention = ".appref-ms";
+        private const string Extention = ".lnk";
 
         public AutorunService(ILog logger, AppSettings settings, AppContracts contracts)
         {
@@ -31,16 +30,13 @@ namespace MiniPie.Core
                 if (_Settings.StartWithWindows)
                 {
                     // Add/Update autorun
-                    if (ApplicationDeployment.IsNetworkDeployed)
+                    if (!File.Exists(startupPath))
                     {
-                        if (!File.Exists(startupPath))
-                        {
-                            string allProgramsPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
-                            string shortcutPath = Path.Combine(allProgramsPath, _Contracts.PublisherName);
-                            shortcutPath = Path.Combine(shortcutPath, _Contracts.ProductName) + Extention;
+                        string allProgramsPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+                        string shortcutPath = Path.Combine(allProgramsPath, _Contracts.PublisherName);
+                        shortcutPath = Path.Combine(shortcutPath, _Contracts.ProductName) + Extention;
 
-                            File.Copy(shortcutPath, startupPath);
-                        }
+                        File.Copy(shortcutPath, startupPath);
                     }
                 }
                 else
