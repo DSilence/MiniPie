@@ -15,6 +15,7 @@ using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
 using MiniPie.Manager;
 using SimpleInjector;
+using Application = System.Windows.Application;
 using ILog = MiniPie.Core.ILog;
 using Screen = Caliburn.Micro.Screen;
 
@@ -190,22 +191,27 @@ namespace MiniPie.ViewModels {
             _clipboardManager.SetText(TrackUrl);
         }
 
+        public Window MainWindow
+        {
+            get { return Application.Current.MainWindow; }
+        }
+
         public void HandleTrayMouseDoubleClick(UIElement window)
         {
             if (_Settings.SingleClickHide)
             {
                 if (window.Visibility == Visibility.Hidden)
                 {
-                    ShowWindow(window);
+                    ShowElement(window);
                 }
                 else
                 {
-                    HideWindow(window);
+                    HideElement(window);
                 }
             }
             else
             {
-                HideWindow(window);
+                HideElement(window);
             }
         }
 
@@ -215,26 +221,26 @@ namespace MiniPie.ViewModels {
             {
                 if (window.Visibility == Visibility.Hidden)
                 {
-                    ShowWindow(window);
+                    ShowElement(window);
                 }
                 else
                 {
-                    HideWindow(window);
+                    HideElement(window);
                 }
             }
             else
             {
-                ShowWindow(window);
+                ShowElement(window);
             }
         }
 
-        private void ShowWindow(UIElement window)
+        public void ShowElement(UIElement window)
         {
             window.Visibility = Visibility.Visible;
             (window as Window)?.Activate();
         }
 
-        private void HideWindow(UIElement window)
+        public void HideElement(UIElement window)
         {
             window.Visibility = Visibility.Hidden;
         }
