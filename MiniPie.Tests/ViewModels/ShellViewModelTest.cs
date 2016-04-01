@@ -196,6 +196,49 @@ namespace MiniPie.Tests.ViewModels
         }
 
         [Fact]
+        public async Task TestUpdateViewPlaylistsFailed()
+        {
+            var status = new Status
+            {
+                track = new Track
+                {
+                    track_resource = new Resource
+                    {
+                        name = "TestName",
+                        uri = "SpotifyUri",
+                        location = new Location
+                        {
+                            og = "https://open.spotify.com/track/trackurl"
+                        }
+                    },
+                    artist_resource = new Resource
+                    {
+                        name = "TestArtistName"
+                    }
+                },
+                playing = true
+            };
+            _spotifyController.IsSpotifyOpen().Returns(true);
+            _spotifyController.GetStatus().Returns(status);
+            _settings.SpotifyToken = new MiniPie.Core.SpotifyWeb.Token();
+            _coverService.FetchCover(status).Returns("TestCover");
+            _spotifyController.IsTracksSaved(null).ReturnsForAnyArgs(new[] { true });
+
+            Exception playlistException = new Exception("Playlists failed");
+            _spotifyController.GetPlaylists().Throws(playlistException);
+
+            await _shellViewModel.UpdateView();
+            Assert.Equal("TestName", _shellViewModel.CurrentTrack);
+            Assert.Equal("SpotifyUri", _shellViewModel.SpotifyUri);
+            Assert.Equal("https://open.spotify.com/track/trackurl", _shellViewModel.TrackUrl);
+            Assert.Equal("TestArtistName – TestName", _shellViewModel.TrackFriendlyName);
+            Assert.Equal("trackurl", _shellViewModel.TrackId);
+            Assert.Equal("TestCover", _shellViewModel.CoverImage);
+
+            _log.Received(1).FatalException("UpdateView() failed hard with: Playlists failed", playlistException);
+        }
+
+        [Fact]
         public async Task TestUpdateViewCoverFailed()
         {
             var status = new Status
