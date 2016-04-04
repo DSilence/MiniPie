@@ -187,5 +187,13 @@
         </MenuItem>
     <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
                   cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
-        <MenuItem Header="{wpf:Resx App_Exit}" cal:Message.Attach="[Event Click] = [Action Close]" />
+   <MenuItem Header="{wpf:Resx App_Exit}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Click">
+                <cal:ActionMessage MethodName="Close">
+                    <cal:Parameter Value="{Binding MainWindow}"/>
+                </cal:ActionMessage>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </MenuItem>
 </ContextMenu>

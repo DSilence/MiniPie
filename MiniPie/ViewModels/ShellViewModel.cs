@@ -245,6 +245,11 @@ namespace MiniPie.ViewModels {
             window.Visibility = Visibility.Hidden;
         }
 
+        public void Close(Window window)
+        {
+            window.Close();
+        }
+
         private Task SpotifyOpened() {
             if(_Settings.HideIfSpotifyClosed)
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
