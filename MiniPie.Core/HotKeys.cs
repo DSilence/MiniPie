@@ -5,7 +5,7 @@ using MiniPie.Core.SpotifyNative.HotKeyManager;
 
 namespace MiniPie.Core
 {
-    public class HotKeys: ICloneable
+    public class HotKeys
     {
         public KeyValuePair<Key, KeyModifier> PlayPause { get; set; }
         public KeyValuePair<Key, KeyModifier> VolumeDown { get; set; }
@@ -13,7 +13,7 @@ namespace MiniPie.Core
         public KeyValuePair<Key, KeyModifier> Next { get; set; }
         public KeyValuePair<Key, KeyModifier> Previous { get; set; }
 
-        public object Clone()
+        public HotKeys Clone()
         {
             return new HotKeys
             {

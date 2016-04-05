@@ -30,7 +30,7 @@ namespace MiniPie.ViewModels {
             HotKeyViewModel = hotKeyViewModel;
             _spotifyController = spotifyController;
             _autorunService = autorunService;
-            DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
+            DisplayName = $"Settings - {_Contracts.ApplicationName}";
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
             UpdateLoggedIn();
             //TODO custom decorator would be ideal here
@@ -198,6 +198,7 @@ namespace MiniPie.ViewModels {
         protected override void OnActivate()
         {
             base.OnActivate();
+            HotKeyViewModel.UnregisterHotKeys();
             _spotifyController.TokenUpdated += SpotifyControllerOnTokenUpdated;
         }
 
@@ -209,6 +210,7 @@ namespace MiniPie.ViewModels {
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
+            HotKeyViewModel.RegisterHotKeys();
             _spotifyController.TokenUpdated -= SpotifyControllerOnTokenUpdated;
         }
     }

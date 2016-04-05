@@ -13,8 +13,6 @@ namespace MiniPie.Core.SpotifyNative.HotKeyManager
         private readonly HotKey _playPause;
         private readonly HotKey _volumeUp;
         private readonly HotKey _volumeDown;
-
-        private List<HotKey> _hotKeys;
         private readonly ILog _log;
 
         public KeyManager(ISpotifyController spotifyController, ILog log)
@@ -31,14 +29,6 @@ namespace MiniPie.Core.SpotifyNative.HotKeyManager
             _volumeUp = new HotKey(Key.None, KeyModifier.None, 
                 key => _spotifyController.VolumeUp());
             _log = log;
-            _hotKeys = new List<HotKey>
-            {
-                _next,
-                _previous,
-                _playPause,
-                _volumeUp,
-                _volumeDown
-            };
 
         }
 
@@ -74,9 +64,17 @@ namespace MiniPie.Core.SpotifyNative.HotKeyManager
             {
                 if (!hotKey.Register())
                 {
-                    _log.Warn(String.Format("Failed to register hotkey:{0},{1}", 
+                    _log.Warn(string.Format("Failed to register hotkey:{0},{1}", 
                         value.Key, value.Value));
                 }
+            }
+        }
+
+        public bool TestKeyValue(KeyValuePair<Key, KeyModifier> value)
+        {
+            using (var hotkey = new HotKey(value.Key, value.Value, key => { }))
+            {
+                return hotkey.Register();
             }
         }
 

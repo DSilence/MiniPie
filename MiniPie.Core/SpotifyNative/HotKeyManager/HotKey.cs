@@ -36,6 +36,10 @@ namespace MiniPie.Core.SpotifyNative.HotKeyManager
         // ******************************************************************
         public bool Register()
         {
+            if (Key == Key.None)
+            {
+                return true;
+            }
             int virtualKeyCode = KeyInterop.VirtualKeyFromKey(Key);
             if (virtualKeyCode > 0)
             {

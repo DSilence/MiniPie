@@ -195,18 +195,6 @@
   <data name="Settings_Hotkeys" xml:space="preserve">
     <value>Hotkeys</value>
   </data>
-  <data name="Enum_SupportedKeyModifiers_Alt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="Enum_SupportedKeyModifiers_Ctrl" xml:space="preserve">
-    <value>Ctrl</value>
-  </data>
-  <data name="Enum_SupportedKeyModifiers_Shift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
-  <data name="Enum_SupportedKeyModifiers_None" xml:space="preserve">
-    <value>(None)</value>
-  </data>
   <data name="Settings_InvalidHotkeys" xml:space="preserve">
     <value>Invalid hotkey selected. Make sure that hotkeys are different.</value>
   </data>
@@ -275,5 +263,11 @@
   </data>
   <data name="Settings_SingleClickHide" xml:space="preserve">
     <value>Hide window by single click on track icon (not double click)</value>
+  </data>
+  <data name="Settings_FailedToRegisterHotkey" xml:space="preserve">
+    <value>Failed to register hotkey. It may be used by another application.</value>
+  </data>
+  <data name="Settings_Clear" xml:space="preserve">
+    <value>Clear</value>
   </data>
 </root>

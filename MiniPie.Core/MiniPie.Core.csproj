@@ -41,18 +41,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Caliburn.Micro.Core.3.0.0\lib\net45\Caliburn.Micro.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Caliburn.Micro.Platform, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Caliburn.Micro.3.0.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Caliburn.Micro.Platform.Core, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Caliburn.Micro.3.0.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Equals, Version=1.4.9.0, Culture=neutral, PublicKeyToken=15432f00798e61a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Equals.Fody.1.4.9.0\lib\dotnet\Equals.dll</HintPath>
       <Private>False</Private>
@@ -84,7 +72,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -100,9 +87,10 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="AutorunService.cs" />
     <Compile Include="CoverService.cs" />
+    <Compile Include="Enums\HotkeyAction.cs" />
     <Compile Include="Enums\LockScreenBehavior.cs" />
-    <Compile Include="Enums\SupportedKeyModifiers.cs" />
     <Compile Include="Enums\UpdatePreference.cs" />
+    <Compile Include="SpotifyNative\HotKeyManager\IKeyManager.cs" />
     <Compile Include="SpotifyNative\ISpotifyNativeApi.cs" />
     <Compile Include="SpotifyNative\SpotifyNativeApi.cs" />
     <Compile Include="SpotifyWeb\Extensions\StringExtensions.cs" />
