@@ -120,6 +120,7 @@
     <Compile Include="SpotifyWeb\Models\PagingObject.cs" />
     <Compile Include="SpotifyWeb\Models\Playlist.cs" />
     <Compile Include="SpotifyWeb\Models\GrantType.cs" />
+    <Compile Include="SpotifyWeb\Models\SearchResult.cs" />
     <Compile Include="SpotifyWeb\Models\Track.cs" />
     <Compile Include="SpotifyWeb\Models\TrackCollection.cs" />
     <Compile Include="SpotifyWeb\Models\User.cs" />

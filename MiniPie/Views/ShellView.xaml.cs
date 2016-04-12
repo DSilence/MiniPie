@@ -16,7 +16,6 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
-using MenuItem = System.Windows.Forms.MenuItem;
 using Size = System.Windows.Size;
 using UserControl = System.Windows.Controls.UserControl;
 
