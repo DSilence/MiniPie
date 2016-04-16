@@ -87,13 +87,18 @@ namespace MiniPie.Core.SpotifyNative.HotKeyManager
             _volumeUp.Unregister();
         }
 
-        public void Dispose()
+        private void Dispose(bool disposing)
         {
             _next.Dispose();
             _previous.Dispose();
             _playPause.Dispose();
             _volumeDown.Dispose();
             _volumeUp.Dispose();
+            GC.SuppressFinalize(this);
+        }
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }
