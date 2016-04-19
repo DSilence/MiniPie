@@ -106,6 +106,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add to Queue.
+        /// </summary>
+        public static string App_AddToQueue {
+            get {
+                return ResourceManager.GetString("App_AddToQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Spotify Url.
         /// </summary>
         public static string App_CopySpotifyLink {
@@ -129,6 +138,15 @@ namespace MiniPie.Properties {
         public static string App_CopyTrackName {
             get {
                 return ResourceManager.GetString("App_CopyTrackName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy track names.
+        /// </summary>
+        public static string App_CopyTrackNames {
+            get {
+                return ResourceManager.GetString("App_CopyTrackNames", resourceCulture);
             }
         }
         
