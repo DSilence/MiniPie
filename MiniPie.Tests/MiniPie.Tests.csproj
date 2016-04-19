@@ -108,6 +108,7 @@
     <Compile Include="SpotifyHelperTest.cs" />
     <Compile Include="Core\SpotifyLocal\SpotifyLocalApiTest.cs" />
     <Compile Include="Core\SpotifyWeb\SpotifyWebApiTest.cs" />
+    <Compile Include="ViewModels\AboutViewModelTest.cs" />
     <Compile Include="ViewModels\ShellViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>

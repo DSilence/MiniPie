@@ -266,7 +266,6 @@
     <Compile Include="Validation\KeyManagerWrapper.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\HotKeyViewModel.cs" />
-    <Compile Include="ViewModels\NoSpotifyViewModel.cs" />
     <Compile Include="ViewModels\PlaylistItemViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -275,12 +274,6 @@
     </Compile>
     <Compile Include="Views\HotKeyView.xaml.cs">
       <DependentUpon>HotKeyView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\NewBroadcastMessageView.xaml.cs">
-      <DependentUpon>NewBroadcastMessageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\NoSpotifyView.xaml.cs">
-      <DependentUpon>NoSpotifyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -348,14 +341,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HotKeyView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\NewBroadcastMessageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\NoSpotifyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
