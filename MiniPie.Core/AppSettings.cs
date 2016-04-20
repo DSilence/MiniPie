@@ -6,50 +6,43 @@ using Newtonsoft.Json;
 
 namespace MiniPie.Core {
     [JsonObject]
-    public class AppSettings {
-
-        public AppSettings() {
-            Positions = new List<WindowPosition>();
-            ApplicationSize = ApplicationSize.Medium;
-            Language = LanguageHelper.English;
-            LockScreenBehavior = LockScreenBehavior.Disabled;
-            UpdatePreference = UpdatePreference.Stable;
-        }
+    public class AppSettings
+    {
+        
+        [JsonProperty]
+        public virtual bool AlwaysOnTop { get; set; }
 
         [JsonProperty]
-        public bool AlwaysOnTop { get; set; }
+        public virtual bool StartWithWindows { get; set; }
 
         [JsonProperty]
-        public bool StartWithWindows { get; set; }
+        public virtual bool HideIfSpotifyClosed { get; set; }
 
         [JsonProperty]
-        public bool HideIfSpotifyClosed { get; set; }
+        public virtual bool DisableAnimations { get; set; }
 
         [JsonProperty]
-        public bool DisableAnimations { get; set; }
+        public virtual Language Language { get; set; } = LanguageHelper.English;
+
+        public virtual List<WindowPosition> Positions { get; set; } = new List<WindowPosition>();
 
         [JsonProperty]
-        public Language Language { get; set; }
-
-        public List<WindowPosition> Positions { get; set; }
-
+        public virtual ApplicationSize ApplicationSize { get; set; } = ApplicationSize.Medium;
         [JsonProperty]
-        public ApplicationSize ApplicationSize { get; set; }
+        public virtual bool HotKeysEnabled { get; set; }
         [JsonProperty]
-        public bool HotKeysEnabled { get; set; }
+        public virtual HotKeys HotKeys { get; set; }
         [JsonProperty]
-        public HotKeys HotKeys { get; set; }
+        public virtual bool StartMinimized { get; set; }
         [JsonProperty]
-        public bool StartMinimized { get; set; }
+        public virtual string CacheFolder { get; set; }
         [JsonProperty]
-        public string CacheFolder { get; set; }
+        public virtual Token SpotifyToken { get; set; }
         [JsonProperty]
-        public Token SpotifyToken { get; set; }
+        public virtual LockScreenBehavior LockScreenBehavior { get; set; } = LockScreenBehavior.Disabled;
         [JsonProperty]
-        public LockScreenBehavior LockScreenBehavior { get; set; }
+        public virtual UpdatePreference UpdatePreference { get; set; } = UpdatePreference.Stable;
         [JsonProperty]
-        public UpdatePreference UpdatePreference { get; set; }
-        [JsonProperty]
-        public bool SingleClickHide { get; set; }
+        public virtual bool SingleClickHide { get; set; }
     }
 }

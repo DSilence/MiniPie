@@ -4,7 +4,7 @@ using System.IO;
 
 namespace MiniPie.Core
 {
-    public sealed class AutorunService
+    public class AutorunService
     {
         private readonly ILog _Logger;
         private readonly AppSettings _Settings;
@@ -17,11 +17,9 @@ namespace MiniPie.Core
             _Logger = logger;
             _Settings = settings;
             _Contracts = contracts;
-
-            ValidateAutorun();
         }
 
-        public void ValidateAutorun()
+        public virtual void ValidateAutorun()
         {
             try
             {
