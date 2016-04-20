@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -80,6 +81,41 @@ namespace MiniPie.Tests
             Assert.Equal(CoverTestDirectoryName + "\\CoverCache\\a83c1a688201fcf3e304493ed0425fe602e45eb8.jpg", result);
             Assert.Equal(result, result2);
             
+        }
+
+        [Fact]
+        public async Task TestFetchLocalCover()
+        {
+            string uri = "spotify:local:test_uri";
+            string download_uri = "https://i.scdn.co/image/cbdd47d8d6abe7c54d58e0583dfbddbdee703ed2";
+            string found_uri = "test_uri";
+
+            var status = new Status
+            {
+                track = new Track
+                {
+                    track_resource = new Resource
+                    {
+                        uri = uri,
+                        name = "test"
+                    },
+                    artist_resource = new Resource
+                    {
+                        name = "test"
+                    }
+                }
+            };
+            var exception = new Exception();
+            _webApi.TrackSearch(null)
+                .ReturnsForAnyArgs(info => new MiniPie.Core.SpotifyWeb.Models.Track[0], info => { throw exception; }, info => new[] {new MiniPie.Core.SpotifyWeb.Models.Track {Uri = found_uri} });
+            _webApi.GetTrackArt(found_uri).Returns(download_uri);
+
+            var result = await _coverService.FetchCover(status);
+            Assert.Equal("", result);
+            result = await _coverService.FetchCover(status);
+            Assert.Equal("", result);
+            result = await _coverService.FetchCover(status);
+            Assert.True(result.Contains("CoverCache\\33606d2b155398cf4f1b458f3565037e07206916.jpg"));
         }
 
         public void Dispose()

@@ -4,11 +4,18 @@ using System.IO;
 using Newtonsoft.Json;
 
 namespace MiniPie {
-    public sealed class JsonPersister<T> : IDisposable where T : class {
+    public class JsonPersister<T> : IDisposable where T : class {
         
         private T _instance;
         private readonly object _syncLock;
 
+        /// <summary>
+        /// For unit tests
+        /// </summary>
+        public JsonPersister()
+        {
+
+        }
         public JsonPersister(string path) {
             Path = path;
             _syncLock = new object();
@@ -16,7 +23,7 @@ namespace MiniPie {
 
         public string Path { get; private set; }
 
-        public T Instance {
+        public virtual T Instance {
             get {
                 try {
                     return _instance ?? CreateInstance();

@@ -26,11 +26,9 @@ namespace MiniPie.ViewModels {
             UsedComponents = new List<ComponentData>(new [] {
                                                                 new ComponentData("http://caliburnmicro.codeplex.com/","MIT License","Caliburn.Micro"),
                                                                 new ComponentData("http://nlog-project.org/","MIT License", "NLog"), 
-                                                                new ComponentData("https://github.com/grumpydev/TinyIoC", "Ms-Pl","TinyIoC"), 
-                                                                new ComponentData("https://github.com/dbuksbaum/Caliburn.Micro.TinyIOC","MIT License", "Caliburn.Micro.TinyIOC"), 
                                                                 new ComponentData("http://json.codeplex.com/","MIT License", "Newtonsoft Json.Net"), 
                                                                 new ComponentData("http://jariz.nl", "Apache 2.0 License","Spotify local API"),
-																new ComponentData("http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files", "CPOL", "Resx Extention"), 
+                                                                new ComponentData("http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files", "CPOL", "Resx Extention"), 
                                                                 new ComponentData("https://github.com/Fody/Fody", "MIT", "Fody"), 
                                                                 new ComponentData("http://www.codeproject.com/Articles/36468/WPF-NotifyIcon", "CPOL", "Hardcodet WPF NotifyIcon"),
                                                                 new ComponentData("https://github.com/Squirrel/Squirrel.Windows", "Github license", "Squirrel.Windows"), 

@@ -174,6 +174,10 @@ namespace MiniPie.Core {
                                 //try to renew updateToken and retrieve status again
                                 _logger.Info("Renew updateToken and try again");
                                 await _localApi.RenewToken();
+                                if (_localApi.HasValidToken)
+                                {
+                                    throw new Exception("Failed to renew local api token");
+                                }
                                 CurrentTrackInfo = null;
                                 return;
                             }

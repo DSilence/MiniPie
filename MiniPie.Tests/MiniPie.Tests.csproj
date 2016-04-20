@@ -62,8 +62,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleInjector.3.1.2\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.1.3.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.3.1.3\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -108,6 +108,8 @@
     <Compile Include="SpotifyHelperTest.cs" />
     <Compile Include="Core\SpotifyLocal\SpotifyLocalApiTest.cs" />
     <Compile Include="Core\SpotifyWeb\SpotifyWebApiTest.cs" />
+    <Compile Include="ViewModels\AboutViewModelTest.cs" />
+    <Compile Include="ViewModels\SettingsViewModelTest.cs" />
     <Compile Include="ViewModels\ShellViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>

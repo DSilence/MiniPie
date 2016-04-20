@@ -118,11 +118,11 @@ namespace MiniPie.Tests.ViewModels
             _clipboardManager.Received(1).SetText("Test1");
         }
 
-        [Fact(Skip = "Not possible to change mock visibility")]
+        [Fact]
         public void TestHandleTrayMouseDoubleClick()
         {
             _settings.SingleClickHide = false;
-            var testWindow = Substitute.For<UIElement>();
+            var testWindow = new UIElement();
             _shellViewModel.HandleTrayMouseDoubleClick(testWindow);
             Assert.Equal(Visibility.Hidden, testWindow.Visibility);
 
@@ -133,11 +133,11 @@ namespace MiniPie.Tests.ViewModels
             Assert.Equal(Visibility.Hidden, testWindow.Visibility);
         }
 
-        [Fact(Skip = "Not possible to change mock visibility")]
+        [Fact]
         public void TestHandleTrayMouseClick()
         {
             _settings.SingleClickHide = false;
-            var testWindow = Substitute.For<UIElement>();
+            var testWindow = new UIElement();
             _shellViewModel.HandleTrayMouseClick(testWindow);
             Assert.Equal(Visibility.Visible, testWindow.Visibility);
 

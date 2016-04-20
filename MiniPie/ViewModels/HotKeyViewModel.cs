@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Caliburn.Micro;
-using MiniPie.Converter;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyNative.HotKeyManager;
 

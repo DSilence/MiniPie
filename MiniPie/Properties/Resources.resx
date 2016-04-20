@@ -270,4 +270,10 @@
   <data name="Settings_Clear" xml:space="preserve">
     <value>Clear</value>
   </data>
+  <data name="App_CopyTrackNames" xml:space="preserve">
+    <value>Copy track names</value>
+  </data>
+  <data name="App_AddToQueue" xml:space="preserve">
+    <value>Add to Queue</value>
+  </data>
 </root>

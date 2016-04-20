@@ -16,9 +16,9 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
-using MenuItem = System.Windows.Forms.MenuItem;
 using Size = System.Windows.Size;
 using UserControl = System.Windows.Controls.UserControl;
+using System.Windows.Controls.Primitives;
 
 namespace MiniPie.Views
 {
@@ -185,5 +185,51 @@ namespace MiniPie.Views
         {
             ShellViewModel.HandleTrayMouseClick(Application.Current.MainWindow);
         }
+
+        private void ImageBorder_DragEnter(object sender, DragEventArgs e)
+        {
+            ShowTooltip(ImageBorder, Properties.Resources.App_AddToQueue);
+        }
+
+        private void ImageBorder_DragLeave(object sender, DragEventArgs e)
+        {
+            HideTooltip(ImageBorder);
+        }
+
+        private void TitlePanel_DragEnter(object sender, DragEventArgs e)
+        {
+            ShowTooltip(TitlePanel, Properties.Resources.App_CopyTrackNames);
+        }
+
+        private void TitlePanel_DragLeave(object sender, DragEventArgs e)
+        {
+            HideTooltip(TitlePanel);
+        }
+
+        public void ShowTooltip(FrameworkElement element, string text)
+        {
+            ToolTipService.SetIsEnabled(element, true);
+            ToolTipService.SetShowOnDisabled(element, true);
+            var tooltip = new ToolTip
+            {
+                Content = text,
+            };
+            element.ToolTip = tooltip;
+            ToolTipService.SetInitialShowDelay(element, 0);
+            tooltip.IsOpen = true;
+        }
+
+        public void HideTooltip(FrameworkElement element)
+        {
+            ToolTipService.SetInitialShowDelay(element, (int)ToolTipService.InitialShowDelayProperty.DefaultMetadata.DefaultValue);
+            var tooltip = element.ToolTip as ToolTip;
+            if(tooltip != null)
+            {
+                tooltip.IsOpen = false;
+            }
+            TitlePanel.ToolTip = null;
+        }
+
+        
     }
 }

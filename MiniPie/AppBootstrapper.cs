@@ -125,6 +125,7 @@ namespace MiniPie {
             await _kernel.GetInstance<ISpotifyLocalApi>().Initialize().ConfigureAwait(false);
             await _kernel.GetInstance<ISpotifyController>().Initialize().ConfigureAwait(false);
             _kernel.GetInstance<UpdateManager>().Initialize();
+            _kernel.GetInstance<AutorunService>().ValidateAutorun();
         }
 
         protected override void OnExit(object sender, EventArgs e) {
