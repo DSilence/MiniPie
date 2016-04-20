@@ -1,5 +1,5 @@
 @ECHO OFF &SETLOCAL
-set version=0.0.2.0
+set version=0.0.5.0
 IF NOT [%1] == [] (
 		set version=%1
 	)
