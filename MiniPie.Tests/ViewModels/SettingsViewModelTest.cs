@@ -294,11 +294,40 @@ namespace MiniPie.Tests.ViewModels
             var exception = new Exception("Boom");
             _coverService.When(x => x.ClearCache()).Do(info => { throw exception; });
 
-
             await _settingsViewModel.ClearCache();
             _logger.Received(1).WarnException("Failed to clear cover cache", exception);
 
             Assert.True(_settingsViewModel.CanClearCache);
+        }
+
+        [Fact]
+        public void TestHotkeyViewModel()
+        {
+            Assert.Equal(_hotkeyViewModel, _settingsViewModel.HotKeyViewModel);
+        }
+
+        [Fact]
+        public async Task TestUpdateLogin()
+        {
+            Assert.False(_settingsViewModel.LoginChecking);
+            Assert.False(_settingsViewModel.LoggedIn);
+
+            _spotifyController.IsUserLoggedIn().Returns(info =>
+            {
+                Assert.True(_settingsViewModel.LoginChecking);
+                return Task.FromResult(true);
+            });
+            await _settingsViewModel.UpdateLoggedIn();
+            Assert.False(_settingsViewModel.LoginChecking);
+            Assert.True(_settingsViewModel.LoggedIn);
+        }
+
+        [Fact]
+        public void TestLanguages()
+        {
+            Assert.Collection(_settingsViewModel.Languages, 
+                l => Assert.Equal(l, LanguageHelper.English), 
+                l => Assert.Equal(l, LanguageHelper.Russian));
         }
     }
 }

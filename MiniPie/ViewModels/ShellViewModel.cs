@@ -52,10 +52,12 @@ namespace MiniPie.ViewModels {
 
             CoverImage = NoCoverUri;
 
+#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
             _SpotifyController.AttachTrackChangedHandler(async (o, e) => await UpdateView().ConfigureAwait(false));
             _SpotifyController.SpotifyOpened += async (o, e) => await SpotifyOpened().ConfigureAwait(false);
             _SpotifyController.SpotifyExited += async (o, e) => await SpotifyExited().ConfigureAwait(false);
             _SpotifyController.AttachTrackStatusChangedHandler(SpotifyControllerOnTrackStatusChanged);
+#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
 
             //TODO more app sizes
             ApplicationSize = ApplicationSize.Medium;
@@ -423,18 +425,16 @@ namespace MiniPie.ViewModels {
         }
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
             Execute.OnUIThread(() => {
-                                   var handler = ToggleVisibility;
-                                   if (handler != null) handler(this, e);
-                               });
+                ToggleVisibility?.Invoke(this, e);
+            });
         }
         private void OnCoverDisplayFadeOut() {
             Execute.OnUIThread(() => {
                                    if (_Settings.DisableAnimations)
                                        return;
 
-                                   var handler = CoverDisplayFadeOut;
-                                   if (handler != null) handler(this, EventArgs.Empty);
-                               });
+                CoverDisplayFadeOut?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         private void OnCoverDisplayFadeIn() {
@@ -442,9 +442,8 @@ namespace MiniPie.ViewModels {
                                    if (_Settings.DisableAnimations)
                                        return;
 
-                                   var handler = CoverDisplayFadeIn;
-                                   if (handler != null) handler(this, EventArgs.Empty);
-                               });
+                CoverDisplayFadeIn?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         public async Task AddToMyMusic()

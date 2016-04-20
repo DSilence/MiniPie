@@ -105,8 +105,6 @@ namespace MiniPie.ViewModels {
 
         public ObservableCollection<Language> Languages 
             => new ObservableCollection<Language>(LanguageHelper.Languages);
-        public ObservableCollection<LockScreenBehavior> LockScreenBehaviors
-            => new ObservableCollection<LockScreenBehavior>(); 
 
         public bool CanClearCache { get; set; } = true;
 
