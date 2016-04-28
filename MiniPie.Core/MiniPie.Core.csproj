@@ -103,7 +103,6 @@
     <Compile Include="ISpotifyController.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="LanguageHelper.cs" />
-    <Compile Include="LastFmPOCOs.cs" />
     <Compile Include="ProductionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpotifyController.cs" />
