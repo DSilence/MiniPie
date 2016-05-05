@@ -1,0 +1,16 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="MiniPie.Tests\MiniPie.Tests.csproj" />
+  
+    <Target Name="Build">
+      <MSBuild Projects="MiniPie.sln"
+               Targets="Build" 
+               Properties="Configuration=$(Configuration)" 
+               BuildInParallel="true"/>
+    </Target>
+
+    <Target Name="TestOnly">
+      <xunit Assemblies="MiniPie.Tests\bin\$(Configuration)\MiniPie.Tests.dll" />
+    </Target>
+    <Target Name="Test" DependsOnTargets="Build;TestOnly">
+    </Target>
+</Project>
