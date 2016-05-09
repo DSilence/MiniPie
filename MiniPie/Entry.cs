@@ -7,7 +7,7 @@ using MiniPie.Manager;
 
 namespace MiniPie
 {
-    public class Entry
+    public static class Entry
     {
         [STAThread]
         public static void Main(string[] args)

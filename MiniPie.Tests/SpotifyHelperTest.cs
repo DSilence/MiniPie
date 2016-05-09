@@ -8,6 +8,7 @@ using MiniPie.Core;
 using MiniPie.Core.SpotifyWeb.Models;
 using Newtonsoft.Json;
 using Xunit;
+using System.Windows;
 
 namespace MiniPie.Tests
 {
@@ -15,13 +16,24 @@ namespace MiniPie.Tests
     {
         public SpotifyHelperTest()
         {
-            //Register uro scheme "pack"
+            //Register uri scheme "pack"
             if (!UriParser.IsKnownScheme("pack"))
-                new System.Windows.Application();
+            {
+                var app = new Application();
+            }
+        }
+
+        [Theory]
+        [InlineData(2010200, "1.92 MB")]
+        [InlineData(2, "2.00 B")]
+        [InlineData(100000, "97.66 KB")]
+        public void MakeNiceSizeTest(double input, string expected)
+        {
+            Assert.Equal(expected, Helper.MakeNiceSize(input));
         }
 
         [Fact]
-        public async void AsyncDeserializeTest()
+        public async Task AsyncDeserializeTest()
         {
             ExternalUrl test = new ExternalUrl
             {

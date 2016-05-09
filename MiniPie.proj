@@ -8,9 +8,7 @@
                BuildInParallel="true"/>
     </Target>
 
-    <Target Name="TestOnly">
+    <Target Name="Test">
       <xunit Assemblies="MiniPie.Tests\bin\$(Configuration)\MiniPie.Tests.dll" />
-    </Target>
-    <Target Name="Test" DependsOnTargets="Build;TestOnly">
     </Target>
 </Project>

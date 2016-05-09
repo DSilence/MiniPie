@@ -1,5 +1,6 @@
 ﻿using MiniPie.Core;
 using MiniPie.Core.Enums;
+using MiniPie.Core.SpotifyNative;
 using MiniPie.ViewModels;
 using NSubstitute;
 using System;

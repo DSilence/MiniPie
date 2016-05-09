@@ -102,7 +102,10 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="Converter\BoolInvertedConverterTest.cs" />
+    <Compile Include="Converter\BoolToLoginTextConverterTest.cs" />
     <Compile Include="Core\Controller\SpotifyControllerTest.cs" />
+    <Compile Include="Core\SpotifyWeb\GrantTypeTest.cs" />
     <Compile Include="CoverServiceTest.cs" />
     <Compile Include="FakeResponseHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

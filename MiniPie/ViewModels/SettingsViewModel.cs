@@ -9,6 +9,7 @@ using Infralution.Localization.Wpf;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using ILog = MiniPie.Core.ILog;
+using MiniPie.Core.SpotifyNative;
 
 namespace MiniPie.ViewModels {
     public sealed class SettingsViewModel : Screen {

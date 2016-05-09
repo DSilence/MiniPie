@@ -85,7 +85,7 @@
     <Compile Include="AppContracts.cs" />
     <Compile Include="Enums\ApplicationSize.cs" />
     <Compile Include="AppSettings.cs" />
-    <Compile Include="AutorunService.cs" />
+    <Compile Include="SpotifyNative\AutorunService.cs" />
     <Compile Include="CoverService.cs" />
     <Compile Include="Enums\HotkeyAction.cs" />
     <Compile Include="Enums\LockScreenBehavior.cs" />

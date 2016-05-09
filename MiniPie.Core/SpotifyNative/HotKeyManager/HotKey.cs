@@ -6,7 +6,9 @@ using System.Windows.Interop;
 
 namespace MiniPie.Core.SpotifyNative.HotKeyManager
 {
+#pragma warning disable CA1060 // Move P/Invokes to native methods class
     public class HotKey : IDisposable
+#pragma warning restore CA1060 // Move P/Invokes to native methods class
     {
         private static Dictionary<int, HotKey> _dictHotKeyToCalBackProc;
 

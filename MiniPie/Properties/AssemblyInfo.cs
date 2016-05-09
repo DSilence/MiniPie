@@ -23,3 +23,7 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
 )]
 [assembly: InternalsVisibleTo("MiniPie.Tests")]
+
+
+//Supressions
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Potential Code Quality Issues", "RECS0165:Asynchronous methods should return a Task instead of void", Justification = "<Pending>", Scope = "member", Target = "~M:MiniPie.AppBootstrapper.ProcessTokenUpdate(System.String)")]

@@ -72,7 +72,7 @@ namespace MiniPie.Core {
 
         private async Task ProcessFound(Process process)
         {
-            await _localApi.RenewToken().ConfigureAwait(false); ;
+            await _localApi.RenewToken().ConfigureAwait(false);
         }
 
         private void SongTimerChanging(object state)
@@ -89,14 +89,15 @@ namespace MiniPie.Core {
         {
             if (_backgroundChangeTracker != null && !_backgroundChangeTracker.IsCompleted)
                 return;
-            
+
+#pragma warning disable RECS0135 // Function does not reach its end or a 'return' statement by any of possible execution paths
             _backgroundChangeTracker = Task.Run(async () =>
+#pragma warning restore RECS0135 // Function does not reach its end or a 'return' statement by any of possible execution paths
             {
                 while (true)
                 {
                     await BackgroundChangeTrackerWork().ConfigureAwait(false);
                 }
-                
             }, _backgroundChangeWorkerTokenSource.Token);
         }
 

@@ -2,7 +2,7 @@
 using System.Deployment.Application;
 using System.IO;
 
-namespace MiniPie.Core
+namespace MiniPie.Core.SpotifyNative
 {
     public class AutorunService
     {

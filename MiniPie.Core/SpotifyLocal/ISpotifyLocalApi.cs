@@ -1,9 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MiniPie.Core.SpotifyLocal
 {
-    public interface ISpotifyLocalApi
+    public interface ISpotifyLocalApi: IDisposable
     {
         bool HasValidToken { get; }
         string Uri { get; set; }

@@ -32,6 +32,16 @@ namespace MiniPie.Models
                 return ((int)Key * 397) ^ (int)KeyModifier;
             }
         }
+
+        public static bool operator ==(HotKey left, HotKey right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(HotKey left, HotKey right)
+        {
+            return !left.Equals(right);
+        }
         #endregion
     }
 }

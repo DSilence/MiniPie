@@ -18,7 +18,8 @@ using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
-    public sealed class AppBootstrapper : BootstrapperBase {
+    public sealed class AppBootstrapper : BootstrapperBase, IDisposable
+    {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
@@ -130,8 +131,13 @@ namespace MiniPie {
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
+            Dispose();
+        }
+
+        public void Dispose()
+        {
             _SettingsPersistor.Dispose();
-            _kernel.Dispose();    
+            _kernel.Dispose();
         }
     }
 }

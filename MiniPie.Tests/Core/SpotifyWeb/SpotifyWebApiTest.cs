@@ -12,7 +12,7 @@ using Xunit;
 
 namespace MiniPie.Tests.Core.SpotifyWeb
 {
-    public class SpotifyWebApiTest
+    public class SpotifyWebApiTest: IDisposable
     {
         private readonly ILog _log = Substitute.For<ILog>();
         private readonly AppSettings _appSettings = Substitute.For<AppSettings>();
@@ -230,6 +230,20 @@ namespace MiniPie.Tests.Core.SpotifyWeb
             Assert.NotNull(result);
             Assert.Equal(20, result.Count);
             Assert.Equal("Dancing Queen", result.First().Name);
+        }
+
+        [Fact]
+        public void BuildLoginQueryTest()
+        {
+            var result = _spotifyWebApi.BuildLoginQuery().ToString();
+            Assert.True(result.StartsWith("https://accounts.spotify.com/authorize/?client_id=7cab801edfb04e309949c79b8e76b425&response_type=code&redirect_uri=minipie://callback&state=", StringComparison.Ordinal));
+            Assert.True(result.EndsWith("&scope=playlist-read-private+playlist-read-collaborative+playlist-modify-public+playlist-modify+playlist-modify-private+user-library-read+user-library-modify+user-follow-modify+user-follow-read+streaming", StringComparison.Ordinal));
+
+        }
+
+        public void Dispose()
+        {
+            _spotifyWebApi.Dispose();
         }
     }
 }
