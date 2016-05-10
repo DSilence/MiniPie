@@ -35,10 +35,6 @@ namespace MiniPie.Converter
                     {
                         return resultResource;
                     }
-                    else
-                    {
-                        return resultStringValue;
-                    }
                 }
             }
             return null;

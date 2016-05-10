@@ -10,11 +10,11 @@ namespace MiniPie.Converter.CircularProgressButton
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             double progress = System.Convert.ToDouble(values[0]);
-            PropgressButton bar = values[1] as PropgressButton;
+            IProgressReporter reporter = values[1] as IProgressReporter;
 
-            if (bar != null)
+            if (reporter != null)
             {
-                return 359.999 * (progress / (bar.Maximum - bar.Minimum));
+                return 359.999 * (progress / (reporter.Maximum - reporter.Minimum));
             }
             return null;
         }

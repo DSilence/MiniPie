@@ -104,6 +104,8 @@
     </Compile>
     <Compile Include="Converter\BoolInvertedConverterTest.cs" />
     <Compile Include="Converter\BoolToLoginTextConverterTest.cs" />
+    <Compile Include="Converter\CircularProgressButton\ProgressToAngleConverterTest.cs" />
+    <Compile Include="Converter\EnumToLocalizedStringConverterTest.cs" />
     <Compile Include="Core\Controller\SpotifyControllerTest.cs" />
     <Compile Include="Core\SpotifyWeb\GrantTypeTest.cs" />
     <Compile Include="CoverServiceTest.cs" />
