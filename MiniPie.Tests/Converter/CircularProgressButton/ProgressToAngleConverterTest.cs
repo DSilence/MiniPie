@@ -12,13 +12,13 @@ namespace MiniPie.Tests.Converter.CircularProgressButton
 {
     public class ProgressToAngleConverterTest
     {
-        ProgressToAngleConverter converter = new ProgressToAngleConverter();
-        IProgressReporter reporter = Substitute.For<IProgressReporter>();
+        ProgressToAngleConverter _converter = new ProgressToAngleConverter();
+        IProgressReporter _reporter = Substitute.For<IProgressReporter>();
 
         public ProgressToAngleConverterTest()
         {
-            reporter.Maximum.Returns(100);
-            reporter.Minimum.Returns(0);
+            _reporter.Maximum.Returns(100);
+            _reporter.Minimum.Returns(0);
         }
 
         public static IEnumerable<object[]> TestData
@@ -41,8 +41,8 @@ namespace MiniPie.Tests.Converter.CircularProgressButton
         [MemberData(nameof(TestData))]
         public void TestConvert(double data, double expected)
         {
-            var array = new object[] { data, reporter };
-            double result = (double)converter.Convert(array, null, null, null);
+            var array = new object[] { data, _reporter };
+            double result = (double)_converter.Convert(array, null, null, null);
             Assert.Equal(expected, result, 2);
 ;       }
 
@@ -52,8 +52,8 @@ namespace MiniPie.Tests.Converter.CircularProgressButton
         public void TestConvertBack(double expected, double data)
 #pragma warning restore RECS0154 // Parameter is never used
         {
-            var array = new object[] { data, reporter };
-            Assert.Throws<NotImplementedException>(() => converter.ConvertBack(array, null, null, null));
+            var array = new object[] { data, _reporter };
+            Assert.Throws<NotImplementedException>(() => _converter.ConvertBack(array, null, null, null));
         }
     }
 }

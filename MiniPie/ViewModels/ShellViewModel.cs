@@ -20,7 +20,7 @@ using ILog = MiniPie.Core.ILog;
 using Screen = Caliburn.Micro.Screen;
 
 namespace MiniPie.ViewModels {
-    public sealed class ShellViewModel : Screen, IToggleVisibility {
+    public class ShellViewModel : Screen, IToggleVisibility {
         private readonly IWindowManager _WindowManager;
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
@@ -367,7 +367,7 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        public async Task AddToPlaylist(string id)
+        public virtual async Task AddToPlaylist(string id)
         {
             await _SpotifyController.AddToPlaylist(id, SpotifyUri).ConfigureAwait(false);
         }
