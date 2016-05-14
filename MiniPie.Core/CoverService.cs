@@ -3,109 +3,138 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
-using System.Xml.Serialization;
 using MiniPie.Core.Extensions;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb;
 
-namespace MiniPie.Core {
-    public class CoverService : ICoverService {
-
+namespace MiniPie.Core
+{
+    public class CoverService : ICoverService, IDisposable
+    {
         private const string CacheFileNameTemplate = "{0}.jpg";
-        private readonly string _CacheDirectory;
-        private readonly SpotifyWebApi _webApi;
-        private readonly ILog _Logger;
-        private HttpClient _client = new HttpClient();
-        
-        private const int MaxFileCount = 500;
+        private readonly string _cacheDirectory;
+        private readonly ISpotifyWebApi _webApi;
+        private readonly ILog _logger;
+        private readonly WebClient _client = new WebClient();
+
+        private readonly int MaxFileCount = 500;
 
         public CoverService(string cacheRootDirectory,
-            ILog logger, SpotifyWebApi webApi)
+            ILog logger, ISpotifyWebApi webApi)
         {
-            _CacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
-            _Logger = logger;
+            _cacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
+            _logger = logger;
             _webApi = webApi;
-            if (!Directory.Exists(_CacheDirectory))
-                Directory.CreateDirectory(_CacheDirectory);
+            if (!Directory.Exists(_cacheDirectory))
+                Directory.CreateDirectory(_cacheDirectory);
         }
 
         public long CacheSize()
         {
-            return !Directory.Exists(_CacheDirectory)
+            return !Directory.Exists(_cacheDirectory)
                 ? 0
-                : new DirectoryInfo(_CacheDirectory).GetFiles().Sum(f => f.Length);
+                : new DirectoryInfo(_cacheDirectory).GetFiles().Sum(f => f.Length);
         }
 
-        public void ClearCache() {
-            Directory.GetFiles(_CacheDirectory,"*.jpg").ToList().ForEach(f => {
-                                                                             try {
-                                                                                 File.Delete(f);
-                                                                             }
-                                                                             catch (Exception exc) {
-                                                                                 _Logger.WarnException("Failed to delete file", exc);
-                                                                             }
-                                                                         });
+        public void ClearCache()
+        {
+            Directory.GetFiles(_cacheDirectory, "*.jpg").ToList().ForEach(f =>
+            {
+                try
+                {
+                    File.Delete(f);
+                }
+                catch (Exception exc)
+                {
+                    _logger.WarnException("Failed to delete file", exc);
+                }
+            });
         }
 
-        public async Task<string> FetchCover(Status trackStatus) {
-            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (trackStatus.track.album_resource.uri).ToSHA1()));
+        public async Task<string> FetchCover(Status trackStatus)
+        {
+            var trackUri = trackStatus.track.track_resource.uri;
+            var sha = trackUri.ToSHA1();
+            
+            var cachedFileName = Path.Combine(_cacheDirectory,
+                string.Format(CacheFileNameTemplate, sha));
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
-            var spotifyCover = await FetchSpotifyCover(trackStatus, cachedFileName);
+            if (trackUri.StartsWith("spotify:local", StringComparison.OrdinalIgnoreCase))
+            {
+                trackUri = await FetchRemoteSpotifyTrackFromLocal(trackStatus).ConfigureAwait(false);
+            }
+            var spotifyCover = await FetchSpotifyCover(trackUri, cachedFileName);
             return spotifyCover;
         }
 
-        private async Task<string> FetchSpotifyCover(Status trackStatus, string cachedFileName) {
-            try {
-                if (trackStatus != null) {
-                    if (trackStatus.error != null)
-                        throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.error.message,
-                                                          trackStatus.error.type));
-
-                    if (trackStatus.track != null && trackStatus.track.album_resource != null) {
-                        var coverUrl = await _webApi.GetArt(trackStatus.track.album_resource.uri);
-                        if (!string.IsNullOrEmpty(coverUrl))
-                            return await DownloadAndSaveImage(coverUrl, cachedFileName);
-                    }
+        /// <summary>
+        /// Attempts to retrieve remove spotify uri. Returns local uri (same as passed) if fails
+        /// </summary>
+        /// <param name="trackStatus"></param>
+        /// <returns></returns>
+        private async Task<string> FetchRemoteSpotifyTrackFromLocal(Status trackStatus)
+        {
+            try
+            {
+                var tracks =
+                    await
+                        _webApi.TrackSearch(
+                            $"{trackStatus.track.artist_resource.name} {trackStatus.track.track_resource.name}")
+                            .ConfigureAwait(false);
+                if (tracks.Any())
+                {
+                    return tracks.First().Uri;
                 }
             }
-            catch (WebException webExc) {
-                if(webExc.Response != null && ((HttpWebResponse)webExc.Response).StatusCode != HttpStatusCode.NotFound)
-                    _Logger.WarnException(string.Format("Failed to retrieve Image via Spotify Local API: {0}", webExc.Message), webExc);
+            catch (Exception e)
+            {
+                _logger.WarnException("Could not process replacement track cover for local track. Using default image. Exception is: " + e.Message, e);
             }
-            catch (Exception exc) {
-                _Logger.WarnException("Failed to retrieve cover from Spotify", exc);
+            return trackStatus.track.track_resource.uri;
+        }
+
+        private async Task<string> FetchSpotifyCover(string trackUri, string cachedFileName)
+        {
+            try
+            {
+                if (trackUri != null)
+                {
+                    var coverUrl = await _webApi.GetTrackArt(trackUri);
+                    if (!string.IsNullOrEmpty(coverUrl))
+                        return await DownloadAndSaveImage(coverUrl, cachedFileName);
+                }
+            }
+            catch (WebException webExc)
+            {
+                _logger.WarnException(
+                    string.Format("Failed to retrieve Image via Spotify Local API: {0}", webExc.Message), webExc);
+            }
+            catch (Exception exc)
+            {
+                _logger.WarnException("Failed to retrieve cover from Spotify", exc);
             }
             return string.Empty;
         }
 
         private async Task<string> DownloadAndSaveImage(string url, string destination)
         {
-            using (var fs = File.Create(destination))
-            {
-                using (var rs = await _client.GetStreamAsync(url))
-                {
-                    await rs.CopyToAsync(fs);
-                    CleanupCache();
-                }
-            }
+            await _client.DownloadFileTaskAsync(url, destination).ConfigureAwait(false);
+            await CleanupCache().ConfigureAwait(false);
 
             return destination;
         }
 
-        private void CleanupCache()
+        private Task CleanupCache()
         {
-            Task.Run(() =>
+            return Task.Run(() =>
             {
-                DirectoryInfo info = new DirectoryInfo(_CacheDirectory);
+                DirectoryInfo info = new DirectoryInfo(_cacheDirectory);
                 IEnumerable<FileInfo> files = info.GetFiles();
                 while (files.Count() > MaxFileCount)
                 {
-                    
                     files = files.OrderBy(f => f.LastAccessTime);
                     if (!files.Any())
                     {
@@ -118,7 +147,11 @@ namespace MiniPie.Core {
                     }
                 }
             });
-            return;
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

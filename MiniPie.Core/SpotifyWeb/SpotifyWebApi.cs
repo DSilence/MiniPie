@@ -4,145 +4,135 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using MiniPie.Core.SpotifyWeb.Models;
-using Newtonsoft.Json;
 
 namespace MiniPie.Core.SpotifyWeb
 {
-    //TODO move all web api associated stuff here(album art, etc.)
-    public class SpotifyWebApi
+    public class SpotifyWebApi : ISpotifyWebApi
     {
-        private readonly HttpClient _client = new HttpClient();
-        private readonly HttpClient _authClient = new HttpClient();
+        private SpotifyHttpClient _client;
         private readonly ILog _log;
-        private const string _spotifyApiUrl = "https://api.spotify.com/v1/";
-        private const string _redirectUrl = "minipie://callback";
-        private Token _spotifyToken;
-        private AppSettings _appSettings;
+        private const string SpotifyApiUrl = "https://api.spotify.com/v1/";
+        private const string RedirectUrl = "minipie://callback";
+        private readonly AppSettings _appSettings;
         private Timer _timer;
+
+        private const int PlayListLimit = 50;
+        #region Uris
+        private const string _albumsUri = "albums/{0}";
+        private const string SpotifyProfileUri = "me";
+        private const string AddToPlaylistUrl = "users/{0}/playlists/{1}/tracks?uris={2}";
+        private const string PlaylistsUrl = "me/playlists?limit={0}";
+        private const string GetTrackInfoUrl = "tracks?ids={0}";
+        private const string IsTrackSavedFormat = "me/tracks/contains?ids={0}";
+        private const string MyMusicAddFormat = "me/tracks";
+        private const string MyMusicDeleteFormat = MyMusicAddFormat + "?ids={0}";
+        private const string TrackInfoUrl = "tracks/{0}";
+        private const string TrackSearchUrl = "search?q={0}&type=track";
+        #endregion
 
         public event EventHandler TokenUpdated;
 
         public SpotifyWebApi(ILog log, AppSettings settings)
         {
-            this._log = log;
+            _log = log;
             _appSettings = settings;
-            _timer = new Timer(Callback);
         }
 
-        public async Task Initialize()
+        public virtual async Task Initialize()
         {
+            _timer = new Timer(async state =>
+            {
+                await _client.Authenticate(_appSettings.SpotifyToken.RefreshToken, GrantType.RefreshToken).ConfigureAwait(false);
+            });
+            _client = new SpotifyHttpClient(SpotifyApiUrl, _log, RedirectUrl, _appSettings, token =>
+            {
+                TokenUpdated?.Invoke(this, null);
+                _timer.Change((token.ExpiresIn - 15) * 1000, int.MaxValue);
+            });
             if (_appSettings.SpotifyToken != null)
             {
-                await UpdateToken(_appSettings.SpotifyToken.RefreshToken, GrantType.RefreshToken);
+                await _client.Authenticate(_appSettings.SpotifyToken.RefreshToken, GrantType.RefreshToken).ConfigureAwait(false);
             }
         }
 
-        private async void Callback(object state)
-        {
-            await UpdateToken(_appSettings.SpotifyToken.RefreshToken, GrantType.RefreshToken);
-        }
-
-        private readonly Uri _albumsUri = new Uri(_spotifyApiUrl + "albums/");
-
-
-        private const string _spotifyProfileUri = _spotifyApiUrl + "me";
-        public async Task<User> GetProfile()
-        {
-            var response = await _client.GetStringAsync(_spotifyProfileUri);
-            User user = await JsonConvert.DeserializeObjectAsync<User>(response);
-            return user;
-        }
-
-        public async Task<string> GetArt(string uri)
-        {
-            try
-            {
-                var albumId = uri.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries).Last();
-                //Modified to use spotify WEB API
-                var lines = await _client.GetStringAsync(new Uri(_albumsUri, albumId));
-                var album = await JsonConvert.DeserializeObjectAsync<Models.Album>(lines);
-                return album.Images[1].Url;
-            }
-            catch (WebException webException)
-            {
-                if (webException.Response != null && ((HttpWebResponse)webException.Response).StatusCode != HttpStatusCode.NotFound)
-                    _log.WarnException("[WebException] Failed to retrieve cover url from Spotify", webException);
-            }
-            catch (Exception exc)
-            {
-                _log.WarnException("Failed to retrieve cover url from Spotify", exc);
-            }
-            return string.Empty;
-        }
-
-        private const int PlayListLimit = 50;
-        private const string PlaylistsUrl = _spotifyApiUrl + "users/{0}/playlists?limit={1}";
-        public async Task<IList<Playlist>> GetUserPlaylists()
-        {
-            try
-            {
-                var profile = await GetProfile();
-                if (profile != null)
-                {
-                    var url = string.Format(PlaylistsUrl, profile.Id, PlayListLimit);
-                    var stringResult = await _client.GetStringAsync(url);
-                    var playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
-                    var result = playLists.Items.ToList();
-                    while (playLists.Next != null)
-                    {
-                        stringResult = await _client.GetStringAsync(playLists.Next);
-                        playLists = JsonConvert.DeserializeObject<PagingObject<Playlist>>(stringResult);
-                        result.AddRange(playLists.Items);
-                    }
-                    return result;
-                }
-                else
-                {
-                    _log.Warn("User can't be retrieved");
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.WarnException("Failed to retrieve User Playlists", ex);
-            }
-            return new List<Playlist>();
-        }
-
-        private const string AddToPlaylistUrl = _spotifyApiUrl + "users/{0}/playlists/{1}/tracks?uris={2}";
-        public async Task AddToPlaylist(string playlistId, string trackUrls)
-        {
-            try
-            {
-                var profile = await GetProfile();
-                if (profile != null)
-                {
-                    var url = string.Format(AddToPlaylistUrl, profile.Id, playlistId, trackUrls);
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                    await _client.SendAsync(request);
-                }
-            }
-            catch (Exception exc)
-            {
-                _log.WarnException("Failed to add playlist to Spotify", exc);
-            }
-        }
-
-        private const string scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming user-read-private user-read-birthdate user-read-email";
-        private const string loginQueryFormat =
+        private const string Scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming";
+        private const string LoginQueryFormat =
             "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}";
         public Uri BuildLoginQuery()
         {
-            var scopeEncoded = HttpUtility.UrlEncode(scope);
+            var scopeEncoded = HttpUtility.UrlEncode(Scope);
             var loginUri = new Uri(
-                string.Format(loginQueryFormat, AppContracts.ClientId, 
-                _redirectUrl, Guid.NewGuid(), scopeEncoded));
+                string.Format(LoginQueryFormat, AppContracts.ClientId,
+                RedirectUrl, Guid.NewGuid(), scopeEncoded));
             return loginUri;
+        }
+        
+        public Task<User> GetProfile()
+        {
+            return _client.DoGetAsync<User>(SpotifyProfileUri);
+        }
+
+        public async Task<string> GetAlbumArt(string uri)
+        {
+            var albumId = uri.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries).Last();
+            var album = await _client.DoGetAsync<Models.Album>(string.Format(_albumsUri, albumId));
+            if (album?.Images != null && album.Images.Count > 1)
+            {
+                return album.Images[1].Url;
+            }
+            throw new ApplicationException("Failed to retrieve art url");
+        }
+
+        public async Task<string> GetTrackArt(string uri)
+        {
+            var trackId = uri.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries).Last();
+            var track = await _client.DoGetAsync<Models.Track>(string.Format(TrackInfoUrl, trackId));
+            if (track?.Album?.Images != null && track.Album?.Images?.Count > 1)
+            {
+                return track.Album.Images[1].Url;
+            }
+            throw new ApplicationException("Failed to retrieve art url");
+        }
+
+
+        public async Task<IList<Playlist>> GetUserPlaylists()
+        {
+            var url = string.Format(PlaylistsUrl, PlayListLimit);
+            var playLists = await _client.DoGetAsync<PagingObject<Playlist>>(url).ConfigureAwait(false);
+            var result = playLists.Items.ToList();
+            while (playLists.Next != null)
+            {
+                playLists = await _client.DoGetAsync<PagingObject<Playlist>>(playLists.Next).ConfigureAwait(false);
+                result.AddRange(playLists.Items);
+            }
+            return result;
+        }
+
+        public async Task AddToPlaylist(string playlistId, string trackUrls)
+        {
+            var profile = await GetProfile();
+            if (profile != null)
+            {
+                var url = string.Format(AddToPlaylistUrl, profile.Id, playlistId, trackUrls);
+                await _client.DoPostAsync(url);
+            }
+        }
+
+        public async Task<IList<Models.Track>> GetTrackInfo(IList<string> trackIds)
+        {
+            var url = string.Format(GetTrackInfoUrl, string.Join(",", trackIds));
+            var tracks = await _client.DoGetAsync<TrackCollection>(url).ConfigureAwait(false);
+            return tracks.Tracks;
+        }
+        public async Task<IList<Models.Track>> TrackSearch(string searchString)
+        {
+            var url = string.Format(TrackSearchUrl, searchString);
+            var tracks = await _client.DoGetAsync<SearchResult>(url).ConfigureAwait(false);
+            return tracks.Tracks.Items;
         }
 
         public void Logout()
@@ -150,72 +140,33 @@ namespace MiniPie.Core.SpotifyWeb
             _client.DefaultRequestHeaders.Authorization = null;
         }
 
-        private const string tokenQueryFormat = "https://accounts.spotify.com/api/token";
-
         public async Task CreateToken(string response)
         {
             var queryResult = HttpUtility.ParseQueryString(new Uri(response).Query);
-            await UpdateToken(queryResult["code"]);
+            await _client.Authenticate(queryResult["code"]);
         }
 
-        public async Task UpdateToken(string refreshToken, 
-            GrantType grantType = GrantType.AuthorizationCode)//string grantType="authorization_code")
+        public Task<IList<bool>> IsTracksSaved(IList<string> trackIds)
         {
-            try
-            {
-                _log.Info("Refreshing token");
-                _log.Info("Token type:" + grantType.GetDescription());
-                if (refreshToken == null)
-                {
-                    return;
-                }
-                var parameters = new Dictionary<string, string>();
-                parameters.Add("grant_type", grantType.GetDescription());
-                parameters.Add("redirect_uri", _redirectUrl);
-                parameters.Add("client_id", AppContracts.ClientId);
-                parameters.Add("client_secret", AppContracts.ClientSecret);
-                if (grantType == GrantType.AuthorizationCode)
-                {
-                    parameters.Add("code", refreshToken);
-                }
-                else
-                {
-                    parameters.Add("refresh_token", refreshToken);
-                }
-                var postResult = await _authClient.PostAsync(tokenQueryFormat, new FormUrlEncodedContent(parameters));
-                var stringResult = await postResult.Content.ReadAsStringAsync();
-                var token = await JsonConvert.DeserializeObjectAsync<Token>(stringResult);
-                if (token != null)
-                {
-                    if (grantType == GrantType.RefreshToken)
-                    {
-                        token.RefreshToken = refreshToken;
-                    }
-                }
-                _appSettings.SpotifyToken = token;
-                if (token != null && token.TokenType != null && token.AccessToken != null)
-                {
-                    _client.DefaultRequestHeaders.Authorization
-                        = new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
-                    TimeSpan timeSpan = TimeSpan.FromSeconds(token.ExpiresIn - 30);
-                    _timer.Change(timeSpan, timeSpan);
-                    _log.Info("Token refreshed");
-                }
-                else
-                {
-                    _log.Info(stringResult);
-                }
-                
-                if (TokenUpdated != null)
-                {
-                    TokenUpdated(this, null);
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.FatalException("Update token failed with" + ex.Message, ex);
-            }
-            
+            var url = string.Format(IsTrackSavedFormat, string.Join(",", trackIds));
+            return _client.DoGetAsync<IList<bool>>(url);
+        }
+        
+        public Task AddToMyMusic(IList<string> trackIds)
+        {
+            var url = MyMusicAddFormat;
+            return _client.DoPutAsync(url, trackIds);
+        }
+
+        public Task RemoveFromMyMusic(IList<string> trackIds)
+        {
+            var url = string.Format(MyMusicDeleteFormat, string.Join(",", trackIds));
+            return _client.DoDeleteAsync(url);
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

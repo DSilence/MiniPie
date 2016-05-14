@@ -1,58 +1,96 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 using Caliburn.Micro;
+using Microsoft.Win32;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
-using TinyIoC;
+using MiniPie.Manager;
+using SimpleInjector;
+using Application = System.Windows.Application;
 using ILog = MiniPie.Core.ILog;
+using Screen = Caliburn.Micro.Screen;
 
 namespace MiniPie.ViewModels {
-    public sealed class ShellViewModel : Screen, IToggleVisibility {
+    public class ShellViewModel : Screen, IToggleVisibility {
         private readonly IWindowManager _WindowManager;
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
-        private readonly IEventAggregator _EventAggregator;
         private readonly AppSettings _Settings;
         private readonly ILog _Logger;
+        private readonly Container _kernel;
+        private readonly ClipboardManager _clipboardManager;
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
+        private const string TrackPattern = @".*\/\/open\.spotify\.com\/track\/(.*)";
 
         private const string _songFriendlyNameFormat = "{0} – {1}";
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
-        
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, ILog logger) {
+        private bool _isLockPaused;
+
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
+            ICoverService coverService, AppSettings settings, ILog logger, Container kernel, ClipboardManager clipboardManager) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
-            _EventAggregator = eventAggregator;
             _Settings = settings;
             _Logger = logger;
-            _ApplicationSize = _Settings.ApplicationSize;
+            _kernel = kernel;
+            _clipboardManager = clipboardManager;
+            ApplicationSize = _Settings.ApplicationSize;
 
             CoverImage = NoCoverUri;
 
-            _SpotifyController.AttachTrackChangedHandler((o, e) => UpdateView());
-            _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
-            _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
+#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
+            _SpotifyController.AttachTrackChangedHandler(async (o, e) => await UpdateView().ConfigureAwait(false));
+            _SpotifyController.SpotifyOpened += async (o, e) => await SpotifyOpened().ConfigureAwait(false);
+            _SpotifyController.SpotifyExited += async (o, e) => await SpotifyExited().ConfigureAwait(false);
             _SpotifyController.AttachTrackStatusChangedHandler(SpotifyControllerOnTrackStatusChanged);
+#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
 
-            _Settings.PropertyChanged += (o, e) => {
-                                             if (e.PropertyName == ApplicationSize.GetType().Name)
-                                                 ApplicationSize = _Settings.ApplicationSize;
-                                         };
+            //TODO more app sizes
+            ApplicationSize = ApplicationSize.Medium;
+            SystemEvents.SessionSwitch += SystemEventsOnSessionSwitch;
+        }
+
+        private void SystemEventsOnSessionSwitch(object sender,
+            SessionSwitchEventArgs sessionSwitchEventArgs)
+        {
+            if (_Settings.LockScreenBehavior > 0)
+            {
+                if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionLock)
+                {
+                    if (IsPlaying)
+                    {
+                        _SpotifyController.Pause();
+                        _isLockPaused = true;
+                    }
+                }
+                else if (sessionSwitchEventArgs.Reason == SessionSwitchReason.SessionUnlock)
+                {
+                    if ((_isLockPaused && !IsPlaying && _Settings.LockScreenBehavior == LockScreenBehavior.PauseUnpause)
+                        || (!IsPlaying && _Settings.LockScreenBehavior == LockScreenBehavior.PauseUnpauseAlways))
+                    {
+                        _SpotifyController.Play();
+                    }
+                    _isLockPaused = false;
+                }
+            }
         }
 
         protected override void OnViewLoaded(object view) {
             base.OnViewLoaded(view);
-
-            if (!_SpotifyController.IsSpotifyInstalled())
-                _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
 
             if (_Settings.StartMinimized)
             {
@@ -67,130 +105,77 @@ namespace MiniPie.ViewModels {
 
         protected override void OnDeactivate(bool close)
         {
-            base.OnDeactivate(close);
+            SystemEvents.SessionSwitch -= SystemEventsOnSessionSwitch;
         }
 
         #region Properties
+        public string CurrentTrack { get; set; }
+        public string CurrentArtist { get; set; }
+        public string CoverImage { get; set; }
+        public bool CanPlayPause { get; set; }
+        public bool CanPlayPrevious { get; set; }
+        public bool CanVolumeDown { get; set; }
+        public bool CanVolumeUp { get; set; }
+        public bool CanPlayNext { get; set; }
+        public bool HasTrackInformation { get; set; }
+        public ApplicationSize ApplicationSize { get; set; }
+        public bool IsPlaying { get; set; }
+        public ObservableCollection<Playlist> Playlists { get; set; }
+        public double MaxProgress { get; set; }
+        public double Progress { get; set; }
+        public string TrackUrl { get; set; }
+        public string SpotifyUri { get; set; }
+        public string TrackFriendlyName { get; set; }
+        public bool IsTrackSaved { get; set; }
+        public string TrackId { get; set; }
 
-        private string _CurrentTrack;
-        public string CurrentTrack {
-            get { return _CurrentTrack; }
-            set { _CurrentTrack = value; NotifyOfPropertyChange(() => CurrentTrack); }
-        }
-
-        private string _CurrentArtist;
-        public string CurrentArtist {
-            get { return _CurrentArtist; }
-            set { _CurrentArtist = value; NotifyOfPropertyChange(() => CurrentArtist); }
-        }
-
-        private string _CoverImage;
-        public string CoverImage {
-            get { return _CoverImage; }
-            set { _CoverImage = value; NotifyOfPropertyChange(() => CoverImage); }
-        }
-
-        private bool _CanPlayPause;
-        public bool CanPlayPause {
-            get { return _CanPlayPause; }
-            set { _CanPlayPause = value; NotifyOfPropertyChange(() => CanPlayPause); }
-        }
-
-        private bool _CanPlayPrevious;
-        public bool CanPlayPrevious {
-            get { return _CanPlayPrevious; }
-            set { _CanPlayPrevious = value; NotifyOfPropertyChange(() => CanPlayPrevious); }
-        }
-
-        private bool _canVolumeDown;
-        public bool CanVolumeDown
+        public bool Loading
         {
-            get { return _canVolumeDown; }
-            set { _canVolumeDown = value; NotifyOfPropertyChange(); }
+            get { return string.IsNullOrEmpty(CurrentTrack); }
         }
-
-        private bool _canVolumeUp;
-        public bool CanVolumeUp
-        {
-            get { return _canVolumeUp; }
-            set { _canVolumeUp = value; NotifyOfPropertyChange(); }
-        }
-
-        private bool _CanPlayNext;
-        public bool CanPlayNext {
-            get { return _CanPlayNext; }
-            set { _CanPlayNext = value; NotifyOfPropertyChange(() => CanPlayNext); }
-        }
-
-        private bool _HasTrackInformation;
-        public bool HasTrackInformation {
-            get { return _HasTrackInformation; }
-            set { _HasTrackInformation = value; NotifyOfPropertyChange(() => HasTrackInformation); }
-        }
-
-        private ApplicationSize _ApplicationSize;
-        public ApplicationSize ApplicationSize {
-            get { return _ApplicationSize; }		    
-            set { _ApplicationSize = value; NotifyOfPropertyChange(() => ApplicationSize); }
-        }
-
-        private bool _isPlaying;
-        public bool IsPlaying
-        {
-            get { return _isPlaying; }
-            set
-            {
-                if (_isPlaying != value)
-                {
-                    _isPlaying = value;
-                    NotifyOfPropertyChange();
-                }
-            }
-        }
-
-        private ObservableCollection<Playlist> _playlists;
-        public ObservableCollection<Playlist> Playlists
-        {
-            get { return _playlists; }
-            set { _playlists = value; 
-                NotifyOfPropertyChange(); }
-        } 
 
         #endregion
 
         public void ShowSettings() {
-            _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<SettingsViewModel>());
+            _WindowManager.ShowDialog(_kernel.GetInstance<SettingsViewModel>());
         }
 
         public void ShowAbout() {
-            _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<AboutViewModel>());
+            _WindowManager.ShowDialog(_kernel.GetInstance<AboutViewModel>());
         }
 
-        public void PlayPause() {
+        public async Task PlayPause()
+        {
             if (CanPlayPause)
             {
-                _SpotifyController.PausePlay();
+                await _SpotifyController.PausePlay().ConfigureAwait(false);
             }
         }
 
-        public void PlayPrevious() {
-            if(CanPlayPrevious)
-                _SpotifyController.PreviousTrack();
+        public async Task PlayPrevious()
+        {
+            if (CanPlayPrevious)
+            {
+                await _SpotifyController.PreviousTrack().ConfigureAwait(false);
+            }
         }
 
-        public void PlayNext() {
-            if(CanPlayNext)
-                _SpotifyController.NextTrack();
+        public async Task PlayNext()
+        {
+            if (CanPlayNext)
+            {
+                await _SpotifyController.NextTrack().ConfigureAwait(false);
+            }
         }
 
-        public void VolumeUp() {
+        public async Task VolumeUp() {
             if(CanVolumeUp)
-                _SpotifyController.VolumeUp();
+                await _SpotifyController.VolumeUp().ConfigureAwait(false);
         }
 
-        public void VolumeDown() {
+        public async Task VolumeDown() {
             if(CanVolumeDown)
-                _SpotifyController.VolumeDown();
+                await _SpotifyController.VolumeDown().ConfigureAwait(false);
         }
 
         public void OpenSpotifyWindow()
@@ -198,104 +183,87 @@ namespace MiniPie.ViewModels {
             _SpotifyController.OpenSpotify();
         }
 
-        private string _trackFriendlyName;
-
-        public string TrackFriendlyName
-        {
-            get { return _trackFriendlyName; }
-            set
-            {
-                _trackFriendlyName = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
         public void CopyTrackName()
         {
-            Clipboard.SetText(TrackFriendlyName);
+            _clipboardManager.SetText(TrackFriendlyName);
         }
 
         public void CopySpotifyLink()
         {
-            Clipboard.SetText(TrackUrl);
+            _clipboardManager.SetText(TrackUrl);
         }
 
-        private double _maxProgress;
-        public double MaxProgress
+        public Window MainWindow
         {
-            get { return _maxProgress; }
-            set
+            get { return Application.Current.MainWindow; }
+        }
+
+        public void HandleTrayMouseDoubleClick(UIElement window)
+        {
+            if (_Settings.SingleClickHide)
             {
-                _maxProgress = value; 
-                NotifyOfPropertyChange();
+                if (window.Visibility == Visibility.Hidden)
+                {
+                    ShowElement(window);
+                }
+                else
+                {
+                    HideElement(window);
+                }
+            }
+            else
+            {
+                HideElement(window);
             }
         }
 
-        private double _progress;
-        public double Progress
+        public void HandleTrayMouseClick(UIElement window)
         {
-            get { return _progress; }
-            set
+            if (_Settings.SingleClickHide)
             {
-                _progress = value; 
-                NotifyOfPropertyChange();
+                if (window.Visibility == Visibility.Hidden)
+                {
+                    ShowElement(window);
+                }
+                else
+                {
+                    HideElement(window);
+                }
+            }
+            else
+            {
+                ShowElement(window);
             }
         }
 
-        private string _trackUrl;
-        public string TrackUrl
+        public void ShowElement(UIElement window)
         {
-            get { return _trackUrl; }
-            set { _trackUrl = value; NotifyOfPropertyChange(); }
+            window.Visibility = Visibility.Visible;
+            (window as Window)?.Activate();
         }
 
-        private string _spotifyUri;
-        public string SpotifyUri
+        public void HideElement(UIElement window)
         {
-            get { return _spotifyUri; }
-            set { _spotifyUri = value; NotifyOfPropertyChange(); }
-        }
-
-        public void MinimizeMiniplayer()
-        {
-            var window = Application.Current.MainWindow;
             window.Visibility = Visibility.Hidden;
         }
 
-        public void MaximizeMiniplayer()
+        public void Close(Window window)
         {
-            var window = Application.Current.MainWindow;
-            window.Visibility = Visibility.Visible;
-            window.Activate();
+            window.Close();
         }
 
-        internal void MinimizeMiniplayer(object sender, EventArgs e)
-        {
-            MinimizeMiniplayer();
-        }
-
-        internal void MaximizeMiniplayer(object sender, EventArgs args)
-        {
-            MaximizeMiniplayer();
-        }
-
-        public void Close()
-        {
-            this.TryClose();
-        }
-
-        private void SpotifyOpened() {
+        private Task SpotifyOpened() {
             if(_Settings.HideIfSpotifyClosed)
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
 
-            UpdateView();
+            return UpdateView();
         }
 
-        private void SpotifyExited() {
+        private Task SpotifyExited() {
             if(_Settings.HideIfSpotifyClosed)
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
 
-            UpdateView();
+            return UpdateView();
         }
 
         private void SpotifyControllerOnTrackStatusChanged(object sender, EventArgs eventArgs)
@@ -306,33 +274,39 @@ namespace MiniPie.ViewModels {
             IsPlaying = status.playing;
         }
 
-        private async void UpdateView() {
-            try {
+        internal async Task UpdateView()
+        {
+            try
+            {
                 var status = _SpotifyController.GetStatus();
                 if (status == null)
                 {
                     return;
                 }
 
-                var track = _SpotifyController.GetSongName();
-                var artist = _SpotifyController.GetArtistName();
-                MaxProgress = status == null ? 0 : status.track.length;
-                Progress = status == null ? 0 : status.playing_position;
-                IsPlaying = status != null && status.playing;
+                var track = status.track?.track_resource?.name;
+                var artist = status.track?.artist_resource?.name;
+                if (status.track != null)
+                {
+                    MaxProgress = status.track.length;
+                    Progress = status.playing_position;
+                    IsPlaying = status.playing;
 
-                if (IsPlaying)
-                    OnCoverDisplayFadeOut();
+                    if (IsPlaying)
+                        OnCoverDisplayFadeOut();
 
-                HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
-                _CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
-                _CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
-                _trackFriendlyName = String.Format(_songFriendlyNameFormat, CurrentArtist, CurrentTrack);
-                _trackUrl = status.track.track_resource.location.og;
-                _spotifyUri = status.track.track_resource.uri;
-                NotifyOfPropertyChange(() => CurrentTrack);
-                NotifyOfPropertyChange(() => CurrentArtist);
-                NotifyOfPropertyChange(() => TrackFriendlyName);
-                NotifyOfPropertyChange(() => TrackUrl);
+                    HasTrackInformation = !string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist);
+                    var currentTrack = string.IsNullOrEmpty(track) ? "-" : track;
+                    var currentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+                    var trackFriendlyName = string.Format(_songFriendlyNameFormat, currentArtist, currentTrack);
+
+                    TrackUrl = status.track.track_resource?.location.og;
+                    SpotifyUri = status.track.track_resource?.uri;
+                    CurrentTrack = currentTrack;
+                    CurrentArtist = currentArtist;
+                    TrackFriendlyName = trackFriendlyName;
+                }
+                TrackId = GetTrackId(TrackUrl);
 
                 CanPlayPause = _SpotifyController.IsSpotifyOpen();
                 CanPlayPrevious = _SpotifyController.IsSpotifyOpen();
@@ -340,58 +314,127 @@ namespace MiniPie.ViewModels {
                 CanVolumeDown = _SpotifyController.IsSpotifyOpen();
                 CanVolumeUp = _SpotifyController.IsSpotifyOpen();
 
-                if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
-                    if(_Settings.DisableAnimations)
+                if (_SpotifyController.IsSpotifyOpen()
+                    && !string.IsNullOrEmpty(track)
+                    && !string.IsNullOrEmpty(artist))
+                {
+                    if (_Settings.DisableAnimations)
                         CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
-
-                    var coverUri = await _CoverService.FetchCover(status);
-                    if (string.IsNullOrEmpty(coverUri))
-                        coverUri = UnknownCoverUri;
-                    CoverImage = coverUri;
-                    if (IsPlaying)
-                        OnCoverDisplayFadeIn();
+                    try
+                    {
+                        var coverUri = await _CoverService.FetchCover(status);
+                        if (string.IsNullOrEmpty(coverUri))
+                            coverUri = UnknownCoverUri;
+                        CoverImage = coverUri;
+                        if (IsPlaying)
+                            OnCoverDisplayFadeIn();
+                    }
+                    catch (Exception e)
+                    {
+                        _Logger.WarnException("Failed to retrieve cover information with: " + e.Message, e);
+                    }
                 }
-                else {
+                else
+                {
                     CoverImage = NoCoverUri;
                     if (IsPlaying)
                         OnCoverDisplayFadeIn();
                 }
 
-                UpdatePlaylists();
+                var tokenPresent = _Settings.SpotifyToken != null;
+                if (tokenPresent)
+                {
+                    if (TrackId != null)
+                    {
+                        IsTrackSaved = (await _SpotifyController.IsTracksSaved(new[] { TrackId })).First();
+                    }
+                    await UpdatePlaylists().ConfigureAwait(false);
+                }
             }
-            catch (Exception exc) {
-                _Logger.FatalException("UpdateView() failed hard", exc);
+            catch (Exception exc)
+            {
+                _Logger.FatalException("UpdateView() failed hard with: " + exc.Message, exc);
+                _Logger.Fatal(exc.StackTrace);
             }
         }
 
-        private async void UpdatePlaylists()
+        private async Task UpdatePlaylists()
         {
-            var newPlaylists = await _SpotifyController.GetPlaylists();
+            var newPlaylists = await _SpotifyController.GetPlaylists().ConfigureAwait(false);
             if (Playlists == null ||!newPlaylists.SequenceEqual(Playlists))
             {
                 Playlists = new ObservableCollection<Playlist>(newPlaylists);
             }
         }
 
-        public async void AddToPlaylist(string id)
+        public virtual async Task AddToPlaylist(string id)
         {
-            await _SpotifyController.AddToPlaylist(id, SpotifyUri);
+            await _SpotifyController.AddToPlaylist(id, SpotifyUri).ConfigureAwait(false);
         }
 
+        private string GetTrackId(string trackUrl)
+        {
+            if (trackUrl == null)
+            {
+                return null;
+            }
+            var match = Regex.Match(trackUrl, TrackPattern);
+            if (match.Groups.Count > 0)
+            {
+                return match.Groups[1].Value;
+            }
+            return null;
+        }
+
+        public string CopyTracksInfo(string data)
+        {
+            try
+            {
+                var bodyIndex = data.IndexOf("<body>", StringComparison.Ordinal);
+                var bodyEndIndicator = "</body>";
+                var bodyEndIndex = data.IndexOf(bodyEndIndicator, StringComparison.Ordinal);
+                var length = bodyEndIndex + bodyEndIndicator.Length - bodyIndex;
+                var body = data.Substring(bodyIndex, length);
+                body = body.Replace("<br>", "");
+                body = body.Replace("&", "&amp;");
+                body = body.Replace("'", "&apos;");
+                var element = XElement.Parse(body);
+                var links = element.Descendants("a");
+
+                var niceNames = links.Select(link => link.Value).ToList();
+                var result = string.Join(Environment.NewLine, niceNames);
+                return result;
+            }
+            catch (Exception e)
+            {
+                _Logger.WarnException("Failed to copy track info", e);
+            }
+            return string.Empty;
+        }
+
+        public async Task AddTracksToQueue(IList<string> trackUrls)
+        {
+            try
+            {
+                await _SpotifyController.AddToQueue(trackUrls).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _Logger.WarnException("Failed to add tracks to queue", e);
+            }
+        }
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
             Execute.OnUIThread(() => {
-                                   var handler = ToggleVisibility;
-                                   if (handler != null) handler(this, e);
-                               });
+                ToggleVisibility?.Invoke(this, e);
+            });
         }
         private void OnCoverDisplayFadeOut() {
             Execute.OnUIThread(() => {
                                    if (_Settings.DisableAnimations)
                                        return;
 
-                                   var handler = CoverDisplayFadeOut;
-                                   if (handler != null) handler(this, EventArgs.Empty);
-                               });
+                CoverDisplayFadeOut?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         private void OnCoverDisplayFadeIn() {
@@ -399,9 +442,36 @@ namespace MiniPie.ViewModels {
                                    if (_Settings.DisableAnimations)
                                        return;
 
-                                   var handler = CoverDisplayFadeIn;
-                                   if (handler != null) handler(this, EventArgs.Empty);
-                               });
+                CoverDisplayFadeIn?.Invoke(this, EventArgs.Empty);
+            });
+        }
+
+        public async Task AddToMyMusic()
+        {
+            IsTrackSaved = true;
+            try
+            {
+                await _SpotifyController.AddToMyMusic(new[] {TrackId}).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                IsTrackSaved = false;
+                _Logger.WarnException("Failed to add track", e);
+            }
+        }
+
+        public async Task RemoveFromMyMusic()
+        {
+            IsTrackSaved = false;
+            try
+            {
+                await _SpotifyController.RemoveFromMyMusic(new[] {TrackId}).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                IsTrackSaved = true;
+                _Logger.WarnException("Failed to remove track", e);
+            }
         }
     }
 }

@@ -1,0 +1,38 @@
+version: 1.0.0.{build}
+configuration: Release
+platform: Any CPU
+assembly_info:
+      patch: true
+      file: '**\AssemblyInfoCommon.*'
+      assembly_version: $(appveyor_build_version)
+      assembly_file_version: $(appveyor_build_version)
+      assembly_informational_version: $(appveyor_build_version)
+environment:
+    CODECOV_REPO_TOKEN:
+       secure: cOjdr+oFYpqClG9XmYPFU9yX6x9TA9VTSFk7h/mLBu5nT1kOyrLbSVdhp0Rc3IMe
+build:
+    project: MiniPie.sln
+    verbosity: minimal
+before_build:
+    - nuget restore
+artifacts:
+    - path: MiniPie\Releases\
+      name: MiniPie
+    - path: MiniPie\Releases\MiniPieSetup.exe
+      name: Installer
+    - path: MiniPie\bin\Release\
+      name: Binaries
+after_build:
+        - cmd: CreateInstaller.bat %appveyor_build_version%
+notifications:
+  - provider: Slack
+    auth_token:
+      secure: l9d2Z7yxqHY6S1Iom6FANSPbVpIcz0zes2lw6DmedTdqfgJRf10nVXSRp2YAMwVy
+    channel: '#appveyor'
+test_script:
+  - cmd: packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:+"[MiniPie*]MiniPie* -[MiniPie.Tests]* -[MiniPie*]*.Properties* -[MiniPie*]MiniPie.Views* -[MiniPie*]MiniPie.Interactivity* -[MiniPie.Core]MiniPie.Core.SpotifyNative*" -target:packages\xunit.runner.console.2.1.0\tools\xunit.console.exe -targetargs:"MiniPie.Tests\bin\Release\MiniPie.Tests.dll -noshadow -appveyor -xml xunit-results.xml" -output:coverage.xml -returntargetcode
+  #- ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-results.xml))
+after_test:
+  - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+  - pip install codecov
+  - codecov -f "coverage.xml" -t %CODECOV_REPO_TOKEN%

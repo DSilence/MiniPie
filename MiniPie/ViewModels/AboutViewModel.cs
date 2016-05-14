@@ -5,7 +5,6 @@ using MiniPie.Core;
 
 namespace MiniPie.ViewModels {
     public sealed class AboutViewModel : Screen {
-        private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
 
         public class ComponentData {
@@ -20,44 +19,36 @@ namespace MiniPie.ViewModels {
             public string Url { get; set; }
         }
 
-        public AboutViewModel(AppSettings settings, AppContracts contracts) {
-            _Settings = settings;
+        public AboutViewModel(AppContracts contracts) {
             _Contracts = contracts;
 
             DisplayName = string.Format("About - {0}", _Contracts.ApplicationName);
             UsedComponents = new List<ComponentData>(new [] {
                                                                 new ComponentData("http://caliburnmicro.codeplex.com/","MIT License","Caliburn.Micro"),
                                                                 new ComponentData("http://nlog-project.org/","MIT License", "NLog"), 
-                                                                new ComponentData("https://github.com/grumpydev/TinyIoC", "Ms-Pl","TinyIoC"), 
-                                                                new ComponentData("https://github.com/dbuksbaum/Caliburn.Micro.TinyIOC","MIT License", "Caliburn.Micro.TinyIOC"), 
                                                                 new ComponentData("http://json.codeplex.com/","MIT License", "Newtonsoft Json.Net"), 
                                                                 new ComponentData("http://jariz.nl", "Apache 2.0 License","Spotify local API"),
-																new ComponentData("http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files", "CPOL", "Resx Extention"), 
+                                                                new ComponentData("http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files", "CPOL", "Resx Extention"), 
+                                                                new ComponentData("https://github.com/Fody/Fody", "MIT", "Fody"), 
+                                                                new ComponentData("http://www.codeproject.com/Articles/36468/WPF-NotifyIcon", "CPOL", "Hardcodet WPF NotifyIcon"),
+                                                                new ComponentData("https://github.com/Squirrel/Squirrel.Windows", "Github license", "Squirrel.Windows"), 
                                                             });
         }
 
-        public string ApplicationName { get { return _Contracts.ApplicationName; } }
-        public Version ApplicationVersion { get { return _Contracts.ApplicationVersion; } }
+        public string ApplicationName => _Contracts.ApplicationName;
+        public Version ApplicationVersion => _Contracts.ApplicationVersion;
 
-        private List<ComponentData> _UsedComponents;
-        public List<ComponentData> UsedComponents {
-            get { return _UsedComponents; }
-            set { _UsedComponents = value; NotifyOfPropertyChange(() => UsedComponents); }
-        }
+        public List<ComponentData> UsedComponents { get; set; }
 
-        private ComponentData _SelectedComponent;
-        public ComponentData SelectedComponent {
-            get { return _SelectedComponent; }
-            set { _SelectedComponent = value; NotifyOfPropertyChange(() => SelectedComponent); }
-        }
+        public ComponentData SelectedComponent { get; set; }
 
-        public void GoHome() {
+        public void GoHome()
+        {
             Helper.OpenUrl(_Contracts.HomepageUrl);
         }
 
-        public void OpenComponentUrl() {
-            if (_SelectedComponent == null)
-                return;
+        public void OpenComponentUrl()
+        {
             Helper.OpenUrl(SelectedComponent.Url);
         }
 

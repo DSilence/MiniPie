@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MiniPie.Core.HotKeyManager;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 
 namespace MiniPie.Models
 {
@@ -31,6 +31,16 @@ namespace MiniPie.Models
             {
                 return ((int)Key * 397) ^ (int)KeyModifier;
             }
+        }
+
+        public static bool operator ==(HotKey left, HotKey right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(HotKey left, HotKey right)
+        {
+            return !left.Equals(right);
         }
         #endregion
     }

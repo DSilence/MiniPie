@@ -3,147 +3,155 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Caliburn.Micro;
 using Infralution.Localization.Wpf;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
 using ILog = MiniPie.Core.ILog;
+using MiniPie.Core.SpotifyNative;
 
 namespace MiniPie.ViewModels {
     public sealed class SettingsViewModel : Screen {
-        private readonly AppSettings _Settings;
-        private readonly AppContracts _Contracts;
-        private readonly ICoverService _CoverService;
+        private readonly AppSettings _settings;
+        private readonly AppContracts _contracts;
+        private readonly ICoverService _coverService;
         private readonly ISpotifyController _spotifyController;
-        private readonly ILog _Logger;
-        private readonly HotKeyViewModel _hotKeyViewModel;
+        private readonly ILog _logger;
+        private readonly AutorunService _autorunService;
+        private readonly JsonPersister<AppSettings> _persister;
 
-        public SettingsViewModel(AppSettings settings, AppContracts contracts, 
+        public SettingsViewModel(AppContracts contracts, 
             ICoverService coverService, ILog logger, HotKeyViewModel hotKeyViewModel, 
-            ISpotifyController spotifyController) 
+            ISpotifyController spotifyController, AutorunService autorunService, JsonPersister<AppSettings> persister) 
         {
-            _Settings = settings;
-            _Contracts = contracts;
-            _CoverService = coverService;
-            _Logger = logger;
-            _hotKeyViewModel = hotKeyViewModel;
+            _settings = persister.Instance;
+            _contracts = contracts;
+            _coverService = coverService;
+            _logger = logger;
             _spotifyController = spotifyController;
-            DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
-            CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
-            UpdateLoggedIn();
+            _autorunService = autorunService;
+            _persister = persister;
+
+            HotKeyViewModel = hotKeyViewModel;
+            DisplayName = $"Settings - {_contracts.ApplicationName}";
+            CacheSize = Helper.MakeNiceSize(_coverService.CacheSize());
+            
         }
 
         public bool AlwaysOnTop {
-            get { return _Settings.AlwaysOnTop; }
-            set { _Settings.AlwaysOnTop = value; NotifyOfPropertyChange(); }
+            get { return _settings.AlwaysOnTop; }
+            set
+            {
+                _settings.AlwaysOnTop = value; 
+                //TODO move this code somewhere
+                Application.Current.MainWindow.Topmost = true;
+            }
         }
 
         public bool StartWithWindows {
-            get { return _Settings.StartWithWindows; }
-            set { _Settings.StartWithWindows = value; NotifyOfPropertyChange(); }
+            get { return _settings.StartWithWindows; }
+            set { _settings.StartWithWindows = value; _autorunService.ValidateAutorun();}
         }
 
-        public bool HideIfSpotifyClosed {
-            get { return _Settings.HideIfSpotifyClosed; }
-            set { _Settings.HideIfSpotifyClosed = value; NotifyOfPropertyChange(); }
+        public bool HideIfSpotifyClosed
+        {
+            get { return _settings.HideIfSpotifyClosed; }
+            set { _settings.HideIfSpotifyClosed = value;}
         }
 
         public bool DisableAnimations {
-            get { return _Settings.DisableAnimations; }
-            set { _Settings.DisableAnimations = value; NotifyOfPropertyChange(); }
+            get { return _settings.DisableAnimations; }
+            set { _settings.DisableAnimations = value;}
         }
 
         public bool StartMinimized
         {
-            get { return _Settings.StartMinimized; }
-            set { _Settings.StartMinimized = value; NotifyOfPropertyChange(); }
+            get { return _settings.StartMinimized; }
+            set { _settings.StartMinimized = value;}
+        }
+
+        public UpdatePreference UpdatePreference
+        {
+            get { return _settings.UpdatePreference; }
+            set { _settings.UpdatePreference = value; }
+        }
+
+        public bool SingleClickHide
+        {
+            get { return _settings.SingleClickHide; }
+            set { _settings.SingleClickHide = value; }
         }
 
         public Language Language
         {
-            get { return _Settings.Language ?? (_Settings.Language = LanguageHelper.English); }
+            get { return _settings.Language; }
             set
             {
-                _Settings.Language = value;
+                _settings.Language = value;
                 if (value != null)
                 {
                     Thread.CurrentThread.CurrentCulture = value.CultureInfo;
                     Thread.CurrentThread.CurrentUICulture = value.CultureInfo;
                     ResxExtension.UpdateAllTargets();
                 }
-                NotifyOfPropertyChange();
             }
         }
 
-        public ObservableCollection<Language> Languages
+        public LockScreenBehavior LockScreenBehavior
         {
-            get
-            {
-                return new ObservableCollection<Language>(LanguageHelper.Languages);
-            }
-        } 
-
-        private bool _CanClearCache = true;
-        public bool CanClearCache {
-            get { return _CanClearCache; }
-            set { _CanClearCache = value; NotifyOfPropertyChange(); }
+            get { return _settings.LockScreenBehavior; }
+            set { _settings.LockScreenBehavior = value; }
         }
 
-        private string _CacheSize;
-        public string CacheSize {
-            get { return _CacheSize; }
-            set { _CacheSize = value; NotifyOfPropertyChange(); }
-        }
+        public ObservableCollection<Language> Languages 
+            => new ObservableCollection<Language>(LanguageHelper.Languages);
+
+        public bool CanClearCache { get; set; } = true;
+
+        public string CacheSize { get; set; }
 
         public ApplicationSize ApplicationSize {
-            get { return _Settings.ApplicationSize; }			
-            set { _Settings.ApplicationSize = value; NotifyOfPropertyChange(); }
+            get { return _settings.ApplicationSize; }			
+            set { _settings.ApplicationSize = value;}
         }
 
-        public void ClearCache() {
-            try {
-                _CoverService.ClearCache();
-                CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
-            }
-            catch (Exception exc) {
-                _Logger.WarnException("Failed to clear cover cache", exc);
-            }
+        public async Task ClearCache() {
             CanClearCache = false;
-        }
-
-        public HotKeyViewModel HotKeyViewModel
-        {
-            get { return _hotKeyViewModel; }
-        }
-
-        private bool _loginChecking;
-
-        public bool LoginChecking
-        {
-            get { return _loginChecking; }
-            set
+            try
             {
-                _loginChecking = value;
-                NotifyOfPropertyChange();
-                NotifyOfPropertyChange(() => LoginStatus);
+                await Task.Run(() =>_coverService.ClearCache());
+                CacheSize = Helper.MakeNiceSize(_coverService.CacheSize());
+            }
+            catch (Exception exc)
+            {
+                _logger.WarnException("Failed to clear cover cache", exc);
+            }
+            finally
+            {
+                CanClearCache = true;
             }
         }
 
+        public HotKeyViewModel HotKeyViewModel { get; }
 
-        public async void UpdateLoggedIn()
+        public bool LoginChecking { get; set; }
+
+
+        public async Task UpdateLoggedIn()
         {
             LoginChecking = true;
             LoggedIn = await _spotifyController.IsUserLoggedIn();
             LoginChecking = false;
         }
 
-        public void PerformLoginLogout()
+        public async Task PerformLoginLogout()
         {
             if (!LoginChecking)
             {
                 if (LoggedIn)
                 {
-                    Logout();
+                    await Logout();
                 }
                 else
                 {
@@ -154,24 +162,14 @@ namespace MiniPie.ViewModels {
 
         public void Login()
         {
-            var processStartInfo = new ProcessStartInfo("MiniPie.exe", "registerUri");
-            processStartInfo.Verb = "runas";
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            using (var utils = new Process())
-            {
-                utils.StartInfo = processStartInfo;
-                utils.EnableRaisingEvents = true;
-                utils.Start();
-                Process.Start(BuildLoginQuery().ToString());
-            }
+            Process.Start(BuildLoginQuery().ToString());
         }
 
-        public void Logout()
+        public async Task Logout()
         {
-            _Settings.SpotifyToken = null;
+            _settings.SpotifyToken = null;
             _spotifyController.Logout();
-            UpdateLoggedIn();
+            await UpdateLoggedIn();
         }
 
         public string LoginStatus
@@ -190,12 +188,7 @@ namespace MiniPie.ViewModels {
             }
         }
 
-        private bool _loggedIn;
-        public bool LoggedIn
-        {
-            get { return _loggedIn; }
-            set { _loggedIn = value; NotifyOfPropertyChange(); }
-        }
+        public bool LoggedIn { get; set; }
 
 
         public Uri BuildLoginQuery()
@@ -203,26 +196,38 @@ namespace MiniPie.ViewModels {
             return _spotifyController.BuildLoginQuery();
         }
 
-        public async Task UpdateToken(string token)
-        {
-            await _spotifyController.UpdateToken(token);
-        }
+#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
+        protected override async void OnActivate()
 
-        protected override void OnActivate()
         {
             base.OnActivate();
+            HotKeyViewModel.UnregisterHotKeys();
             _spotifyController.TokenUpdated += SpotifyControllerOnTokenUpdated;
+            await UpdateLoggedIn();
+            //TODO custom decorator would be ideal here
+            PropertyChanged += SettingsViewModel_PropertyChanged;
         }
 
-        private void SpotifyControllerOnTokenUpdated(object sender, EventArgs eventArgs)
+        private async void SettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            UpdateLoggedIn();
+            await Task.Run(() =>
+            {
+                _persister.Persist();
+            });
         }
 
+        private async void SpotifyControllerOnTokenUpdated(object sender, EventArgs eventArgs)
+        {
+            await UpdateLoggedIn();
+        }
+
+#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
+            HotKeyViewModel.RegisterHotKeys();
             _spotifyController.TokenUpdated -= SpotifyControllerOnTokenUpdated;
+            PropertyChanged -= SettingsViewModel_PropertyChanged;
         }
     }
 }

@@ -1,33 +1,33 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using Caliburn.Micro;
 using MiniPie.Core;
-using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
+using MiniPie.Core.SpotifyNative;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 using MiniPie.Core.SpotifyWeb;
+using MiniPie.Manager;
 using MiniPie.ViewModels;
-using Action = System.Action;
+using MiniPie.Views;
+using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
-    public sealed class AppBootstrapper : TinyBootstrapper<ShellViewModel> {
+    public sealed class AppBootstrapper : BootstrapperBase, IDisposable
+    {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
         private JsonPersister<AppSettings> _SettingsPersistor;
         private ILog _log;
-        private bool _secondInstance;
-        private SpotifyWebApi _spotifyWebApi;
-        private SpotifyController _spotifyController;
-        private SpotifyLocalApi _spotifyLocalApi;
+        private readonly Container _kernel = new Container();
 
-        public AppBootstrapper()
+        public AppBootstrapper():base(true)
         {
         }
 
@@ -36,87 +36,108 @@ namespace MiniPie {
             base.OnStartup(sender, e);
 
             _log.Info("Starting");
-            if(Process.GetProcessesByName("MiniPie").Length > 1)
+            DisplayRootViewFor<ShellViewModel>();
+        }
+
+        protected override object GetInstance(Type service, string key)
+        {
+            return _kernel.GetInstance(service);
+        }
+
+        protected override IEnumerable<object> GetAllInstances(Type service)
+        {
+            return new List<object>
             {
-                //signal existing app via named pipes
-                _secondInstance = true;
-            }
-            else
-            {
-                _log.Info("First Application");
-                var namedPipeString = new NamedPipe<string>(NamedPipe<string>.NameTypes.PipeType1);
-                namedPipeString.OnRequest += async s =>
-                {
-                    await Container.Resolve<SpotifyWebApi>().CreateToken(s);
-                    var processStartInfo = new ProcessStartInfo("MiniPie.exe", "unregisterUri");
-                    processStartInfo.Verb = "runas";
-                    processStartInfo.CreateNoWindow = true;
-                    processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    Process.Start(processStartInfo);
-                };
-                namedPipeString.Start();
-                Container.Register(namedPipeString);
-            }
+                _kernel.GetInstance(service)
+            };
+            //No real need to resolve all
+            /*
+            IServiceProvider provider = _kernel;
+            Type collectionType = typeof(IEnumerable<>).MakeGenericType(service);
+            var services = (IEnumerable<object>)provider.GetService(collectionType);
+            return services ?? Enumerable.Empty<object>();*/
+        }
+
+        protected override void BuildUp(object instance)
+        {
+            //Not using property injection
+            //var registration = _kernel.GetRegistration(instance.GetType(), true);
+            //registration.Registration.InitializeInstance(instance);
+        }
+
+        public async void ProcessTokenUpdate(string input)
+        {
+            await _kernel.GetInstance<ISpotifyWebApi>().CreateToken(input);
         }
 
         protected override void Configure() {
-            base.Configure();
-
             _Contracts = new AppContracts();
-
+            _kernel.RegisterSingleton(this);
             _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
+            _kernel.RegisterSingleton(_SettingsPersistor);
+            _kernel.RegisterSingleton(_Contracts);
             _Settings = _SettingsPersistor.Instance;
-            if (_Settings.Language != null)
-            {
-                Thread.CurrentThread.CurrentCulture = _Settings.Language.CultureInfo;
-                Thread.CurrentThread.CurrentUICulture = _Settings.Language.CultureInfo;
-            }
-
-            Container.Register<AppContracts>(_Contracts);
-            Container.Register<AppSettings>(_Settings);
+            _kernel.RegisterSingleton(_Settings);
+            
             _log = new ProductionLogger();
-            Container.Register<ILog>(_log);
-            Container.Register<AutorunService>(new AutorunService(Container.Resolve<ILog>(), _Settings, _Contracts));
-            Container.Register<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.RegisterSingleton(_log);
+            _kernel.RegisterSingleton<UpdateManager>();
 
-            _spotifyLocalApi = new SpotifyLocalApi(Container.Resolve<ILog>(), _Contracts, _Settings);
-            Container.Register(_spotifyLocalApi);
-            _spotifyWebApi = new SpotifyWebApi(Container.Resolve<ILog>(), Container.Resolve<AppSettings>());
-            Container.Register(_spotifyWebApi);
-            _spotifyController = new SpotifyController(Container.Resolve<ILog>(),
-                Container.Resolve<SpotifyLocalApi>(), Container.Resolve<SpotifyWebApi>());
-            Container.Register<ISpotifyController>(_spotifyController);
-            Container.Register<ICoverService>(
-                new CoverService(
-                    string.IsNullOrEmpty(_Settings.CacheFolder)
-                        ? Directory.GetCurrentDirectory()
-                        : _Settings.CacheFolder, Container.Resolve<ILog>(), Container.Resolve<SpotifyWebApi>()));
+            _kernel.RegisterSingleton(new AutorunService(_log, _Settings, _Contracts));
+            _kernel.RegisterSingleton<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.RegisterSingleton<ClipboardManager>();
+            _kernel.Register<IEventAggregator, EventAggregator>();
 
-            //Container.Register<IUpdateService>(new UpdateService(Container.Resolve<ILog>()));
-            var keyManager = new KeyManager(Container.Resolve<ISpotifyController>(), Container.Resolve<ILog>());
-            Container.Register<KeyManager>(keyManager);
-            if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
+            _kernel.RegisterSingleton<ISpotifyLocalApi, SpotifyLocalApi>();
+            _kernel.RegisterSingleton<ISpotifyWebApi, SpotifyWebApi>();
+            _kernel.RegisterSingleton<ISpotifyNativeApi, SpotifyNativeApi>();
+            _kernel.RegisterSingleton<ISpotifyController, SpotifyController>();
+            //new CoverService(
+            _kernel.RegisterSingleton<ICoverService>(() => new CoverService(string.IsNullOrEmpty(_Settings.CacheFolder)
+                ? _Contracts.SettingsLocation
+                : _Settings.CacheFolder, _log, _kernel.GetInstance<ISpotifyWebApi>()));
+            
+            _kernel.RegisterSingleton<KeyManager>();
+
+            var classes =
+                Assembly.GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(
+                        type =>
+                            type.IsPublic && (
+                            type.Namespace == typeof (ShellViewModel).Namespace ||
+                            type.Namespace == typeof (ShellView).Namespace))
+                    .ToList();
+            foreach (var @class in classes)
             {
-                keyManager.RegisterHotKeys(_Settings.HotKeys);
+                _kernel.Register(@class);
             }
+            base.Configure();
+            
         }
 
         public async Task ConfigurationInitialize()
         {
-            await _spotifyWebApi.Initialize();
-            await _spotifyController.Initialize();
-            await _spotifyLocalApi.Initialize();
-
+            if (_Settings.HotKeysEnabled && _Settings.HotKeys != null)
+            {
+                _kernel.GetInstance<KeyManager>().RegisterHotKeys(_Settings.HotKeys);
+            }
+            await _kernel.GetInstance<ISpotifyWebApi>().Initialize().ConfigureAwait(false);
+            await _kernel.GetInstance<ISpotifyLocalApi>().Initialize().ConfigureAwait(false);
+            await _kernel.GetInstance<ISpotifyController>().Initialize().ConfigureAwait(false);
+            _kernel.GetInstance<UpdateManager>().Initialize();
+            _kernel.GetInstance<AutorunService>().ValidateAutorun();
         }
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
-                
+            Dispose();
+        }
+
+        public void Dispose()
+        {
             _SettingsPersistor.Dispose();
-            foreach (var keyManager in Container.ResolveAll<KeyManager>())
-            {
-                keyManager.Dispose();
-            }
+            _kernel.Dispose();
         }
     }
 }

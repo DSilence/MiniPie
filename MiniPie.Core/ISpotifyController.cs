@@ -11,23 +11,26 @@ namespace MiniPie.Core {
         event EventHandler TokenUpdated;
         Task Initialize();
         bool IsSpotifyOpen();
-        bool IsSpotifyInstalled();
-        string GetSongName();
-        string GetArtistName();
         Status GetStatus();
-        void PausePlay();
-        void NextTrack();
-        void PreviousTrack();
-        void VolumeUp();
-        void VolumeDown();
+        Task Pause();
+        Task Play();
+        Task PausePlay();
+        Task NextTrack();
+        Task PreviousTrack();
+        Task VolumeUp();
+        Task VolumeDown();
         void OpenSpotify();
-        void AttachTrackChangedHandler(EventHandler handler);
-        void AttachTrackStatusChangedHandler(EventHandler handler);
+        void AttachTrackChangedHandler(EventHandler<EventArgs> handler);
+        void AttachTrackStatusChangedHandler(EventHandler<EventArgs> handler);
         Task<bool> IsUserLoggedIn();
         Uri BuildLoginQuery();
-        Task UpdateToken(string token);
         void Logout();
         Task<IList<Playlist>> GetPlaylists();
         Task AddToPlaylist(string playlistId, string trackUrls);
+        Task<IList<SpotifyWeb.Models.Track>> GetTrackInfo(IList<string> trackIds);
+        Task AddToQueue(IList<string> songUrls);
+        Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
+        Task AddToMyMusic(IList<string> trackIds);
+        Task RemoveFromMyMusic(IList<string> trackIds);
     }
 }

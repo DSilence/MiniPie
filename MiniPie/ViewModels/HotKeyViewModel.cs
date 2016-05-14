@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Caliburn.Micro;
 using MiniPie.Core;
-using MiniPie.Core.Enums;
-using MiniPie.Core.HotKeyManager;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 
 namespace MiniPie.ViewModels
 {
-    public class HotKeyViewModel: PropertyChangedBase
+    public class HotKeyViewModel : PropertyChangedBase
     {
-        private readonly KeyManager _manager;
         private readonly AppSettings _settings;
         private HotKeys _lastValidHotkeys;
-        private readonly object _lockObject = new object();
 
         public HotKeyViewModel(KeyManager manager, AppSettings settings)
         {
-            this._manager = manager;
-            this._settings = settings;
-            this._lastValidHotkeys = (HotKeys)HotKeys.Clone();
+            KeyManager = manager;
+            _settings = settings;
+            _lastValidHotkeys = HotKeys.Clone();
         }
 
         public HotKeys HotKeys
@@ -37,11 +35,11 @@ namespace MiniPie.ViewModels
             {
                 _settings.HotKeys = value;
                 NotifyOfPropertyChange();
-                NotifyOfPropertyChange("PlayPause");
-                NotifyOfPropertyChange("Previous");
-                NotifyOfPropertyChange("Next");
-                NotifyOfPropertyChange("VolumeUp");
-                NotifyOfPropertyChange("VolumeDown");
+                NotifyOfPropertyChange(nameof(PlayPause));
+                NotifyOfPropertyChange(nameof(Previous));
+                NotifyOfPropertyChange(nameof(Next));
+                NotifyOfPropertyChange(nameof(VolumeUp));
+                NotifyOfPropertyChange(nameof(VolumeDown));
             }
         }
 
@@ -51,7 +49,7 @@ namespace MiniPie.ViewModels
             {
                 UnregisterHotKeys();
                 RegisterHotKeys();
-                _lastValidHotkeys = (HotKeys) HotKeys.Clone();
+                _lastValidHotkeys = HotKeys.Clone();
             }
             catch (Exception)
             {
@@ -61,14 +59,14 @@ namespace MiniPie.ViewModels
             }
         }
 
-        private void UnregisterHotKeys()
+        public void UnregisterHotKeys()
         {
-            _manager.UnregisterHotKeys();
+            KeyManager.UnregisterHotKeys();
         }
 
-        private void RegisterHotKeys()
+        public void RegisterHotKeys()
         {
-            _manager.RegisterHotKeys(HotKeys);
+            KeyManager.RegisterHotKeys(HotKeys);
         }
 
         public bool HotKeysEnabled
@@ -79,18 +77,6 @@ namespace MiniPie.ViewModels
                 if (_settings.HotKeysEnabled != value)
                 {
                     _settings.HotKeysEnabled = value;
-                    NotifyOfPropertyChange();
-                    lock (_lockObject)
-                    {
-                        if (value)
-                        {
-                            RegisterHotKeys();
-                        }
-                        else
-                        {
-                            UnregisterHotKeys();
-                        }
-                    }
                 }
             }
         }
@@ -100,153 +86,41 @@ namespace MiniPie.ViewModels
         public KeyValuePair<Key, KeyModifier> PlayPause
         {
             get { return HotKeys.PlayPause; }
-            set
-            {
-                HotKeys.PlayPause = value;
-                NotifyOfPropertyChange();
-            }
+            set { HotKeys.PlayPause = value; }
         }
 
         public KeyValuePair<Key, KeyModifier> Previous
         {
             get { return HotKeys.Previous; }
-            set
-            {
-                HotKeys.Previous = value;
-                NotifyOfPropertyChange();
-            }
+            set { HotKeys.Previous = value; }
         }
 
         public KeyValuePair<Key, KeyModifier> Next
         {
             get { return HotKeys.Next; }
-            set
-            {
-                HotKeys.Next = value;
-                NotifyOfPropertyChange();
-            }
+            set { HotKeys.Next = value; }
         }
 
         public KeyValuePair<Key, KeyModifier> VolumeUp
         {
             get { return HotKeys.VolumeUp; }
-            set
-            {
-                HotKeys.VolumeUp = value;
-                NotifyOfPropertyChange();
-            }
+            set { HotKeys.VolumeUp = value; }
         }
 
         public KeyValuePair<Key, KeyModifier> VolumeDown
         {
             get { return HotKeys.VolumeDown; }
-            set
-            {
-                HotKeys.VolumeDown = value;
-                NotifyOfPropertyChange();
-            }
+            set { HotKeys.VolumeDown = value; }
         }
 
-        public SupportedKeyModifiers PlayPauseModifier
+        public void Clear(TextBox parameter)
         {
-            get { return GetFrameworkKeyModifier(PlayPause.Value); }
-            set
-            {
-                PlayPause = new KeyValuePair<Key, KeyModifier>(PlayPause.Key,
-                    GetKeyModifier(value));
-                PerformHotKeyUpdate();
-            }
-        }
-        public SupportedKeyModifiers PreviousModifier
-        {
-            get { return GetFrameworkKeyModifier(Previous.Value); }
-            set
-            {
-                Previous = new KeyValuePair<Key, KeyModifier>(Previous.Key,
-                    GetKeyModifier(value));
-                PerformHotKeyUpdate();
-            }
+            parameter.Text = "";
+            parameter.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
         }
 
-        public SupportedKeyModifiers NextModifier
-        {
-            get { return GetFrameworkKeyModifier(Next.Value); }
-            set
-            {
-                Next = new KeyValuePair<Key, KeyModifier>(Next.Key, 
-                    GetKeyModifier(value));
-                PerformHotKeyUpdate();
-            }
-        }
+        public KeyManager KeyManager { get; }
 
-        public SupportedKeyModifiers VolumeDownModifier
-        {
-            get { return GetFrameworkKeyModifier(VolumeDown.Value); }
-            set
-            {
-                VolumeDown = new KeyValuePair<Key, KeyModifier>(VolumeDown.Key, 
-                    GetKeyModifier(value));
-                PerformHotKeyUpdate();
-            }
-        }
-
-        public SupportedKeyModifiers VolumeUpModifier
-        {
-            get { return GetFrameworkKeyModifier(VolumeUp.Value); }
-            set
-            {
-                VolumeUp = new KeyValuePair<Key, KeyModifier>(VolumeUp.Key,
-                    GetKeyModifier(value));
-                PerformHotKeyUpdate();
-            }
-        }
-
-        private SupportedKeyModifiers GetFrameworkKeyModifier(
-            KeyModifier keyModifier)
-        {
-            switch (keyModifier)
-            {
-                case KeyModifier.Alt:
-                {
-                    return SupportedKeyModifiers.Alt;
-                }
-                case KeyModifier.Ctrl:
-                {
-                    return SupportedKeyModifiers.Ctrl;
-                }
-                case KeyModifier.Shift:
-                {
-                    return SupportedKeyModifiers.Shift;
-                }
-                default:
-                {
-                    return SupportedKeyModifiers.None;
-                }
-            }
-        }
-
-        private KeyModifier GetKeyModifier(SupportedKeyModifiers keyModifiers)
-        {
-            switch (keyModifiers)
-            {
-                case SupportedKeyModifiers.Alt:
-                {
-                    return KeyModifier.Alt;
-                }
-                case SupportedKeyModifiers.Ctrl:
-                {
-                    return KeyModifier.Ctrl;
-                }
-                case SupportedKeyModifiers.Shift:
-                {
-                    return KeyModifier.Shift;
-                }
-                default:
-                {
-                    return KeyModifier.None;
-                }
-            }
-        }
         #endregion
     }
 }

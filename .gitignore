@@ -108,3 +108,5 @@ Backup*/
 UpgradeLog*.XML
 
 .vs
+*.nupkg
+MiniPie/Releases

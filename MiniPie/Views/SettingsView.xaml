@@ -7,13 +7,14 @@
              xmlns:Properties="clr-namespace:MiniPie.Properties"
              xmlns:enums="clr-namespace:MiniPie.Core.Enums;assembly=MiniPie.Core"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
+             xmlns:views="clr-namespace:MiniPie.Views"
              mc:Ignorable="d"
              MaxWidth="400"
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources">
     <UserControl.Resources>
-        <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter" />
+        <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter"/>
     </UserControl.Resources>
-    <TabControl>
+    <TabControl Name="SettingsControl">
         <TabItem Header="{wpf:Resx Settings_Common}">
             <StackPanel Margin="20 10" Orientation="Vertical">
                 <StackPanel.Resources>
@@ -45,8 +46,8 @@
                 <CheckBox Content="{wpf:Resx Settings_AlwaysOnTop}" Name="AlwaysOnTop" />
                 <CheckBox Content="{wpf:Resx Settings_StartWithWindows}" Name="StartWithWindows" />
                 <CheckBox Content="{wpf:Resx Settings_StartMinimized}" Name="StartMinimized"/>
-                <CheckBox Content="{wpf:Resx Settings_HideIfSpotifyClosed}" Name="HideIfSpotifyClosed" />
                 <CheckBox Content="{wpf:Resx Settings_DisableAnimations}" Name="DisableAnimations" />
+                <CheckBox Content="{wpf:Resx Settings_SingleClickHide}" Name="SingleClickHide"/>
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -55,18 +56,24 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Padding="0 0 5 0"
-                               Text="{x:Static Properties:Resources.Settings_ApplicationSize}" />
+                               Text="{x:Static Properties:Resources.Settings_ReleaseChannel}" />
                     <ComboBox Grid.Row="0" Grid.Column="1"
-                              ItemsSource="{Binding Source={x:Type enums:ApplicationSize}, Converter={StaticResource EnumToLocalizedStringConverter}}"
-                              SelectedItem="{Binding ApplicationSize, Converter={StaticResource EnumToLocalizedStringConverter}}" />
+                              ItemsSource="{Binding Source={x:Type enums:UpdatePreference}, Converter={StaticResource EnumToLocalizedStringConverter}}"
+                              SelectedItem="{Binding UpdatePreference, Converter={StaticResource EnumToLocalizedStringConverter}}" />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Padding="0 0 5 0"
                                Text="{x:Static Properties:Resources.Settings_Language}" />
                     <ComboBox Grid.Row="1" Grid.Column="1"
                               ItemsSource="{Binding Languages}"
                               SelectedItem="{Binding Language}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Padding="0 0 5 0"
+                               Text="{x:Static Properties:Resources.Settings_LockScreenBehavior}" />
+                    <ComboBox Grid.Row="2" Grid.Column="1"
+                              ItemsSource="{Binding Source={x:Type enums:LockScreenBehavior}, Converter={StaticResource EnumToLocalizedStringConverter}}"
+                              SelectedItem="{Binding LockScreenBehavior, Converter={StaticResource EnumToLocalizedStringConverter}}"/>
                 </Grid>
 
                 <GroupBox Header="Cover cache" Margin="0 10">
@@ -94,91 +101,8 @@
                 </GroupBox>
             </StackPanel>
         </TabItem>
-        <TabItem Header="{wpf:Resx Settings_Hotkeys}" DataContext="{Binding HotKeyViewModel}">
-            <TabItem.Resources>
-                <converter:KeyCodeToReadableStringConverter x:Key="CodeConverter" />
-            </TabItem.Resources>
-            <Grid Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" MinWidth="100" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Label Grid.Row="0" Grid.Column="0" Content="{wpf:Resx Settings_EnableHotkeys}" />
-                <CheckBox Margin="5,0,0,5" Grid.Row="0" VerticalAlignment="Center"
-                          Grid.Column="2"
-                          IsChecked="{Binding HotKeysEnabled}" />
-
-                <Label Grid.Row="1" Grid.Column="0" Content="{wpf:Resx App_PlayPause}" />
-                <ComboBox
-                    VerticalAlignment="Center"
-                    Grid.Row="1" Name="PlayPauseModifier" Grid.Column="1"
-                    ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
-                    Converter={StaticResource EnumToLocalizedStringConverter}}"
-                    SelectedItem="{Binding PlayPauseModifier, Converter={StaticResource EnumToLocalizedStringConverter}}" />
-                <TextBox Margin="5,0,0,5" Name="PlayPause" Grid.Row="1"
-                         VerticalAlignment="Center"
-                         Grid.Column="2"
-                         Text="{Binding PlayPause, Converter={StaticResource CodeConverter}, Mode=OneWay}"
-                         PreviewKeyDown="HotKey_OnPreviewKeyDown" />
-
-                <Label Grid.Row="2" Grid.Column="0" Content="{wpf:Resx App_Previous}" />
-                <ComboBox Grid.Row="2" Name="PreviousModifier" Grid.Column="1"
-                          VerticalAlignment="Center"
-                          ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
-                    Converter={StaticResource EnumToLocalizedStringConverter}}"
-                          SelectedItem="{Binding PreviousModifier, Converter={StaticResource EnumToLocalizedStringConverter}}" />
-                <TextBox Margin="5,0,0,5" Name="Previous" Grid.Row="2"
-                         VerticalAlignment="Center"
-                         Grid.Column="2"
-                         Text="{Binding Previous, Converter={StaticResource CodeConverter}, Mode=OneWay}"
-                         PreviewKeyDown="HotKey_OnPreviewKeyDown" />
-
-                <Label Grid.Row="3" Grid.Column="0" Content="{wpf:Resx App_Next}" />
-                <ComboBox Grid.Row="3" Name="NextModifier" Grid.Column="1"
-                          VerticalAlignment="Center"
-                          ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
-                    Converter={StaticResource EnumToLocalizedStringConverter}}"
-                          SelectedItem="{Binding NextModifier, Converter={StaticResource EnumToLocalizedStringConverter}}" />
-                <TextBox Margin="5,0,0,5" Name="Next" Grid.Row="3"
-                         VerticalAlignment="Center"
-                         Grid.Column="2"
-                         Text="{Binding Next, Converter={StaticResource CodeConverter}, Mode=OneWay}"
-                         PreviewKeyDown="HotKey_OnPreviewKeyDown" />
-
-                <Label Grid.Row="4" Grid.Column="0" Content="{wpf:Resx App_VolumeDown}" />
-                <ComboBox Grid.Row="4" Name="VolumeDownModifier" Grid.Column="1"
-                          VerticalAlignment="Center"
-                          SelectedItem="{Binding VolumeDownModifier, Converter={StaticResource EnumToLocalizedStringConverter}}"
-                          ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
-                    Converter={StaticResource EnumToLocalizedStringConverter}}" />
-                <TextBox Margin="5,0,0,5" Name="VolumeDown" Grid.Row="4"
-                         VerticalAlignment="Center"
-                         Grid.Column="2"
-                         Text="{Binding VolumeDown, Converter={StaticResource CodeConverter}, Mode=OneWay}"
-                         PreviewKeyDown="HotKey_OnPreviewKeyDown" />
-
-                <Label Grid.Row="5" Grid.Column="0" Content="{wpf:Resx App_VolumeUp}" />
-                <ComboBox Grid.Row="5" Name="VolumeUpModifier" Grid.Column="1"
-                          VerticalAlignment="Center"
-                          SelectedItem="{Binding VolumeUpModifier, Converter={StaticResource EnumToLocalizedStringConverter}}"
-                          ItemsSource="{Binding Source={x:Type enums:SupportedKeyModifiers}, 
-                    Converter={StaticResource EnumToLocalizedStringConverter}}" />
-                <TextBox Margin="5,0,0,5" Name="VolumeUp" Grid.Row="5"
-                         VerticalAlignment="Center"
-                         Grid.Column="2"
-                         Text="{Binding VolumeUp, Converter={StaticResource CodeConverter}, Mode=OneWay}"
-                         PreviewKeyDown="HotKey_OnPreviewKeyDown" />
-            </Grid>
+        <TabItem Name="SettingsHotkeys" Header="{wpf:Resx Settings_Hotkeys}" DataContext="{Binding HotKeyViewModel}" >
+            <views:HotKeyView></views:HotKeyView>
         </TabItem>
     </TabControl>
 

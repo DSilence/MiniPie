@@ -17,7 +17,7 @@ namespace MiniPie.Converter
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(bool)value;
+            return Convert(value, targetType, parameter, culture);
         }
     }
 }

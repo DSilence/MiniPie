@@ -4,21 +4,19 @@
              xmlns:miniPie="clr-namespace:MiniPie"
              xmlns:converter="clr-namespace:MiniPie.Converter"
              xmlns:ctrl="clr-namespace:MiniPie.Controls"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             Startup="App_OnStartup">
+             xmlns:system="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <miniPie:AppBootstrapper x:Key="bootstrapper"/>
                     <converter:VisibilityConverter x:Key="VisibilityConverter" />
                     <converter:ApplicationSizeConverter x:Key="ApplicationSizeConverter" />
                     <converter:BoolInvertedConverter x:Key="BoolInvertedConverter"/>
-                    
+
                     <Style TargetType="{x:Type Window}">
                         <Setter Property="TextOptions.TextFormattingMode" Value="Display"></Setter>
                     </Style>
-                    
+
                     <Style TargetType="{x:Type ctrl:ImageButton}">
                         <Setter Property="Background" Value="Transparent" />
                         <Setter Property="BorderThickness" Value="1" />
@@ -43,6 +41,10 @@
                     <system:Boolean x:Key="True">True</system:Boolean>
                     <system:Boolean x:Key="False">False</system:Boolean>
                 </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
