@@ -10,7 +10,7 @@ using MiniPie.Core.SpotifyWeb;
 
 namespace MiniPie.Core
 {
-    public class CoverService : ICoverService
+    public class CoverService : ICoverService, IDisposable
     {
         private const string CacheFileNameTemplate = "{0}.jpg";
         private readonly string _cacheDirectory;
@@ -62,7 +62,7 @@ namespace MiniPie.Core
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
-            if (trackUri.StartsWith("spotify:local"))
+            if (trackUri.StartsWith("spotify:local", StringComparison.OrdinalIgnoreCase))
             {
                 trackUri = await FetchRemoteSpotifyTrackFromLocal(trackStatus).ConfigureAwait(false);
             }
@@ -147,6 +147,11 @@ namespace MiniPie.Core
                     }
                 }
             });
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

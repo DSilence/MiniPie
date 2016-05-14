@@ -5,7 +5,7 @@ using MiniPie.Core.SpotifyWeb.Models;
 
 namespace MiniPie.Core.SpotifyWeb
 {
-    public interface ISpotifyWebApi
+    public interface ISpotifyWebApi: IDisposable
     {
         event EventHandler TokenUpdated;
 

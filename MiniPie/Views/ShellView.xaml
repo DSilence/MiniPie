@@ -55,10 +55,10 @@
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:.3"/>
         </Storyboard>
-        <Style TargetType="circularProgressButton1:PropgressButton">
+        <Style TargetType="circularProgressButton1:ProgressButton">
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type circularProgressButton1:PropgressButton}">
+                    <ControlTemplate TargetType="{x:Type circularProgressButton1:ProgressButton}">
                         <Grid Background="Transparent">
                             <!--TODO Someone should fix this awful markup-->
                             <Ellipse Name="BorderEllipse"  Stroke="{TemplateBinding Foreground}" StrokeThickness="2" Margin="0"
@@ -171,7 +171,7 @@
                                                   ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
                                                   ToolTip="plays the previous track" 
                                                   Visibility="{Binding CanPlayPrevious, Converter={StaticResource VisibilityConverter}}"/>
-                                <circularProgressButton1:PropgressButton 
+                                <circularProgressButton1:ProgressButton 
                                                                          RenderOptions.BitmapScalingMode="HighQuality"
                                                                          cal:Message.Attach="[Event Click] = [Action PlayPause]"
                                                                          Width="33" Height="33" 

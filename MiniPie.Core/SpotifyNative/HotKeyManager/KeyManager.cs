@@ -87,7 +87,9 @@ namespace MiniPie.Core.SpotifyNative.HotKeyManager
             _volumeUp.Unregister();
         }
 
+#pragma warning disable RECS0154 // Parameter is never used
         private void Dispose(bool disposing)
+#pragma warning restore RECS0154 // Parameter is never used
         {
             _next.Dispose();
             _previous.Dispose();

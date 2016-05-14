@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace MiniPie.Core.SpotifyNative
 {
+#pragma warning disable CA1060 // Move P/Invokes to native methods class
     public class SpotifyNativeApi: ISpotifyNativeApi
+#pragma warning restore CA1060 // Move P/Invokes to native methods class
     {
         public Process SpotifyProcess { get; set; }
 
@@ -26,18 +28,18 @@ namespace MiniPie.Core.SpotifyNative
 
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
         static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        private struct WINDOWPLACEMENT
+        struct WINDOWPLACEMENT
         {
             public int length;
             public int flags;

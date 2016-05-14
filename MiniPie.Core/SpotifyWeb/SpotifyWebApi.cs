@@ -163,5 +163,10 @@ namespace MiniPie.Core.SpotifyWeb
             var url = string.Format(MyMusicDeleteFormat, string.Join(",", trackIds));
             return _client.DoDeleteAsync(url);
         }
+
+        public void Dispose()
+        {
+            _client.Dispose();
+        }
     }
 }

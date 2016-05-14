@@ -41,8 +41,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Equals, Version=1.4.10.0, Culture=neutral, PublicKeyToken=15432f00798e61a4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Equals.Fody.1.4.10.0\lib\dotnet\Equals.dll</HintPath>
+    <Reference Include="Equals, Version=1.5.0.0, Culture=neutral, PublicKeyToken=15432f00798e61a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Equals.Fody.1.5.0.0\lib\dotnet\Equals.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -50,7 +50,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.0\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.3\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -85,7 +85,7 @@
     <Compile Include="AppContracts.cs" />
     <Compile Include="Enums\ApplicationSize.cs" />
     <Compile Include="AppSettings.cs" />
-    <Compile Include="AutorunService.cs" />
+    <Compile Include="SpotifyNative\AutorunService.cs" />
     <Compile Include="CoverService.cs" />
     <Compile Include="Enums\HotkeyAction.cs" />
     <Compile Include="Enums\LockScreenBehavior.cs" />
@@ -103,7 +103,6 @@
     <Compile Include="ISpotifyController.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="LanguageHelper.cs" />
-    <Compile Include="LastFmPOCOs.cs" />
     <Compile Include="ProductionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpotifyController.cs" />
@@ -156,9 +155,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\dotnet\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\Equals.Fody.1.4.10.0\build\dotnet\Equals.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Equals.Fody.1.4.10.0\build\dotnet\Equals.Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Equals.Fody.1.5.0.0\build\dotnet\Equals.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Equals.Fody.1.5.0.0\build\dotnet\Equals.Fody.targets'))" />
   </Target>
-  <Import Project="..\packages\Equals.Fody.1.4.10.0\build\dotnet\Equals.Fody.targets" Condition="Exists('..\packages\Equals.Fody.1.4.10.0\build\dotnet\Equals.Fody.targets')" />
+  <Import Project="..\packages\Equals.Fody.1.5.0.0\build\dotnet\Equals.Fody.targets" Condition="Exists('..\packages\Equals.Fody.1.5.0.0\build\dotnet\Equals.Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

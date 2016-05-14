@@ -6,7 +6,7 @@ namespace MiniPie.Controls.CircularProgressButton
     /// <summary>
     /// Interaction logic for PropgressButton.xaml
     /// </summary>
-    public partial class PropgressButton : Button
+    public partial class ProgressButton : Button, IProgressReporter
     {
         public double Maximum
         {
@@ -16,7 +16,7 @@ namespace MiniPie.Controls.CircularProgressButton
 
         // Using a DependencyProperty as the backing store for Maximum.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MaximumProperty =
-            DependencyProperty.Register("Maximum", typeof(double), typeof(PropgressButton), new PropertyMetadata(100.0));
+            DependencyProperty.Register("Maximum", typeof(double), typeof(ProgressButton), new PropertyMetadata(100.0));
 
         public double Minimum
         {
@@ -26,7 +26,7 @@ namespace MiniPie.Controls.CircularProgressButton
 
         // Using a DependencyProperty as the backing store for Minimum.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinimumProperty =
-            DependencyProperty.Register("Minimum", typeof(double), typeof(PropgressButton), new PropertyMetadata(0.0));
+            DependencyProperty.Register("Minimum", typeof(double), typeof(ProgressButton), new PropertyMetadata(0.0));
 
 
 
@@ -38,11 +38,11 @@ namespace MiniPie.Controls.CircularProgressButton
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(double), typeof(PropgressButton), new PropertyMetadata(0.0));
+            DependencyProperty.Register("Value", typeof(double), typeof(ProgressButton), new PropertyMetadata(0.0));
 
         
 
-        public PropgressButton()
+        public ProgressButton()
         {
             InitializeComponent();
         }

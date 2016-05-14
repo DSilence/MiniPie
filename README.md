@@ -1,6 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xc89lwvclmexie2m?svg=true)](https://ci.appveyor.com/project/DzmitrySafarau/minipie)
 [![codecov.io](https://codecov.io/github/DSilence/MiniPie/coverage.svg?branch=develop)](https://codecov.io/github/DSilence/MiniPie?branch=develop)
-[![Slack Status](https://minipieinvite.herokuapp.com/badge.svg)](https://minipieinvite.herokuapp.com/)
 [![ZenHub] (https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)](https://zenhub.io)
 
 # MiniPie

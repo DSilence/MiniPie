@@ -18,7 +18,7 @@ namespace MiniPie.Converter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var playlists = values[0] as ObservableCollection<Playlist>;
+            var playlists = values[0] as IList<Playlist>;
             var viewModel = values[1] as ShellViewModel;
             if (playlists == null || viewModel == null)
             {
