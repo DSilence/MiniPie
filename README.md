@@ -3,7 +3,7 @@
 [![ZenHub] (https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)](https://zenhub.io)
 
 # MiniPie
-Spotify Miniplayer based on WinFy project (http://krauss.io/projects/Winfy). 
+Spotify Miniplayer based on WinFy project (http://krauss.io/projects/Winfy).  
 NOTE: This is not a standalone client. Works only with official spotify client! You need to have official spotify client installed!  
 NOTE: To access some of the features you need to login to the application. Right-click the window, select settings and hit the login button.
 
