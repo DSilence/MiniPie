@@ -191,6 +191,11 @@
             </Border>
 
             <StackPanel AllowDrop="True" Drop="TitlePanel_OnDrop" DragEnter="TitlePanel_DragEnter" DragLeave="TitlePanel_DragLeave" Background="#282828" Name="TitlePanel" Grid.Row="1"  Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}" ClipToBounds="True">
+                <Slider 
+                    HorizontalAlignment="Right" Foreground="#1FD861" Value="{Binding Volume, Mode=OneWay}" 
+                    Maximum="1" Minimum="0" ValueChanged="RangeBase_OnValueChanged" Style="{DynamicResource FlatSlider}" 
+                    IsMoveToPointEnabled="True"
+                    Width="50" Focusable="False"></Slider>
                 <Canvas Margin="5" Height="8">
                     <TextBlock Name="CurrentTrack" FontSize="12" Canvas.Top="-3"
                            ToolTip="{Binding CurrentTrack}" TextTrimming="None"

@@ -169,7 +169,8 @@ namespace MiniPie.Tests.ViewModels
                         name = "TestArtistName"
                     }
                 },
-                playing = true
+                playing = true,
+                volume = 0.5
             };
             _spotifyController.IsSpotifyOpen().Returns(true);
             _spotifyController.GetStatus().Returns(status);
@@ -191,6 +192,7 @@ namespace MiniPie.Tests.ViewModels
             Assert.Equal("TestArtistName – TestName", _shellViewModel.TrackFriendlyName);
             Assert.Equal("trackurl", _shellViewModel.TrackId);
             Assert.Equal("TestCover", _shellViewModel.CoverImage);
+            Assert.Equal(0.5, _shellViewModel.Volume);
 
             Assert.Collection(_shellViewModel.Playlists, playlist => Assert.Equal("TestId", playlist.Id));
         }
@@ -337,6 +339,14 @@ namespace MiniPie.Tests.ViewModels
             string badData = "ThisIsBad";
             Assert.Equal("", _shellViewModel.CopyTracksInfo(badData));
             _log.Received(1).WarnException("Failed to copy track info", Arg.Any<Exception>());
+        }
+
+        [Fact]
+        public async Task TestVolumeChanged()
+        {
+            double newValue = 123;
+            await _shellViewModel.VolumeChanged(newValue);
+            await _spotifyController.Received(1).SetSpotifyVolume(newValue);
         }
     }
 }

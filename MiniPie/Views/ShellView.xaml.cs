@@ -230,6 +230,10 @@ namespace MiniPie.Views
             TitlePanel.ToolTip = null;
         }
 
-        
+
+        private void RangeBase_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ShellViewModel.VolumeChanged(e.NewValue);
+        }
     }
 }

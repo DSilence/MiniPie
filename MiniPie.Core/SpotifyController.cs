@@ -400,6 +400,48 @@ namespace MiniPie.Core {
             await _spotifyWebApi.RemoveFromMyMusic(trackIds);
         }
 
+        private async Task<double> GetVolume()
+        {
+            var status = await _localApi.SendLocalStatusRequest(true, true, CancellationToken.None);
+            return status.volume;
+        }
+
+        public async Task<double> SetSpotifyVolume(double volume)
+        {
+            try
+            {
+                var volumeCurrent = await GetVolume();
+                if (Math.Abs(volumeCurrent - volume) < 0.1)
+                {
+                    return volume;
+                }
+                if (volumeCurrent < volume)
+                {
+                    do
+                    {
+                        await VolumeUp();
+                        volumeCurrent = await GetVolume();
+                    }
+                    while (volumeCurrent < volume);
+                }
+                else
+                {
+                    do
+                    {
+                        await VolumeDown();
+                        volumeCurrent = await GetVolume();
+                    }
+                    while (volumeCurrent > volume);
+                }
+                return volumeCurrent;
+            }
+            catch(Exception e)
+            {
+                _logger.FatalException("Failed to change volume with " + e.Message, e);
+            }
+            return double.NaN;
+        }
+
         public void Dispose()
         {
             _songStatusWatcher?.Dispose();

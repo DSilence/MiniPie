@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -128,6 +129,7 @@ namespace MiniPie.ViewModels {
         public string TrackFriendlyName { get; set; }
         public bool IsTrackSaved { get; set; }
         public string TrackId { get; set; }
+        public double Volume { get; set; }
 
         public bool Loading
         {
@@ -274,6 +276,8 @@ namespace MiniPie.ViewModels {
             IsPlaying = status.playing;
         }
 
+        
+
         internal async Task UpdateView()
         {
             try
@@ -291,6 +295,7 @@ namespace MiniPie.ViewModels {
                     MaxProgress = status.track.length;
                     Progress = status.playing_position;
                     IsPlaying = status.playing;
+                    Volume = status.volume;
 
                     if (IsPlaying)
                         OnCoverDisplayFadeOut();
@@ -444,6 +449,11 @@ namespace MiniPie.ViewModels {
 
                 CoverDisplayFadeIn?.Invoke(this, EventArgs.Empty);
             });
+        }
+
+        public Task VolumeChanged(double value)
+        {
+            return _SpotifyController.SetSpotifyVolume(value);
         }
 
         public async Task AddToMyMusic()

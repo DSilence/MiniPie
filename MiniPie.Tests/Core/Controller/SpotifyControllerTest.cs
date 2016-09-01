@@ -12,6 +12,7 @@ using MiniPie.Core.SpotifyWeb;
 using MiniPie.Core.SpotifyWeb.Models;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Xbehave;
 using Xunit;
 using Track = MiniPie.Core.SpotifyLocal.Track;
 
@@ -365,6 +366,52 @@ namespace MiniPie.Tests.Core.Controller
 
             await _spotifyController.RemoveFromMyMusic(trackIds);
             await _spotifyWebApi.Received(1).RemoveFromMyMusic(trackIds);
+        }
+
+        [Fact]
+        public async Task SetSpotifyVolumeTestNoAction()
+        {
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ReturnsForAnyArgs(new Status
+            {
+                volume = 2
+            });
+            Assert.Equal(2, await _spotifyController.SetSpotifyVolume(2));
+        }
+
+        [Scenario]
+        public void TestVolumeDownRequest(ISpotifyController controller, ISpotifyLocalApi localApi, double resultVolume)
+        {
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ReturnsForAnyArgs(new Status { volume = 2 }, new Status { volume = 1 }, new Status { volume = 0 });
+
+            "Given spotify controller".x(() => controller = _spotifyController);
+            "and local api".x(() => localApi = _localApi);
+            "When i change volume to 0".x(async () => resultVolume = await controller.SetSpotifyVolume(0));
+            "Then the return value is 0".x(() => Assert.Equal(0, resultVolume));
+            "And VolumeDown is called 2 times".x(() => _nativeApi.ReceivedWithAnyArgs(2).VolumeDown());
+        }
+
+
+        [Scenario]
+        public void TestVolumeUpRequest(ISpotifyController controller, ISpotifyLocalApi localApi, double resultVolume)
+        {
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ReturnsForAnyArgs(new Status { volume = 0 }, new Status { volume = 1 }, new Status { volume = 2 });
+
+            "Given spotify controller".x(() => controller = _spotifyController);
+            "and local api".x(() => localApi = _localApi);
+            "When i change volume to 2".x(async () => resultVolume = await controller.SetSpotifyVolume(2));
+            "Then the return value is 2".x(() => Assert.Equal(2, resultVolume));
+            "And VolumeUp is called 2 times".x(() => _nativeApi.ReceivedWithAnyArgs(2).VolumeUp());
+        }
+
+        [Scenario]
+        public void TestVolumeFailedRequest(ISpotifyController controller, ISpotifyLocalApi localApi, double resultVolume)
+        {
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ThrowsForAnyArgs<ArgumentException>();
+
+            "Given spotify controller".x(() => controller = _spotifyController);
+            "and local api".x(() => localApi = _localApi);
+            "When i change volume and it fails".x(async () => resultVolume = await controller.SetSpotifyVolume(2));
+            "Then the result is Nan".x(() => Assert.Equal(double.NaN, resultVolume));
         }
 
         public void Dispose()
