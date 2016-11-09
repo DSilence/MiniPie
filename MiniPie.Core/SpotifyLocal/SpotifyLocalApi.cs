@@ -25,8 +25,8 @@ namespace MiniPie.Core.SpotifyLocal {
 
             //emulate the embed code [NEEDED]
             _client = new HttpClient();
-            _client.DefaultRequestHeaders.Add("Origin", "https://embed.spotify.com");
-            _client.DefaultRequestHeaders.Referrer = new Uri("https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            _client.DefaultRequestHeaders.Add("Origin", "https://open.spotify.com");
+            _client.DefaultRequestHeaders.Referrer = new Uri("https://open.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
             _client.DefaultRequestHeaders.Add("User-Agent", "MiniPie");
             _log = log;
             _baseUri = new Uri(contracts.SpotifyLocalHost);

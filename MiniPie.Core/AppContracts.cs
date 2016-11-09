@@ -40,7 +40,7 @@ namespace MiniPie.Core {
         }
 
         public string SpotifyLocalHost {
-            get { return "http://minipie.spotilocal.com:4380/"; }
+            get { return "https://minipie.spotilocal.com:4371/"; }
         }
 
         public string PublisherName
