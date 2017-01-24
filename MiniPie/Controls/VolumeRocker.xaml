@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="MiniPie.Controls.VolumeRocker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MiniPie.Controls"
+             xmlns:converter="clr-namespace:MiniPie.Converter"
+             mc:Ignorable="d"
+             x:Name="VolumeControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Buttons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <SolidColorBrush x:Key="normal" Color="#ADAFB2"/>
+            <SolidColorBrush x:Key="mouseover" Color="#FFFFFFFF"/>
+            <Style x:Key="ToggleStyle" TargetType="ToggleButton">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Grid>
+                                <ContentPresenter x:Name="PART_ContentPresenter"
+                                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                  Margin="{TemplateBinding Control.Padding}" RecognizesAccessKey="true"
+                                                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
+                                                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Canvas x:Key="VolumeHigh" Width="24" Height="24">
+                <Path Fill="#FFFFFFFF"
+                      Data="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+            </Canvas>
+            <Canvas x:Key="VolumeMedium" Width="24" Height="24">
+                <Path Fill="#FFFFFFFF"
+                      Data="M5,9V15H9L14,20V4L9,9M18.5,12C18.5,10.23 17.5,8.71 16,7.97V16C17.5,15.29 18.5,13.76 18.5,12Z" />
+            </Canvas>
+            <Canvas x:Key="VolumeLow" Width="24" Height="24">
+                <Path Fill="#FFFFFFFF" Data="M7,9V15H11L16,20V4L11,9H7Z" />
+            </Canvas>
+            <Canvas x:Key="Muted" Width="24" Height="24">
+                <Path Fill="#FFFFFFFF"
+                      Data="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" />
+            </Canvas>
+            <converter:VolumeToImageConverter x:Key="VolumeToImageConverter"
+                                              HighCanvas="{StaticResource VolumeHigh}"
+                                              MediumCanvas="{StaticResource VolumeMedium}"
+                                              LowCanvas="{StaticResource VolumeLow}"
+                                              MutedCanvas="{StaticResource Muted}" 
+                                              NormalBrush="{StaticResource normal}"
+                                              MouseoverBrush="{StaticResource mouseover}"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+        <ToggleButton Name="VolumeButton" BorderThickness="0" BorderBrush="Transparent"
+                      Style="{StaticResource ToggleStyle}"
+                      Checked="VolumeButton_Checked"
+                      Unchecked="VolumeButton_Unchecked">
+            <ToggleButton.Content>
+                <MultiBinding Converter="{StaticResource VolumeToImageConverter}">
+                    <Binding Path="Volume" ElementName="VolumeControl"/>
+                    <Binding Path="IsMouseOver" RelativeSource="{RelativeSource Self}"/>
+                    <Binding Path="IsChecked" RelativeSource="{RelativeSource Self}"/>
+                </MultiBinding>
+            </ToggleButton.Content>
+            <ToggleButton.ContextMenu>
+                <ContextMenu x:Name="Menu" Opened="Menu_OnOpened">
+                    <ContextMenu.Template >
+                        <ControlTemplate>
+                            <Slider Name="slider"
+                                HorizontalAlignment="Right" Foreground="#1FD861"
+                                Maximum="1" Minimum="0"
+                                Value="{Binding Volume, Mode=TwoWay}"
+                                Style="{DynamicResource FlatSlider}"
+                                IsMoveToPointEnabled="True"
+                                Width="64" Focusable="False" Orientation="Horizontal" />
+                        </ControlTemplate>
+                    </ContextMenu.Template>
+                    <MenuItem Name="item" DataContext="{Binding RelativeSource={RelativeSource Self}}"/>
+                </ContextMenu>
+            </ToggleButton.ContextMenu>
+        </ToggleButton>
+    </StackPanel>
+</UserControl>
+

@@ -223,6 +223,10 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Controls\CircularProgressButton\IProgressReporter.cs" />
+    <Compile Include="Controls\VolumeRocker.xaml.cs">
+      <DependentUpon>VolumeRocker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converter\VolumeToImageConverter.cs" />
     <Compile Include="Interactivity\BindingProxy.cs" />
     <Compile Include="Manager\AppWindowManager.cs" />
     <Compile Include="Controls\CircularProgressButton\Arc.cs" />
@@ -335,6 +339,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\CircularProgressButton\ProgressButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VolumeRocker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

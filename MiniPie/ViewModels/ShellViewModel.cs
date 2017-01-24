@@ -171,8 +171,10 @@ namespace MiniPie.ViewModels {
         }
 
         public async Task VolumeUp() {
-            if(CanVolumeUp)
+            if (CanVolumeUp)
+            {
                 await _SpotifyController.VolumeUp().ConfigureAwait(false);
+            }
         }
 
         public async Task VolumeDown() {
@@ -451,9 +453,9 @@ namespace MiniPie.ViewModels {
             });
         }
 
-        public Task VolumeChanged(double value)
+        public async Task VolumeChanged(double value)
         {
-            return _SpotifyController.SetSpotifyVolume(value);
+            Volume = await _SpotifyController.SetSpotifyVolume(value);
         }
 
         public async Task AddToMyMusic()

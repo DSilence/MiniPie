@@ -1,59 +1,61 @@
-﻿<UserControl 
-            Name="ShellViewControl"
-            x:Class="MiniPie.Views.ShellView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-             xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
-             xmlns:interactivity="clr-namespace:MiniPie.Interactivity"
-             xmlns:controls="clr-namespace:MiniPie.Controls"
-             xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
-             xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
-             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:tb="http://www.hardcodet.net/taskbar"
-             mc:Ignorable="d" 
-             MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
-             MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
-             MaxWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
-             Padding="0"
-             Background="#000000" FontFamily="Segoe UI"
-             Foreground="#FFFFFF" BorderBrush="#000000"
-             DataContextChanged="ShellView_OnDataContextChanged"
-             UseLayoutRounding="True">
+﻿<UserControl
+    Name="ShellViewControl"
+    x:Class="MiniPie.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+    xmlns:interactivity="clr-namespace:MiniPie.Interactivity"
+    xmlns:controls="clr-namespace:MiniPie.Controls"
+    xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
+    xmlns:cal="http://www.caliburnproject.org"
+    xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
+    xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
+    xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:converter="clr-namespace:MiniPie.Converter"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d"
+    MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+    MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+    MaxWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+    Padding="0"
+    Background="#000000" FontFamily="Segoe UI"
+    Foreground="#FFFFFF" BorderBrush="#000000"
+    DataContextChanged="ShellView_OnDataContextChanged"
+    UseLayoutRounding="True">
     <UserControl.Resources>
-        <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter"/>
+        <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter" />
         <Storyboard x:Key="StbFadeout">
             <DoubleAnimation AutoReverse="False"
                              From="1" To="0.0"
                              Storyboard.TargetName="CoverDisplay"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0:01"/>
+                             Duration="0:0:0:01" />
         </Storyboard>
         <Storyboard x:Key="StbFadein">
             <DoubleAnimation AutoReverse="False"
                              From="0.0" To="1"
                              Storyboard.TargetName="CoverDisplay"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0:01"/>
+                             Duration="0:0:0:01" />
         </Storyboard>
         <Storyboard x:Key="StbFadeoutPlayer">
             <DoubleAnimation AutoReverse="False"
                              To="0.0"
                              Storyboard.TargetName="PlayerButtons"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.3"/>
+                             Duration="0:0:.3" />
         </Storyboard>
         <Storyboard x:Key="StbFadeinPlayer">
             <DoubleAnimation AutoReverse="False"
                              From="0.0" To="1"
                              Storyboard.TargetName="PlayerButtons"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.3"/>
+                             Duration="0:0:.3" />
         </Storyboard>
         <Style TargetType="circularProgressButton1:ProgressButton">
             <Setter Property="Template">
@@ -61,7 +63,8 @@
                     <ControlTemplate TargetType="{x:Type circularProgressButton1:ProgressButton}">
                         <Grid Background="Transparent">
                             <!--TODO Someone should fix this awful markup-->
-                            <Ellipse Name="BorderEllipse"  Stroke="{TemplateBinding Foreground}" StrokeThickness="2" Margin="0"
+                            <Ellipse Name="BorderEllipse" Stroke="{TemplateBinding Foreground}" StrokeThickness="2"
+                                     Margin="0"
                                      Fill="#282828" />
                             <circularProgressButton1:Arc UseLayoutRounding="True" StrokeThickness="2"
                                                          Stroke="{TemplateBinding BorderBrush}" Margin="0">
@@ -79,37 +82,41 @@
                                 </circularProgressButton1:Arc.EndAngle>
                             </circularProgressButton1:Arc>
                             <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
-                                       Margin="7,0,0,0" Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}"/>
+                                       Margin="7,0,0,0"
+                                       Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}" />
                             <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
-                                           Margin="-7,0,0,0" Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}"/>
+                                       Margin="-7,0,0,0"
+                                       Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}" />
 
-                            <Polygon UseLayoutRounding="True" Points="4,2 15,9 4,15" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                     Stroke="#DFE0E6" Fill="#DFE0E6" 
-                                Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, 
-                                ConverterParameter={StaticResource True}}"/>
+                            <Polygon UseLayoutRounding="True" Points="4,2 15,9 4,15" HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Stroke="#DFE0E6" Fill="#DFE0E6"
+                                     Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, 
+                                ConverterParameter={StaticResource True}}" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="BorderBrush" Value="#6BDB92"/>
-                                <Setter Property="Foreground" Value="#808080"/>
+                                <Setter Property="BorderBrush" Value="#6BDB92" />
+                                <Setter Property="Foreground" Value="#808080" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="BorderBrush" Value="#1FD861"></Setter>
-            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="BorderBrush" Value="#1FD861" />
+            <Setter Property="UseLayoutRounding" Value="True" />
             <!--In reality this is a color for second ellipse-->
-            <Setter Property="Foreground" Value="#6B6870"></Setter>
+            <Setter Property="Foreground" Value="#6B6870" />
         </Style>
+        
         <tb:TaskbarIcon x:Key="NotifyIcon"
                         IconSource="..\App.ico"
                         ToolTipText="{Binding TrackFriendlyName}"
                         TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
                         TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp">
             <tb:TaskbarIcon.ContextMenu>
-                <controls:MiniPieContextMenu x:Name="TaskbarContextMenu"/>
+                <controls:MiniPieContextMenu x:Name="TaskbarContextMenu" />
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
     </UserControl.Resources>
@@ -140,18 +147,23 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <controls1:ProgressRing Grid.Row="0" IsActive="{Binding Loading, Mode=OneWay}"
-                                        Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
-            
-            <Border Name="ImageBorder" Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, 
-                    ConverterParameter={StaticResource True}, Mode=OneWay}" Grid.Row="0" Background="#000000" 
-                    Drop="AlbumArt_OnDrop" DragEnter="ImageBorder_DragEnter" DragLeave="ImageBorder_DragLeave"  
+                                    Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+
+            <Border Name="ImageBorder"
+                    Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, 
+                    ConverterParameter={StaticResource True}, Mode=OneWay}"
+                    Grid.Row="0" Background="#000000"
+                    Drop="AlbumArt_OnDrop" DragEnter="ImageBorder_DragEnter" DragLeave="ImageBorder_DragLeave"
                     AllowDrop="True">
-                <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
+                <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay"
+                        MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding CoverImage}" />
                     </Border.Background>
                     <Border>
-                        <Border.Background><ImageBrush ImageSource="/Images/cover.png"></ImageBrush></Border.Background>
+                        <Border.Background>
+                            <ImageBrush ImageSource="/Images/cover.png" />
+                        </Border.Background>
                         <Grid Background="Transparent" MouseDown="AlbumArt_OnMouseDown">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -159,63 +171,65 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                               <RowDefinition Height="*" /> 
+                                <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel Cursor="Arrow" Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
-                                        Name="PlayerButtons" Background="Transparent" Opacity="0" UseLayoutRounding="True">
-                                <controls:ImageButton RenderOptions.BitmapScalingMode="HighQuality"  Width="25" Height="25" x:Name="PlayPrevious"
-                                                  ImageSourceNormal="/Images/Player/prev-normal.png"
-                                                  ImageSource="/Images/Player/prev-normal.png"
-                                                  ImageSourcePressed="/Images/Player/prev-pressed.png"
-                                                  ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
-                                                  ToolTip="plays the previous track" 
-                                                  Visibility="{Binding CanPlayPrevious, Converter={StaticResource VisibilityConverter}}"/>
-                                <circularProgressButton1:ProgressButton 
-                                                                         RenderOptions.BitmapScalingMode="HighQuality"
-                                                                         cal:Message.Attach="[Event Click] = [Action PlayPause]"
-                                                                         Width="33" Height="33" 
-                                                                         Maximum="{Binding MaxProgress}" 
-                                                                         Value="{Binding Progress}" Background="Transparent"/>
-                                <controls:ImageButton RenderOptions.BitmapScalingMode="HighQuality" Width="25" Height="25" x:Name="PlayNext"
-                                                  ImageSourceNormal="/Images/Player/next-normal.png"
-                                                  ImageSource="/Images/Player/next-normal.png"
-                                                  ImageSourcePressed="/Images/Player/next-pressed.png"
-                                                  ImageSourceMouseOver="/Images/Player/next-mouseover.png"
-                                                  ToolTip="plays the next track" 
-                                                  Visibility="{Binding CanPlayNext, Converter={StaticResource VisibilityConverter}}"/>
+                                        Name="PlayerButtons" Background="Transparent" Opacity="0"
+                                        UseLayoutRounding="True">
+                                <controls:ImageButton RenderOptions.BitmapScalingMode="HighQuality" Width="25"
+                                                      Height="25" x:Name="PlayPrevious"
+                                                      ImageSourceNormal="/Images/Player/prev-normal.png"
+                                                      ImageSource="/Images/Player/prev-normal.png"
+                                                      ImageSourcePressed="/Images/Player/prev-pressed.png"
+                                                      ImageSourceMouseOver="/Images/Player/prev-mouseover.png"
+                                                      ToolTip="plays the previous track"
+                                                      Visibility="{Binding CanPlayPrevious, Converter={StaticResource VisibilityConverter}}" />
+                                <circularProgressButton1:ProgressButton
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    cal:Message.Attach="[Event Click] = [Action PlayPause]"
+                                    Width="33" Height="33"
+                                    Maximum="{Binding MaxProgress}"
+                                    Value="{Binding Progress}" Background="Transparent" />
+                                <controls:ImageButton RenderOptions.BitmapScalingMode="HighQuality" Width="25"
+                                                      Height="25" x:Name="PlayNext"
+                                                      ImageSourceNormal="/Images/Player/next-normal.png"
+                                                      ImageSource="/Images/Player/next-normal.png"
+                                                      ImageSourcePressed="/Images/Player/next-pressed.png"
+                                                      ImageSourceMouseOver="/Images/Player/next-mouseover.png"
+                                                      ToolTip="plays the next track"
+                                                      Visibility="{Binding CanPlayNext, Converter={StaticResource VisibilityConverter}}" />
                             </StackPanel>
                         </Grid>
                     </Border>
                 </Border>
             </Border>
 
-            <StackPanel AllowDrop="True" Drop="TitlePanel_OnDrop" DragEnter="TitlePanel_DragEnter" DragLeave="TitlePanel_DragLeave" Background="#282828" Name="TitlePanel" Grid.Row="1"  Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}" ClipToBounds="True">
-                <Slider 
-                    HorizontalAlignment="Right" Foreground="#1FD861" Value="{Binding Volume, Mode=OneWay}" 
-                    Maximum="1" Minimum="0" ValueChanged="RangeBase_OnValueChanged" Style="{DynamicResource FlatSlider}" 
-                    IsMoveToPointEnabled="True"
-                    Width="50" Focusable="False"></Slider>
+            <StackPanel AllowDrop="True" Drop="TitlePanel_OnDrop" DragEnter="TitlePanel_DragEnter"
+                        DragLeave="TitlePanel_DragLeave" Background="#282828" Name="TitlePanel" Grid.Row="1"
+                        Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}"
+                        ClipToBounds="True">
                 <Canvas Margin="5" Height="8">
                     <TextBlock Name="CurrentTrack" FontSize="12" Canvas.Top="-3"
-                           ToolTip="{Binding CurrentTrack}" TextTrimming="None"
-                               Text="{Binding CurrentTrack, NotifyOnTargetUpdated=True}" TargetUpdated="CurrentTrack_OnTargetUpdated">
+                               ToolTip="{Binding CurrentTrack}" TextTrimming="None"
+                               Text="{Binding CurrentTrack, NotifyOnTargetUpdated=True}"
+                               TargetUpdated="CurrentTrack_OnTargetUpdated">
                         <TextBlock.RenderTransform>
-                            <TranslateTransform x:Name="translate"/>
+                            <TranslateTransform x:Name="translate" />
                         </TextBlock.RenderTransform>
                         <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                                 <BeginStoryboard>
                                     <Storyboard Name="Storyboard" Completed="StoryboardOnCompleted">
-                                        <DoubleAnimationUsingKeyFrames  Name="StoryAnimation"
-                                        Storyboard.TargetName="translate" 
-                                        Storyboard.TargetProperty="X"
-                                        Duration="0">
-                                            <LinearDoubleKeyFrame x:Name="ResetKeyFrameStart" Value="0" KeyTime="0"/>
-                                            <LinearDoubleKeyFrame x:Name="MinKeyTime" Value="0" KeyTime="0"/>
-                                            <LinearDoubleKeyFrame x:Name="MaxKeyFrame" Value="0" KeyTime="0"/>
-                                            <LinearDoubleKeyFrame x:Name="EndDelayKeyFrame" Value="0" KeyTime="0"/>
-                                            <LinearDoubleKeyFrame x:Name="ResetKeyFrame" Value="0" KeyTime="0"/>
+                                        <DoubleAnimationUsingKeyFrames Name="StoryAnimation"
+                                                                       Storyboard.TargetName="translate"
+                                                                       Storyboard.TargetProperty="X"
+                                                                       Duration="0">
+                                            <LinearDoubleKeyFrame x:Name="ResetKeyFrameStart" Value="0" KeyTime="0" />
+                                            <LinearDoubleKeyFrame x:Name="MinKeyTime" Value="0" KeyTime="0" />
+                                            <LinearDoubleKeyFrame x:Name="MaxKeyFrame" Value="0" KeyTime="0" />
+                                            <LinearDoubleKeyFrame x:Name="EndDelayKeyFrame" Value="0" KeyTime="0" />
+                                            <LinearDoubleKeyFrame x:Name="ResetKeyFrame" Value="0" KeyTime="0" />
                                         </DoubleAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
@@ -223,28 +237,32 @@
                         </TextBlock.Triggers>
                     </TextBlock>
                 </Canvas>
-                <Grid UseLayoutRounding="True" Margin="5"> 
+
+                <Grid UseLayoutRounding="True" Margin="5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" />
-                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15" Height="15" 
+                    <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="10" VerticalAlignment="Center"/>
+                    <controls:VolumeRocker Grid.Column="1" BorderThickness="0" HorizontalAlignment="Right"
+                                               Margin="0,0,1,0" Volume="{Binding Volume}"></controls:VolumeRocker>
+                    <controls:ImageButton Grid.Column="2" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15"
+                                          Height="15"
                                           x:Name="AddToMyMusic"
-                                      ImageSource="/Images/Player/add-normal.png"
-                                      ImageSourceNormal="/Images/Player/add-normal.png"
-                                      ImageSourceMouseOver="/Images/Player/add-mouseover.png"
-                                      HorizontalAlignment="Right"
-                                      Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}"
-                                      />
-                    <controls:ImageButton Grid.Column="1" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15" Height="15" 
+                                          ImageSource="/Images/Player/add-normal.png"
+                                          ImageSourceNormal="/Images/Player/add-normal.png"
+                                          ImageSourceMouseOver="/Images/Player/add-mouseover.png"
+                                          HorizontalAlignment="Right"
+                                          Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}, ConverterParameter={StaticResource True}}" />
+                    <controls:ImageButton Grid.Column="2" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="15"
+                                          Height="15"
                                           x:Name="RemoveFromMyMusic"
-                                      ImageSource="/Images/Player/remove-normal.png"
-                                      ImageSourceNormal="/Images/Player/remove-normal.png"
-                                      ImageSourceMouseOver="/Images/Player/remove-mouseover.png"
-                                      HorizontalAlignment="Right"
-                                      Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}}"
-                                      />
+                                          ImageSource="/Images/Player/remove-normal.png"
+                                          ImageSourceNormal="/Images/Player/remove-normal.png"
+                                          ImageSourceMouseOver="/Images/Player/remove-mouseover.png"
+                                          HorizontalAlignment="Right"
+                                          Visibility="{Binding IsTrackSaved, Converter={StaticResource VisibilityConverter}}" />
                 </Grid>
             </StackPanel>
         </Grid>
