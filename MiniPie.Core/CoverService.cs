@@ -19,11 +19,12 @@ namespace MiniPie.Core
         private readonly WebClient _client = new WebClient();
 
         private readonly int MaxFileCount = 500;
+        public static string CacheDirName = "CoverCache";
 
         public CoverService(string cacheRootDirectory,
             ILog logger, ISpotifyWebApi webApi)
         {
-            _cacheDirectory = Path.Combine(cacheRootDirectory, "CoverCache");
+            _cacheDirectory = Path.Combine(cacheRootDirectory, CacheDirName);
             _logger = logger;
             _webApi = webApi;
             if (!Directory.Exists(_cacheDirectory))
