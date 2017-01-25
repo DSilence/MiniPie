@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using Microsoft.VisualBasic.ApplicationServices;
+using MiniPie.Core;
 using NuGet;
 using Squirrel;
 using StartupEventArgs = Microsoft.VisualBasic.ApplicationServices.StartupEventArgs;
@@ -66,9 +68,28 @@ namespace MiniPie.Manager
                   },
                   onAppUninstall: v =>
                   {
-                      
                       mgr.RemoveShortcutForThisExe();
                       UriProtocolManager.UnregisterUrlProtocol();
+                      AppContracts contracts = new AppContracts();
+                      var settingsPersistor =
+                          new JsonPersister<AppSettings>(Path.Combine(contracts.SettingsLocation,
+                              contracts.SettingsFilename));
+                      string dir = Path.Combine(string.IsNullOrEmpty(settingsPersistor.Instance.CacheFolder)
+                          ? contracts.SettingsLocation
+                          : settingsPersistor.Instance.CacheFolder, CoverService.CacheDirName);
+                      var log = new ProductionLogger();
+                      log.Fatal("Uninstalling Minipie. Removing CoverCache from ->" + dir);
+                      try
+                      {
+                          if (Directory.Exists(dir))
+                          {
+                              Directory.Delete(dir, true);
+                          }
+                      }
+                      catch (Exception e)
+                      {
+                          log.FatalException(e.Message, e);
+                      }
                       Environment.Exit(0);
                   },
                   onFirstRun: () =>
