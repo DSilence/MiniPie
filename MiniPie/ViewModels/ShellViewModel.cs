@@ -455,7 +455,7 @@ namespace MiniPie.ViewModels {
 
         public async Task VolumeChanged(double value)
         {
-            Volume = await _SpotifyController.SetSpotifyVolume(value);
+            await _SpotifyController.SetSpotifyVolume(value);
         }
 
         public async Task AddToMyMusic()
