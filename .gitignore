@@ -110,3 +110,14 @@ UpgradeLog*.XML
 .vs
 *.nupkg
 MiniPie/Releases
+
+*/node_modules
+*/npm-debug.log
+*/.DS_Store
+*/dist
+*/lib
+*/.nyc_output
+*/coverage
+*/es
+Web/yarn.lock
+*/.vscode
