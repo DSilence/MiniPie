@@ -78,6 +78,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -95,14 +96,14 @@
     <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
     </Reference>
-    <Reference Include="ChromiumFX, Version=3.2924.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\Unofficial.Chromiumfx.3.2924.0\lib\ChromiumFX.dll</HintPath>
+    <Reference Include="ChromiumFX, Version=3.2526.3.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Unofficial.Chromiumfx.3.2526.5\lib\ChromiumFX.dll</HintPath>
     </Reference>
     <Reference Include="ChromiumFXRenderProcess, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\packages\Neutronium.WebBrowserEngine.ChromiumFx.0.4.0\lib\ChromiumFXRenderProcess.exe</HintPath>
     </Reference>
-    <Reference Include="ChromiumWebBrowser, Version=3.2924.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\Unofficial.Chromiumfx.3.2924.0\lib\ChromiumWebBrowser.dll</HintPath>
+    <Reference Include="ChromiumWebBrowser, Version=3.2526.3.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Unofficial.Chromiumfx.3.2526.5\lib\ChromiumWebBrowser.dll</HintPath>
     </Reference>
     <Reference Include="DeltaCompressionDotNet, Version=1.1.0.0, Culture=neutral, PublicKeyToken=1d14d6e5194e7f4a, processorArchitecture=MSIL">
       <HintPath>..\packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.dll</HintPath>
@@ -299,6 +300,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Content Include="Views\Web\ShellVue\.gitignore" />
+    <Content Include="Views\Web\ShellVue\dist\810a1b930979de83478be0f458b51dd8.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\ShellVue\dist\build.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\ShellVue\dist\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\ShellVue\dist\styles.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\ShellVue\dist\test.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Web\ShellVue\src\entry.js" />
+    <Content Include="Views\Web\ShellVue\src\main.js" />
+    <Content Include="Views\Web\ShellVue\utils.js" />
+    <Content Include="Views\Web\ShellVue\webpack.config.js" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -311,6 +332,14 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Views\Web\ShellVue\dist\styles.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Views\Web\ShellVue\.babelrc" />
+    <None Include="Views\Web\ShellVue\data\data.json" />
+    <None Include="Views\Web\ShellVue\package.json" />
+    <None Include="Views\Web\ShellVue\README.md" />
+    <None Include="Views\Web\ShellVue\src\App.vue" />
     <Resource Include="Images\LogoUnknown.png" />
     <Resource Include="Images\Logo.png" />
     <Resource Include="App.ico" />
@@ -335,6 +364,7 @@
       <SubType>Designer</SubType>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Views\Web\ShellVue\src\assets\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\MiniPieContextMenu.xaml">
@@ -425,6 +455,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <!--<Target Name="BeforeBuild">
+    <ItemGroup>
+      <CssFiles Include="$(ProjectDir)Views\Web\ShellVue\dist\static\css\*.*" />
+      <JsFiles Include="$(ProjectDir)Views\Web\ShellVue\dist\static\js\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(CssFiles)" DestinationFolder="$(OutputPath)Views\Web\ShellVue\dist\static\css" />
+    <Copy SourceFiles="@(JsFiles)" DestinationFolder="$(OutputPath)Views\Web\ShellVue\dist\static\js" />
+  </Target>-->
   <Target Name="AfterCompile">
     <GetAssemblyIdentity AssemblyFiles="$(ProjectDir)obj\$(ConfigurationName)\$(TargetFileName)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
@@ -440,9 +478,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\dotnet\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\Neutronium.JavascriptFramework.Vue.0.4.0\build\Neutronium.JavascriptFramework.Vue.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Neutronium.JavascriptFramework.Vue.0.4.0\build\Neutronium.JavascriptFramework.Vue.props'))" />
-    <Error Condition="!Exists('..\packages\Unofficial.Cef.for.Chromiumfx.3.2924.0\build\Unofficial.Cef.for.Chromiumfx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Unofficial.Cef.for.Chromiumfx.3.2924.0\build\Unofficial.Cef.for.Chromiumfx.targets'))" />
-    <Error Condition="!Exists('..\packages\Unofficial.Chromiumfx.3.2924.0\build\Unofficial.Chromiumfx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Unofficial.Chromiumfx.3.2924.0\build\Unofficial.Chromiumfx.targets'))" />
+    <Error Condition="!Exists('..\packages\Unofficial.Chromiumfx.3.2526.5\build\Unofficial.Chromiumfx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Unofficial.Chromiumfx.3.2526.5\build\Unofficial.Chromiumfx.targets'))" />
   </Target>
-  <Import Project="..\packages\Unofficial.Cef.for.Chromiumfx.3.2924.0\build\Unofficial.Cef.for.Chromiumfx.targets" Condition="Exists('..\packages\Unofficial.Cef.for.Chromiumfx.3.2924.0\build\Unofficial.Cef.for.Chromiumfx.targets')" />
-  <Import Project="..\packages\Unofficial.Chromiumfx.3.2924.0\build\Unofficial.Chromiumfx.targets" Condition="Exists('..\packages\Unofficial.Chromiumfx.3.2924.0\build\Unofficial.Chromiumfx.targets')" />
+  <Import Project="..\packages\Unofficial.Chromiumfx.3.2526.5\build\Unofficial.Chromiumfx.targets" Condition="Exists('..\packages\Unofficial.Chromiumfx.3.2526.5\build\Unofficial.Chromiumfx.targets')" />
 </Project>

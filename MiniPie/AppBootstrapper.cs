@@ -14,6 +14,8 @@ using MiniPie.Core.SpotifyWeb;
 using MiniPie.Manager;
 using MiniPie.ViewModels;
 using MiniPie.Views;
+using Neutronium.Core.JavascriptFramework;
+using Neutronium.JavascriptFramework.Vue;
 using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
@@ -30,6 +32,8 @@ namespace MiniPie {
         public AppBootstrapper():base(true)
         {
         }
+
+        public Container Kernel => _kernel;
 
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
         {
@@ -98,6 +102,7 @@ namespace MiniPie {
                 : _Settings.CacheFolder, _log, _kernel.GetInstance<ISpotifyWebApi>()));
             
             _kernel.RegisterSingleton<KeyManager>();
+            _kernel.RegisterSingleton<IJavascriptFrameworkManager, VueSessionInjector>();
 
             var classes =
                 Assembly.GetExecutingAssembly()

@@ -32,7 +32,7 @@ namespace MiniPie.Converter
                     Name = playlist.Name,
                     Action = async () =>
                     {
-                        await viewModel.AddToPlaylist(playlist.Id);
+                        // await viewModel.AddToPlaylist(playlist.Id);
                     }
                 };
                 result.Add(menuItem);

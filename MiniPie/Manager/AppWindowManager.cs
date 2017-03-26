@@ -28,7 +28,7 @@ namespace MiniPie.Manager {
             var wnd = base.CreateWindow(rootModel, isDialog, context, settings);
             wnd.Topmost = _Settings.AlwaysOnTop;
             wnd.SizeToContent = SizeToContent.WidthAndHeight;
-            wnd.ResizeMode = ResizeMode.NoResize;
+            //wnd.ResizeMode = ResizeMode.NoResize;
             wnd.Icon = Helper.GetImageSourceFromResource("App.ico");
             TrackLocation(wnd, rootModel);
             if(rootModel is ShellViewModel)
@@ -43,9 +43,9 @@ namespace MiniPie.Manager {
 
         private void SetupShell(Window window) {
             //Source: http://code-inside.de/blog/2012/11/11/howto-rahmenlose-wpf-apps-mit-schattenwurf/
-            window.WindowStyle = WindowStyle.None;
-            window.ResizeMode = ResizeMode.NoResize;
-            window.ShowInTaskbar = false;
+            //window.WindowStyle = WindowStyle.None;
+            //window.ResizeMode = ResizeMode.NoResize;
+            //window.ShowInTaskbar = false;
             window.MouseLeftButtonDown += (o, e) => window.DragMove();
         }
 

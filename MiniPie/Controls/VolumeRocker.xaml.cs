@@ -35,7 +35,7 @@ namespace MiniPie.Controls
         
         public static async void VolumePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            await ((VolumeRocker)d).ShellViewModel.VolumeChanged((double)e.NewValue);
+            //await ((VolumeRocker)d).ShellViewModel.VolumeChanged((double)e.NewValue);
         }
 
         public VolumeRocker()
