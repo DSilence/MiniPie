@@ -36,21 +36,21 @@ var webpackOptions = {
       { 
         test: /\.css$/, 
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: "style-loader",
-          loader: ["css"]
+          fallback: "style-loader",
+          loader: ["css-loader"]
         }) 
       },
       {
         test: [/\.scss$/ , /\.sass$/],
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: "style-loader",
+          fallback: "style-loader",
           loader:  [ 'css?sourceMap', 'less?sourceMap' ]
         })
       },
       {
         test: /\.less$/,
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: "style-loader",
+          fallback: "style-loader",
           loader: ['css?sourceMap', 'sass?sourceMap' ]
         })
       },
@@ -100,7 +100,7 @@ if (process.env.NODE_ENV === 'production') {
   webpackOptions.externals={
     'vue' : 'Vue'
   }
-  webpackOptions.entry= './src/entry.js';
+  webpackOptions.entry = './src/main.js';
 
   webpackOptions.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html

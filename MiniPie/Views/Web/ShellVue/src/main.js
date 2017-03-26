@@ -4,7 +4,7 @@ import data from '../data/data'
 
 new Vue({
 	components:{
-		App
+        App
 	},
   el: '#main',
   data
