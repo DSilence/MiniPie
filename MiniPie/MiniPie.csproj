@@ -49,7 +49,7 @@
     <ManifestTimestampUrl>http://timestamp.comodoca.com/authenticode</ManifestTimestampUrl>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>App.ico</ApplicationIcon>
@@ -301,9 +301,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Content Include="Views\Web\ShellVue\.gitignore" />
-    <Content Include="Views\Web\ShellVue\dist\810a1b930979de83478be0f458b51dd8.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Views\Web\ShellVue\dist\build.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -311,9 +308,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Web\ShellVue\dist\styles.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\Web\ShellVue\dist\test.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Web\ShellVue\src\main.js" />

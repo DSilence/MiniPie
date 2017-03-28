@@ -18,7 +18,7 @@ using Track = MiniPie.Core.SpotifyLocal.Track;
 
 namespace MiniPie.Tests.ViewModels
 {
-    public class ShellViewModelTest
+    /*public class ShellViewModelTest
     {
         private ShellViewModel _shellViewModel;
         private readonly IWindowManager _windowManager = Substitute.For<IWindowManager>();
@@ -348,5 +348,5 @@ namespace MiniPie.Tests.ViewModels
             await _shellViewModel.VolumeChanged(newValue);
             await _spotifyController.Received(1).SetSpotifyVolume(newValue);
         }
-    }
+    }*/
 }
