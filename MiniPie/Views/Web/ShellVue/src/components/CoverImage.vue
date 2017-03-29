@@ -6,6 +6,6 @@
 <script>
     export default {
       name: 'cover-image',
-      props: {coverImage}
+      props: ['coverImage']
     }
 </script>
