@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/DSilence/MiniPie.png?label=ready&title=Ready)](https://waffle.io/DSilence/MiniPie)
 [![Build status](https://ci.appveyor.com/api/projects/status/xc89lwvclmexie2m?svg=true)](https://ci.appveyor.com/project/DzmitrySafarau/minipie)
 [![codecov.io](https://codecov.io/github/DSilence/MiniPie/coverage.svg?branch=develop)](https://codecov.io/github/DSilence/MiniPie?branch=develop)
 [![ZenHub] (https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)](https://zenhub.io)
