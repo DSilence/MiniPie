@@ -122,9 +122,11 @@ namespace MiniPie {
             {
                 _kernel.GetInstance<KeyManager>().RegisterHotKeys(_Settings.HotKeys);
             }
-            await _kernel.GetInstance<ISpotifyWebApi>().Initialize().ConfigureAwait(false);
-            await _kernel.GetInstance<ISpotifyLocalApi>().Initialize().ConfigureAwait(false);
-            await _kernel.GetInstance<ISpotifyController>().Initialize().ConfigureAwait(false);
+
+            await Task.WhenAll(_kernel.GetInstance<ISpotifyWebApi>().Initialize(),
+                    _kernel.GetInstance<ISpotifyLocalApi>().Initialize(),
+                    _kernel.GetInstance<ISpotifyController>().Initialize())
+                .ConfigureAwait(false);
             _kernel.GetInstance<UpdateManager>().Initialize();
             _kernel.GetInstance<AutorunService>().ValidateAutorun();
         }
