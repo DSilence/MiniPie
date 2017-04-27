@@ -1,4 +1,4 @@
-version: 1.1.0.{build}
+version: 1.1.{build}.0
 configuration: Release
 platform: Any CPU
 assembly_info:
@@ -8,6 +8,7 @@ assembly_info:
       assembly_file_version: $(appveyor_build_version)
       assembly_informational_version: $(appveyor_build_version)
 environment:
+    semversion: 1.1.$(APPVEYOR_BUILD_NUMBER)
     CODECOV_REPO_TOKEN:
        secure: cOjdr+oFYpqClG9XmYPFU9yX6x9TA9VTSFk7h/mLBu5nT1kOyrLbSVdhp0Rc3IMe
 build:
@@ -23,7 +24,7 @@ artifacts:
     - path: MiniPie\bin\Release\
       name: Binaries
 after_build:
-        - cmd: CreateInstaller.bat %appveyor_build_version%
+        - cmd: CreateInstaller.bat %semversion%
 notifications:
   - provider: Slack
     auth_token:
