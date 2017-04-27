@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace MiniPie.Core.SpotifyWeb.Models
 {
-    [Equals]
     public abstract class ModelBase
     {
         [JsonProperty("id")]

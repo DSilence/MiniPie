@@ -30,7 +30,7 @@ notifications:
       secure: l9d2Z7yxqHY6S1Iom6FANSPbVpIcz0zes2lw6DmedTdqfgJRf10nVXSRp2YAMwVy
     channel: '#appveyor'
 test_script:
-  - cmd: packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:+"[MiniPie*]MiniPie* -[MiniPie.Tests]* -[MiniPie*]*.Properties* -[MiniPie*]MiniPie.Views* -[MiniPie*]MiniPie.Interactivity* -[MiniPie.Core]MiniPie.Core.SpotifyNative*" -target:packages\xunit.runner.console.2.1.0\tools\xunit.console.exe -targetargs:"MiniPie.Tests\bin\Release\MiniPie.Tests.dll -noshadow -appveyor -xml xunit-results.xml" -output:coverage.xml -returntargetcode
+  - cmd: packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:+"[MiniPie*]MiniPie* -[MiniPie.Tests]* -[MiniPie*]*.Properties* -[MiniPie*]MiniPie.Views* -[MiniPie*]MiniPie.Interactivity* -[MiniPie.Core]MiniPie.Core.SpotifyNative*" -target:packages\xunit.runner.console.2.2.0\tools\xunit.console.exe -targetargs:"MiniPie.Tests\bin\Release\MiniPie.Tests.dll -noshadow -appveyor -xml xunit-results.xml" -output:coverage.xml -returntargetcode
   #- ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-results.xml))
 after_test:
   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"

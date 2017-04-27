@@ -26,8 +26,8 @@ namespace MiniPie {
             ThemeManager.ChangeAppStyle(this,
                                         ThemeManager.GetAccent("Green"),
                                         ThemeManager.GetAppTheme("BaseDark"));
-            base.OnStartup(e);
             await Bootstrapper.ConfigurationInitialize();
+            base.OnStartup(e);
         }
     }
 }

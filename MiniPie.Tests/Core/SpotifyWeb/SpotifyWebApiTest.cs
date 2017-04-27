@@ -237,7 +237,7 @@ namespace MiniPie.Tests.Core.SpotifyWeb
         {
             var result = _spotifyWebApi.BuildLoginQuery().ToString();
             Assert.True(result.StartsWith("https://accounts.spotify.com/authorize/?client_id=7cab801edfb04e309949c79b8e76b425&response_type=code&redirect_uri=minipie://callback&state=", StringComparison.Ordinal));
-            Assert.True(result.EndsWith("&scope=playlist-read-private+playlist-read-collaborative+playlist-modify-public+playlist-modify+playlist-modify-private+user-library-read+user-library-modify+user-follow-modify+user-follow-read+streaming", StringComparison.Ordinal));
+            Assert.True(result.EndsWith("&scope=playlist-read-private+playlist-read-collaborative+playlist-modify-public+playlist-modify+playlist-modify-private+user-library-read+user-library-modify+user-follow-modify+user-follow-read+streaming+user-read-playback-state", StringComparison.Ordinal));
 
         }
 
