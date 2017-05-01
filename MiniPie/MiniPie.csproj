@@ -122,8 +122,11 @@
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\squirrel.windows.1.5.2\lib\Net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
+    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.3.0.823, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.3.0.823\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Unofficial.Blend.Interactivity.1.0.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
@@ -181,7 +184,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\packages\JetBrains.Platform.Lib.System.Windows.Interactivity.3.0.40218\lib\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -207,6 +210,9 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Controls\CircularProgressButton\IProgressReporter.cs" />
+    <Compile Include="Controls\MiniPieContextMenu.xaml.cs">
+      <DependentUpon>MiniPieContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\VolumeRocker.xaml.cs">
       <DependentUpon>VolumeRocker.xaml</DependentUpon>
     </Compile>
@@ -214,9 +220,6 @@
     <Compile Include="Interactivity\BindingProxy.cs" />
     <Compile Include="Manager\AppWindowManager.cs" />
     <Compile Include="Controls\CircularProgressButton\Arc.cs" />
-    <Compile Include="Controls\MiniPieContextMenu.xaml.cs">
-      <DependentUpon>MiniPieContextMenu.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\CircularProgressButton\ProgressButton.xaml.cs">
       <DependentUpon>ProgressButton.xaml</DependentUpon>
     </Compile>
@@ -318,13 +321,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\MiniPieContextMenu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\CircularProgressButton\ProgressButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MiniPieContextMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\VolumeRocker.xaml">
       <SubType>Designer</SubType>

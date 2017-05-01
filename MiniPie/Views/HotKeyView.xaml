@@ -8,7 +8,6 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:interactivity="clr-namespace:MiniPie.Interactivity"
              xmlns:converter="clr-namespace:MiniPie.Converter"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources">
     <UserControl.Resources>
@@ -67,13 +66,13 @@
             <Button.Content>
                 <Image Source="../Images/Clear.png" Width="12" Height="12"/>
             </Button.Content>
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <cal:ActionMessage MethodName="Clear">
                         <cal:Parameter Value="{Binding ElementName=PlayPause}"></cal:Parameter>
                     </cal:ActionMessage>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
         </Button>
 
         <Label Grid.Row="2" Grid.Column="0" Margin="0,0,0,5"  Content="{wpf:Resx App_Previous}" />
@@ -100,13 +99,13 @@
             <Button.Content>
                 <Image Source="../Images/Clear.png" Width="12" Height="12"/>
             </Button.Content>
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <cal:ActionMessage MethodName="Clear">
                         <cal:Parameter Value="{Binding ElementName=Previous}"></cal:Parameter>
                     </cal:ActionMessage>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </>-->
         </Button>
 
         <Label Grid.Row="3" Grid.Column="0" Content="{wpf:Resx App_Next}" Margin="0,0,0,5" />
@@ -133,13 +132,13 @@
             <Button.Content>
                 <Image Source="../Images/Clear.png" Width="12" Height="12"/>
             </Button.Content>
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <cal:ActionMessage MethodName="Clear">
                         <cal:Parameter Value="{Binding ElementName=Next}"></cal:Parameter>
                     </cal:ActionMessage>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
         </Button>
 
         <Label Grid.Row="4" Grid.Column="0" Content="{wpf:Resx App_VolumeDown}" Margin="0,0,0,5"  />
@@ -166,13 +165,13 @@
             <Button.Content>
                 <Image Source="../Images/Clear.png" Width="12" Height="12"/>
             </Button.Content>
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <cal:ActionMessage MethodName="Clear">
                         <cal:Parameter Value="{Binding ElementName=VolumeDown}"></cal:Parameter>
                     </cal:ActionMessage>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
         </Button>
 
         <Label Grid.Row="5" Grid.Column="0" Content="{wpf:Resx App_VolumeUp}" Margin="0,0,0,5" />
@@ -198,13 +197,13 @@
             <Button.Content>
                 <Image Source="../Images/Clear.png" Width="12" Height="12"/>
             </Button.Content>
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <cal:ActionMessage MethodName="Clear">
                         <cal:Parameter Value="{Binding ElementName=VolumeUp}"></cal:Parameter>
                     </cal:ActionMessage>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
         </Button>
     </Grid>
 </UserControl>

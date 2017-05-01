@@ -14,7 +14,6 @@
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:circularProgressButton="clr-namespace:MiniPie.Converter.CircularProgressButton"
     xmlns:circularProgressButton1="clr-namespace:MiniPie.Controls.CircularProgressButton"
-    xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:converter="clr-namespace:MiniPie.Converter"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -28,97 +27,99 @@
     DataContextChanged="ShellView_OnDataContextChanged"
     UseLayoutRounding="True">
     <UserControl.Resources>
-        <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter" />
-        <Storyboard x:Key="StbFadeout">
-            <DoubleAnimation AutoReverse="False"
-                             From="1" To="0.0"
-                             Storyboard.TargetName="CoverDisplay"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0:01" />
-        </Storyboard>
-        <Storyboard x:Key="StbFadein">
-            <DoubleAnimation AutoReverse="False"
-                             From="0.0" To="1"
-                             Storyboard.TargetName="CoverDisplay"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0:01" />
-        </Storyboard>
-        <Storyboard x:Key="StbFadeoutPlayer">
-            <DoubleAnimation AutoReverse="False"
-                             To="0.0"
-                             Storyboard.TargetName="PlayerButtons"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.3" />
-        </Storyboard>
-        <Storyboard x:Key="StbFadeinPlayer">
-            <DoubleAnimation AutoReverse="False"
-                             From="0.0" To="1"
-                             Storyboard.TargetName="PlayerButtons"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.3" />
-        </Storyboard>
-        <Style TargetType="circularProgressButton1:ProgressButton">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type circularProgressButton1:ProgressButton}">
-                        <Grid Background="Transparent">
-                            <!--TODO Someone should fix this awful markup-->
-                            <Ellipse Name="BorderEllipse" Stroke="{TemplateBinding Foreground}" StrokeThickness="2"
-                                     Margin="0"
-                                     Fill="#282828" />
-                            <circularProgressButton1:Arc UseLayoutRounding="True" StrokeThickness="2"
-                                                         Stroke="{TemplateBinding BorderBrush}" Margin="0">
-                                <circularProgressButton1:Arc.StartAngle>
-                                    <MultiBinding Converter="{StaticResource ProgressConverter}">
-                                        <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" />
-                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}" />
-                                    </MultiBinding>
-                                </circularProgressButton1:Arc.StartAngle>
-                                <circularProgressButton1:Arc.EndAngle>
-                                    <MultiBinding Converter="{StaticResource ProgressConverter}">
-                                        <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
-                                        <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}" />
-                                    </MultiBinding>
-                                </circularProgressButton1:Arc.EndAngle>
-                            </circularProgressButton1:Arc>
-                            <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
-                                       Margin="7,0,0,0"
-                                       Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}" />
-                            <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
-                                       Margin="-7,0,0,0"
-                                       Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}" />
+        <ResourceDictionary>
+            <circularProgressButton:ProgressToAngleConverter x:Key="ProgressConverter" />
+            <Storyboard x:Key="StbFadeout">
+                <DoubleAnimation AutoReverse="False"
+                                 From="1" To="0.0"
+                                 Storyboard.TargetName="CoverDisplay"
+                                 Storyboard.TargetProperty="Opacity"
+                                 Duration="0:0:0:01" />
+            </Storyboard>
+            <Storyboard x:Key="StbFadein">
+                <DoubleAnimation AutoReverse="False"
+                                 From="0.0" To="1"
+                                 Storyboard.TargetName="CoverDisplay"
+                                 Storyboard.TargetProperty="Opacity"
+                                 Duration="0:0:0:01" />
+            </Storyboard>
+            <Storyboard x:Key="StbFadeoutPlayer">
+                <DoubleAnimation AutoReverse="False"
+                                 To="0.0"
+                                 Storyboard.TargetName="PlayerButtons"
+                                 Storyboard.TargetProperty="Opacity"
+                                 Duration="0:0:.3" />
+            </Storyboard>
+            <Storyboard x:Key="StbFadeinPlayer">
+                <DoubleAnimation AutoReverse="False"
+                                 From="0.0" To="1"
+                                 Storyboard.TargetName="PlayerButtons"
+                                 Storyboard.TargetProperty="Opacity"
+                                 Duration="0:0:.3" />
+            </Storyboard>
+            <Style TargetType="circularProgressButton1:ProgressButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type circularProgressButton1:ProgressButton}">
+                            <Grid Background="Transparent">
+                                <!--TODO Someone should fix this awful markup-->
+                                <Ellipse Name="BorderEllipse" Stroke="{TemplateBinding Foreground}" StrokeThickness="2"
+                                         Margin="0"
+                                         Fill="#282828" />
+                                <circularProgressButton1:Arc UseLayoutRounding="True" StrokeThickness="2"
+                                                             Stroke="{TemplateBinding BorderBrush}" Margin="0">
+                                    <circularProgressButton1:Arc.StartAngle>
+                                        <MultiBinding Converter="{StaticResource ProgressConverter}">
+                                            <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}" />
+                                        </MultiBinding>
+                                    </circularProgressButton1:Arc.StartAngle>
+                                    <circularProgressButton1:Arc.EndAngle>
+                                        <MultiBinding Converter="{StaticResource ProgressConverter}">
+                                            <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="." RelativeSource="{RelativeSource TemplatedParent}" />
+                                        </MultiBinding>
+                                    </circularProgressButton1:Arc.EndAngle>
+                                </circularProgressButton1:Arc>
+                                <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
+                                           Margin="7,0,0,0"
+                                           Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}" />
+                                <Rectangle UseLayoutRounding="True" Width="2" Height="15" Stroke="#DFE0E6"
+                                           Margin="-7,0,0,0"
+                                           Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}}" />
 
-                            <Polygon UseLayoutRounding="True" Points="4,2 15,9 4,15" HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
-                                     Stroke="#DFE0E6" Fill="#DFE0E6"
-                                     Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, 
+                                <Polygon UseLayoutRounding="True" Points="4,2 15,9 4,15" HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Stroke="#DFE0E6" Fill="#DFE0E6"
+                                         Visibility="{Binding IsPlaying, Converter={StaticResource VisibilityConverter}, 
                                 ConverterParameter={StaticResource True}}" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="BorderBrush" Value="#6BDB92" />
-                                <Setter Property="Foreground" Value="#808080" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-            <Setter Property="BorderBrush" Value="#1FD861" />
-            <Setter Property="UseLayoutRounding" Value="True" />
-            <!--In reality this is a color for second ellipse-->
-            <Setter Property="Foreground" Value="#6B6870" />
-        </Style>
-        
-        <tb:TaskbarIcon x:Key="NotifyIcon"
-                        IconSource="..\App.ico"
-                        ToolTipText="{Binding TrackFriendlyName}"
-                        TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
-                        TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp">
-            <tb:TaskbarIcon.ContextMenu>
-                <controls:MiniPieContextMenu x:Name="TaskbarContextMenu" />
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="#6BDB92" />
+                                    <Setter Property="Foreground" Value="#808080" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="BorderBrush" Value="#1FD861" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <!--In reality this is a color for second ellipse-->
+                <Setter Property="Foreground" Value="#6B6870" />
+            </Style>
+
+            <tb:TaskbarIcon x:Key="NotifyIcon"
+                            IconSource="..\App.ico"
+                            ToolTipText="{Binding TrackFriendlyName}"
+                            TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"
+                            TrayLeftMouseUp="NotifyIcon_OnTrayLeftMouseUp">
+                <tb:TaskbarIcon.ContextMenu>
+                    <controls:MiniPieContextMenu/>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
+        </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.MouseEnter">
@@ -136,9 +137,9 @@
             <im:ControlStoryboardAction Storyboard="{StaticResource StbFadein}" ControlStoryboardOption="Play" />
         </interactivity:DataEventTrigger>
     </i:Interaction.Triggers>
-    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
+    <Border Name="MainContolBorder"  BorderBrush="#000000" BorderThickness="0" Background="#000000">
         <Border.ContextMenu>
-            <controls:MiniPieContextMenu x:Name="MiniPieContextMenu" />
+            <controls:MiniPieContextMenu />
         </Border.ContextMenu>
         <Grid>
             <Grid.RowDefinitions>
@@ -146,7 +147,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <controls1:ProgressRing Grid.Row="0" IsActive="{Binding Loading, Mode=OneWay}"
+            <ProgressBar IsIndeterminate="True" Style="{StaticResource MaterialDesignCircularProgressBar}" Grid.Row="0"
                                     Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
 
             <Border Name="ImageBorder"

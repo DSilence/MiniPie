@@ -12,7 +12,12 @@
              MaxWidth="400"
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources">
     <UserControl.Resources>
-        <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />-->
+            </ResourceDictionary.MergedDictionaries>
+            <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter"/>
+        </ResourceDictionary>
     </UserControl.Resources>
     <TabControl Name="SettingsControl">
         <TabItem Header="{wpf:Resx Settings_Common}">

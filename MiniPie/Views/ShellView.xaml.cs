@@ -62,7 +62,7 @@ namespace MiniPie.Views
         {
             Application.Current.MainWindow.Closing -= MainWindowOnClosing;
             Application.Current.MainWindow.Closing += MainWindowOnClosing;
-            MiniPieContextMenu.DataContext = e.NewValue;
+            MainContolBorder.ContextMenu.DataContext = e.NewValue;
             _notifyIcon.ContextMenu.DataContext = e.NewValue;
         }
 
