@@ -184,7 +184,7 @@ namespace MiniPie.Core.SpotifyLocal {
         private async Task<Status> SendLocalStatusRequest(string request, bool oauth, bool cfid, int wait)
         {
             var stringResult = await SendLocalRequest(request, oauth, cfid, wait).ConfigureAwait(false);
-            return await Helper.DeserializeStringAsync<Status>(stringResult);
+            return await Helper.DeserializeStringAsync<Status>(stringResult ?? String.Empty);
         }
 
         public void Dispose()

@@ -8,25 +8,22 @@
              xmlns:enums="clr-namespace:MiniPie.Core.Enums;assembly=MiniPie.Core"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              xmlns:views="clr-namespace:MiniPie.Views"
+             xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
              mc:Ignorable="d"
              MaxWidth="400"
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />-->
-            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignAccentCheckBox}">
+                <Setter Property="BorderThickness" Value="1"></Setter>
+                <Setter Property="BorderBrush" Value="Black"/>
+            </Style>
             <converter:EnumToLocalizedStringConverter x:Key="EnumToLocalizedStringConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl Name="SettingsControl">
-        <TabItem Header="{wpf:Resx Settings_Common}">
+    <dragablz:TabablzControl Name="SettingsControl" FixedHeaderCount="10">
+        <TabItem Header="{wpf:Resx Settings_Common}" IsEnabled="False">
             <StackPanel Margin="20 10" Orientation="Vertical">
-                <StackPanel.Resources>
-                    <Style TargetType="{x:Type CheckBox}">
-                        <Setter Property="Margin" Value="0 2" />
-                    </Style>
-                </StackPanel.Resources>
                 <Grid Margin="0 5 0 0">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -48,7 +45,7 @@
                             Content="{Binding LoggedIn, Converter={StaticResource BoolToLoginTextConverter}}">
                     </Button>
                 </Grid>
-                <CheckBox Content="{wpf:Resx Settings_AlwaysOnTop}" Name="AlwaysOnTop" />
+                <CheckBox Content="{wpf:Resx Settings_AlwaysOnTop}" Name="AlwaysOnTop"/>
                 <CheckBox Content="{wpf:Resx Settings_StartWithWindows}" Name="StartWithWindows" />
                 <CheckBox Content="{wpf:Resx Settings_StartMinimized}" Name="StartMinimized"/>
                 <CheckBox Content="{wpf:Resx Settings_DisableAnimations}" Name="DisableAnimations" />
@@ -109,6 +106,6 @@
         <TabItem Name="SettingsHotkeys" Header="{wpf:Resx Settings_Hotkeys}" DataContext="{Binding HotKeyViewModel}" >
             <views:HotKeyView></views:HotKeyView>
         </TabItem>
-    </TabControl>
+    </dragablz:TabablzControl>
 
 </UserControl>
