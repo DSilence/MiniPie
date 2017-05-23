@@ -142,7 +142,7 @@
         </Border.ContextMenu>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -158,7 +158,7 @@
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay"
                         MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding CoverImage}" />
+                        <ImageBrush Stretch="Uniform" ImageSource="{Binding CoverImage}" />
                     </Border.Background>
                     <Border>
                         <Border.Background>
