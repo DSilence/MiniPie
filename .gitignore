@@ -110,3 +110,4 @@ UpgradeLog*.XML
 .vs
 *.nupkg
 MiniPie/Releases
+/MiniPie.Uwp/win32
