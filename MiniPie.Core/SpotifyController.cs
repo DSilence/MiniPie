@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Win32;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyNative;
 using MiniPie.Core.SpotifyWeb;
@@ -275,6 +272,10 @@ namespace MiniPie.Core {
 
         public Task Play()
         {
+            if (!IsSpotifyOpen())
+            {
+                return Task.FromResult(false);
+            }
             if (!CurrentTrackInfo.playing)
             {
                 return _localApi.Resume();
@@ -284,6 +285,10 @@ namespace MiniPie.Core {
 
         public Task PausePlay()
         {
+            if (!IsSpotifyOpen())
+            {
+                return Task.FromResult(false);
+            }
             if (CurrentTrackInfo.playing)
             {
                 return _localApi.Pause();
@@ -296,24 +301,40 @@ namespace MiniPie.Core {
 
         public Task NextTrack()
         {
+            if (!IsSpotifyOpen())
+            {
+                return Task.FromResult(false);
+            }
             _spotifyNativeApi.NextTrack();
             return Task.FromResult(false);
         }
 
         public Task PreviousTrack()
         {
+            if (!IsSpotifyOpen())
+            {
+                return Task.FromResult(false);
+            }
             _spotifyNativeApi.PreviousTrack();
             return Task.FromResult(false);
         }
 
         public Task VolumeUp()
         {
+            if (!IsSpotifyOpen())
+            {
+                return Task.FromResult(false);
+            }
             _spotifyNativeApi.VolumeUp();
             return Task.FromResult(false);
         }
 
         public Task VolumeDown()
         {
+            if (!IsSpotifyOpen())
+            {
+                return Task.FromResult(false);
+            }
             _spotifyNativeApi.VolumeDown();
             return Task.FromResult(false);
         }
