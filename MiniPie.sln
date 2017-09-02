@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26621.2
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPie", "MiniPie\MiniPie.csproj", "{2D02C8B6-4A11-493F-8DF5-8441618A002F}"
 EndProject
@@ -24,26 +24,34 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		WindowsStoreRelease|Any CPU = WindowsStoreRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.WindowsStoreRelease|Any CPU.ActiveCfg = WindowsStoreRelease|Any CPU
+		{2D02C8B6-4A11-493F-8DF5-8441618A002F}.WindowsStoreRelease|Any CPU.Build.0 = WindowsStoreRelease|Any CPU
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.WindowsStoreRelease|Any CPU.ActiveCfg = WindowsStoreRelease|Any CPU
+		{83442CC4-42E0-4A4B-8BB7-E913B0DCE77C}.WindowsStoreRelease|Any CPU.Build.0 = WindowsStoreRelease|Any CPU
 		{F77FBCEE-0956-4794-99B5-E66811BA0AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F77FBCEE-0956-4794-99B5-E66811BA0AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F77FBCEE-0956-4794-99B5-E66811BA0AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F77FBCEE-0956-4794-99B5-E66811BA0AC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F77FBCEE-0956-4794-99B5-E66811BA0AC5}.WindowsStoreRelease|Any CPU.ActiveCfg = WindowsStoreRelease|Any CPU
+		{F77FBCEE-0956-4794-99B5-E66811BA0AC5}.WindowsStoreRelease|Any CPU.Build.0 = WindowsStoreRelease|Any CPU
 		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.WindowsStoreRelease|Any CPU.ActiveCfg = WindowsStoreRelease|Any CPU
+		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.WindowsStoreRelease|Any CPU.Build.0 = WindowsStoreRelease|Any CPU
+		{C8FE4511-5A0B-4821-B83E-4B823FDBC417}.WindowsStoreRelease|Any CPU.Deploy.0 = WindowsStoreRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
