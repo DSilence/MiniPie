@@ -1,6 +1,5 @@
 ﻿namespace MiniPie.Core.SpotifyWeb.Models
 {
-    [Equals]
     public class Playlist: ModelBase
     {
         public bool Collaborative { get; set; }

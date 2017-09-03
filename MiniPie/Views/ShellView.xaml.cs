@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,7 +16,6 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
-using MenuItem = System.Windows.Forms.MenuItem;
 using Size = System.Windows.Size;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -27,6 +27,7 @@ namespace MiniPie.Views
     public partial class ShellView : UserControl
     {
         private readonly TaskbarIcon _notifyIcon;
+        private bool _isNotificationShown;
 
         public ShellView()
         {
@@ -52,17 +53,37 @@ namespace MiniPie.Views
             }
         }
 
-        private ShellViewModel ShellViewModel
-        {
-            get { return DataContext as ShellViewModel; }
-        }
+        private ShellViewModel ShellViewModel => DataContext as ShellViewModel;
 
         private void ShellView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (e.OldValue != null)
+            {
+                ((ShellViewModel)e.OldValue).NotifyNotLoggedIn -= OnNotifyNotLoggedIn;
+            }
+            if (e.NewValue != null)
+            {
+                ((ShellViewModel)e.NewValue).NotifyNotLoggedIn += OnNotifyNotLoggedIn;
+            }
             Application.Current.MainWindow.Closing -= MainWindowOnClosing;
             Application.Current.MainWindow.Closing += MainWindowOnClosing;
             MiniPieContextMenu.DataContext = e.NewValue;
             _notifyIcon.ContextMenu.DataContext = e.NewValue;
+        }
+
+        private void OnNotifyNotLoggedIn(object sender, string notificationMessage)
+        {
+            if (!_isNotificationShown)
+            {
+                lock (_notifyIcon)
+                {
+                    if (!_isNotificationShown)
+                    {
+                        _notifyIcon.ShowBalloonTip("MiniPie", notificationMessage, BalloonIcon.Info);
+                        _isNotificationShown = true;
+                    }
+                }
+            }
         }
 
 
@@ -162,28 +183,71 @@ namespace MiniPie.Views
 
         private async void TitlePanel_OnDrop(object sender, DragEventArgs e)
         {
-            var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
-            var urls = data.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
-            //TODO url validation
-            Clipboard.SetText(await ShellViewModel.CopyTracksInfo(urls));
+            var data = Convert.ToString(e.Data.GetData(DataFormats.Html));
+            var viewModel = ShellViewModel;
+            Clipboard.SetText(await Task.Run(() => viewModel.CopyTracksInfo(data)));
         }
 
-        private void AlbumArt_OnDrop(object sender, DragEventArgs e)
+        private async void AlbumArt_OnDrop(object sender, DragEventArgs e)
         {
             var data = Convert.ToString(e.Data.GetData(DataFormats.Text));
             var urls = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             //TODO url validation
-            ShellViewModel.AddTracksToQueue(urls);
+            await ShellViewModel.AddTracksToQueue(urls);
         }
 
         private void NotifyIcon_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.HandleTrayMouseDoubleClick();
+            ShellViewModel.HandleTrayMouseDoubleClick(Application.Current.MainWindow);
         }
 
         private void NotifyIcon_OnTrayLeftMouseUp(object sender, RoutedEventArgs e)
         {
-            ShellViewModel.HandleTrayMouseClick();
+            ShellViewModel.HandleTrayMouseClick(Application.Current.MainWindow);
+        }
+
+        private void ImageBorder_DragEnter(object sender, DragEventArgs e)
+        {
+            ShowTooltip(ImageBorder, Properties.Resources.App_AddToQueue);
+        }
+
+        private void ImageBorder_DragLeave(object sender, DragEventArgs e)
+        {
+            HideTooltip(ImageBorder);
+        }
+
+        private void TitlePanel_DragEnter(object sender, DragEventArgs e)
+        {
+            ShowTooltip(TitlePanel, Properties.Resources.App_CopyTrackNames);
+        }
+
+        private void TitlePanel_DragLeave(object sender, DragEventArgs e)
+        {
+            HideTooltip(TitlePanel);
+        }
+
+        public void ShowTooltip(FrameworkElement element, string text)
+        {
+            ToolTipService.SetIsEnabled(element, true);
+            ToolTipService.SetShowOnDisabled(element, true);
+            var tooltip = new ToolTip
+            {
+                Content = text,
+            };
+            element.ToolTip = tooltip;
+            ToolTipService.SetInitialShowDelay(element, 0);
+            tooltip.IsOpen = true;
+        }
+
+        public void HideTooltip(FrameworkElement element)
+        {
+            ToolTipService.SetInitialShowDelay(element, (int)ToolTipService.InitialShowDelayProperty.DefaultMetadata.DefaultValue);
+            var tooltip = element.ToolTip as ToolTip;
+            if(tooltip != null)
+            {
+                tooltip.IsOpen = false;
+            }
+            TitlePanel.ToolTip = null;
         }
     }
 }

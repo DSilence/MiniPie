@@ -45,7 +45,7 @@ namespace MiniPie.Core {
 
         public string PublisherName
         {
-            get { return "Dzmitry Safarau"; }
+            get { return "SleepyManiac"; }
         }
 
         public string ProductName

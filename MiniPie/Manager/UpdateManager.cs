@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Reflection;
 using System.Threading;
-using System.Windows;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
-using MiniPie.ViewModels;
 using Squirrel;
 
 namespace MiniPie.Manager
@@ -28,7 +23,7 @@ namespace MiniPie.Manager
 
         public void Initialize()
         {
-#if !DEBUG
+#if RELEASE
             _timer = new Timer(Callback, null, TimeSpan.FromSeconds(0.3), TimeSpan.FromMinutes(60));
 #endif
         }

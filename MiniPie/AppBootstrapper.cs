@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using MiniPie.Core;
-using MiniPie.Core.HotKeyManager;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyNative;
+using MiniPie.Core.SpotifyNative.HotKeyManager;
 using MiniPie.Core.SpotifyWeb;
 using MiniPie.Manager;
 using MiniPie.ViewModels;
@@ -18,7 +17,8 @@ using SimpleInjector;
 using ILog = MiniPie.Core.ILog;
 
 namespace MiniPie {
-    public sealed class AppBootstrapper : BootstrapperBase {
+    public sealed class AppBootstrapper : BootstrapperBase, IDisposable
+    {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
@@ -59,8 +59,9 @@ namespace MiniPie {
 
         protected override void BuildUp(object instance)
         {
-            var registration = _kernel.GetRegistration(instance.GetType(), true);
-            registration.Registration.InitializeInstance(instance);
+            //Not using property injection
+            //var registration = _kernel.GetRegistration(instance.GetType(), true);
+            //registration.Registration.InitializeInstance(instance);
         }
 
         public async void ProcessTokenUpdate(string input)
@@ -83,6 +84,7 @@ namespace MiniPie {
 
             _kernel.RegisterSingleton(new AutorunService(_log, _Settings, _Contracts));
             _kernel.RegisterSingleton<IWindowManager>(new AppWindowManager(_Settings));
+            _kernel.RegisterSingleton<ClipboardManager>();
             _kernel.Register<IEventAggregator, EventAggregator>();
 
             _kernel.RegisterSingleton<ISpotifyLocalApi, SpotifyLocalApi>();
@@ -119,16 +121,24 @@ namespace MiniPie {
             {
                 _kernel.GetInstance<KeyManager>().RegisterHotKeys(_Settings.HotKeys);
             }
-            await _kernel.GetInstance<ISpotifyWebApi>().Initialize().ConfigureAwait(false);
-            await _kernel.GetInstance<ISpotifyLocalApi>().Initialize().ConfigureAwait(false);
-            await _kernel.GetInstance<ISpotifyController>().Initialize().ConfigureAwait(false);
+
+            await Task.WhenAll(_kernel.GetInstance<ISpotifyWebApi>().Initialize(),
+                    _kernel.GetInstance<ISpotifyLocalApi>().Initialize(),
+                    _kernel.GetInstance<ISpotifyController>().Initialize())
+                .ConfigureAwait(false);
             _kernel.GetInstance<UpdateManager>().Initialize();
+            _kernel.GetInstance<AutorunService>().ValidateAutorun();
         }
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
+            Dispose();
+        }
+
+        public void Dispose()
+        {
             _SettingsPersistor.Dispose();
-            _kernel.Dispose();    
+            _kernel.Dispose();
         }
     }
 }

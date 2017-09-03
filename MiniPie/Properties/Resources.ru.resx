@@ -138,6 +138,9 @@
   <data name="App_Next" xml:space="preserve">
     <value>Следующий трек</value>
   </data>
+  <data name="App_NotLoggedIn" xml:space="preserve">
+    <value>Похоже, что вы не авторизованы. Чтобы разблокировать все возможности MiniPie, кликните правой клавишей мыши но иконке в трее и выберете "Настройки" чтобы авторизоваться. </value>
+  </data>
   <data name="App_PlayPause" xml:space="preserve">
     <value>Воспроизвести/Пауза</value>
   </data>
@@ -162,17 +165,18 @@
   <data name="Enum_ApplicationSize_Small" xml:space="preserve">
     <value>Малый</value>
   </data>
-  <data name="Enum_SupportedKeyModifiers_Alt" xml:space="preserve">
-    <value>Alt</value>
+  <data name="Enum_LockScreenBehavior_Disabled" xml:space="preserve">
+    <value>Нет</value>
   </data>
-  <data name="Enum_SupportedKeyModifiers_Ctrl" xml:space="preserve">
-    <value>Ctrl</value>
+  <data name="Enum_LockScreenBehavior_Pause" xml:space="preserve">
+    <value>Пауза при блокировке</value>
   </data>
-  <data name="Enum_SupportedKeyModifiers_None" xml:space="preserve">
-    <value>(Нет)</value>
+  <data name="Enum_LockScreenBehavior_PauseUnpause" xml:space="preserve">
+    <value>Пауза при блокировке. Продолжить при разблокировке если пауза вызвана блокировкиой
+</value>
   </data>
-  <data name="Enum_SupportedKeyModifiers_Shift" xml:space="preserve">
-    <value>Shift</value>
+  <data name="Enum_LockScreenBehavior_PauseUnpauseAlways" xml:space="preserve">
+    <value>Пауза при блокировке. Всегда продолжить при разблокировке</value>
   </data>
   <data name="Settings_AlwaysOnTop" xml:space="preserve">
     <value>Показывать MiniPie поверх других окон</value>

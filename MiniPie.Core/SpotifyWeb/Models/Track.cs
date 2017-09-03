@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace MiniPie.Core.SpotifyWeb.Models
 {
-    [Equals]
     public class Track: ModelBase
     {
         [JsonProperty("album")]

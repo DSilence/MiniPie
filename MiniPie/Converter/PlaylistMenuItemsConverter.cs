@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using Microsoft.Expression.Interactivity.Core;
 using MiniPie.Core.SpotifyWeb.Models;
 using MiniPie.ViewModels;
 
@@ -18,7 +12,7 @@ namespace MiniPie.Converter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var playlists = values[0] as ObservableCollection<Playlist>;
+            var playlists = values[0] as IList<Playlist>;
             var viewModel = values[1] as ShellViewModel;
             if (playlists == null || viewModel == null)
             {
@@ -30,9 +24,9 @@ namespace MiniPie.Converter
                 var menuItem = new PlaylistItemViewModel
                 {
                     Name = playlist.Name,
-                    Action = () =>
+                    Action = async () =>
                     {
-                        viewModel.AddToPlaylist(playlist.Id);
+                        await viewModel.AddToPlaylist(playlist.Id);
                     }
                 };
                 result.Add(menuItem);

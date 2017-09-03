@@ -1,5 +1,5 @@
 @ECHO OFF &SETLOCAL
-set version=0.0.2.0
+set version=1.0.0
 IF NOT [%1] == [] (
 		set version=%1
 	)
@@ -25,5 +25,5 @@ for /r "..\packages" %%a in ('DIR *.* /B /O:-D') do (
 	if "%%~nxa"=="Squirrel.exe" set sq=%%~dpnxa
 	)
 
-%sq% --releasify MiniPie.%version%.nupkg -g .\Images\Loading.gif --setupIcon App.ico --no-msi
+%sq% --releasify MiniPie.%version%.nupkg -g .\Images\Loading.gif --setupIcon App.ico --no-msi --framework-version net461
 MOVE "Releases\Setup.exe" "Releases\MiniPieSetup.exe"

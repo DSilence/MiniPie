@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -31,6 +28,7 @@ namespace MiniPie.Core.SpotifyWeb
         private const string MyMusicAddFormat = "me/tracks";
         private const string MyMusicDeleteFormat = MyMusicAddFormat + "?ids={0}";
         private const string TrackInfoUrl = "tracks/{0}";
+        private const string TrackSearchUrl = "search?q={0}&type=track";
         #endregion
 
         public event EventHandler TokenUpdated;
@@ -58,7 +56,7 @@ namespace MiniPie.Core.SpotifyWeb
             }
         }
 
-        private const string Scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming";
+        private const string Scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify playlist-modify-private user-library-read user-library-modify user-follow-modify user-follow-read streaming user-read-playback-state";
         private const string LoginQueryFormat =
             "https://accounts.spotify.com/authorize/?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}";
         public Uri BuildLoginQuery()
@@ -126,7 +124,13 @@ namespace MiniPie.Core.SpotifyWeb
             var url = string.Format(GetTrackInfoUrl, string.Join(",", trackIds));
             var tracks = await _client.DoGetAsync<TrackCollection>(url).ConfigureAwait(false);
             return tracks.Tracks;
-        } 
+        }
+        public async Task<IList<Models.Track>> TrackSearch(string searchString)
+        {
+            var url = string.Format(TrackSearchUrl, searchString);
+            var tracks = await _client.DoGetAsync<SearchResult>(url).ConfigureAwait(false);
+            return tracks.Tracks.Items;
+        }
 
         public void Logout()
         {
@@ -155,6 +159,11 @@ namespace MiniPie.Core.SpotifyWeb
         {
             var url = string.Format(MyMusicDeleteFormat, string.Join(",", trackIds));
             return _client.DoDeleteAsync(url);
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

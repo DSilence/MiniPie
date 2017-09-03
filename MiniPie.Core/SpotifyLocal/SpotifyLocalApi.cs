@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -25,8 +24,8 @@ namespace MiniPie.Core.SpotifyLocal {
 
             //emulate the embed code [NEEDED]
             _client = new HttpClient();
-            _client.DefaultRequestHeaders.Add("Origin", "https://embed.spotify.com");
-            _client.DefaultRequestHeaders.Referrer = new Uri("https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            _client.DefaultRequestHeaders.Add("Origin", "https://open.spotify.com");
+            _client.DefaultRequestHeaders.Referrer = new Uri("https://open.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
             _client.DefaultRequestHeaders.Add("User-Agent", "MiniPie");
             _log = log;
             _baseUri = new Uri(contracts.SpotifyLocalHost);
@@ -185,6 +184,11 @@ namespace MiniPie.Core.SpotifyLocal {
         {
             var stringResult = await SendLocalRequest(request, oauth, cfid, wait).ConfigureAwait(false);
             return await Helper.DeserializeStringAsync<Status>(stringResult);
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

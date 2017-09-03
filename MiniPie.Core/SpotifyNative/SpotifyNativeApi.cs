@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace MiniPie.Core.SpotifyNative
 {
+#pragma warning disable CA1060 // Move P/Invokes to native methods class
     public class SpotifyNativeApi: ISpotifyNativeApi
+#pragma warning restore CA1060 // Move P/Invokes to native methods class
     {
         public Process SpotifyProcess { get; set; }
 
@@ -25,18 +28,18 @@ namespace MiniPie.Core.SpotifyNative
 
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
         static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        private struct WINDOWPLACEMENT
+        struct WINDOWPLACEMENT
         {
             public int length;
             public int flags;
@@ -46,6 +49,26 @@ namespace MiniPie.Core.SpotifyNative
             public Point rcNormalPosition;
         }
         #endregion
+
+        public async Task AttachToProcess(Func<Process, Task> processFound, Action<Process> processExited)
+        {
+            SpotifyProcess = null;
+            SpotifyProcess = Process.GetProcessesByName("spotify")
+                .FirstOrDefault(p => !string.IsNullOrEmpty(p.MainWindowTitle));
+            if (SpotifyProcess != null)
+            {
+                await processFound(SpotifyProcess).ConfigureAwait(false);
+                //Renew updateToken for Spotify local api
+                
+                SpotifyProcess.EnableRaisingEvents = true;
+                SpotifyProcess.Exited += (o, e) =>
+                {
+                    processExited(SpotifyProcess);
+                    SpotifyProcess = null;
+                    
+                };
+            }
+        }
 
         public void NextTrack()
         {

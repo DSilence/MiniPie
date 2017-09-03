@@ -19,7 +19,7 @@ namespace MiniPie.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -106,6 +106,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add to Queue.
+        /// </summary>
+        public static string App_AddToQueue {
+            get {
+                return ResourceManager.GetString("App_AddToQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Spotify Url.
         /// </summary>
         public static string App_CopySpotifyLink {
@@ -133,6 +142,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy track names.
+        /// </summary>
+        public static string App_CopyTrackNames {
+            get {
+                return ResourceManager.GetString("App_CopyTrackNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
         public static string App_Exit {
@@ -156,6 +174,15 @@ namespace MiniPie.Properties {
         public static string App_Next {
             get {
                 return ResourceManager.GetString("App_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Looks like you are not logged in. To unlock full MiniPie potential, right-click the minipie tray icon and go to &quot;Settings&quot; menu to authorize..
+        /// </summary>
+        public static string App_NotLoggedIn {
+            get {
+                return ResourceManager.GetString("App_NotLoggedIn", resourceCulture);
             }
         }
         
@@ -277,42 +304,6 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Alt.
-        /// </summary>
-        public static string Enum_SupportedKeyModifiers_Alt {
-            get {
-                return ResourceManager.GetString("Enum_SupportedKeyModifiers_Alt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ctrl.
-        /// </summary>
-        public static string Enum_SupportedKeyModifiers_Ctrl {
-            get {
-                return ResourceManager.GetString("Enum_SupportedKeyModifiers_Ctrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (None).
-        /// </summary>
-        public static string Enum_SupportedKeyModifiers_None {
-            get {
-                return ResourceManager.GetString("Enum_SupportedKeyModifiers_None", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Shift.
-        /// </summary>
-        public static string Enum_SupportedKeyModifiers_Shift {
-            get {
-                return ResourceManager.GetString("Enum_SupportedKeyModifiers_Shift", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Pre-release.
         /// </summary>
         public static string Enum_UpdatePreference_Developer {
@@ -367,6 +358,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Settings_Clear {
+            get {
+                return ResourceManager.GetString("Settings_Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear cover cache.
         /// </summary>
         public static string Settings_ClearCache {
@@ -408,6 +408,15 @@ namespace MiniPie.Properties {
         public static string Settings_EnableHotkeys {
             get {
                 return ResourceManager.GetString("Settings_EnableHotkeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to register hotkey. It may be used by another application..
+        /// </summary>
+        public static string Settings_FailedToRegisterHotkey {
+            get {
+                return ResourceManager.GetString("Settings_FailedToRegisterHotkey", resourceCulture);
             }
         }
         

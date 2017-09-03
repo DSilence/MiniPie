@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyNative;
@@ -12,6 +11,7 @@ using MiniPie.Core.SpotifyWeb;
 using MiniPie.Core.SpotifyWeb.Models;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Xbehave;
 using Xunit;
 using Track = MiniPie.Core.SpotifyLocal.Track;
 
@@ -40,14 +40,8 @@ namespace MiniPie.Tests.Core.Controller
         {
             bool trackChanged = false;
             bool trackTimerFiler = false;
-            _spotifyController.TrackStatusChanged += (sender, args) =>
-            {
-                trackTimerFiler = true;
-            };
-            _spotifyController.TrackChanged += (sender, args) =>
-            {
-                trackChanged = true;
-            };
+            _spotifyController.TrackStatusChanged.Subscribe(args => trackTimerFiler = true);
+            _spotifyController.TrackChanged.Subscribe(args => trackChanged = true);
             var status = new Status();
             status.track = new Track
             {
@@ -141,6 +135,11 @@ namespace MiniPie.Tests.Core.Controller
         {
             _spotifyController.BackgroundDelay = 0;
             _spotifyController.SpotifyProcess = new Process();
+            var isEventRecieved = false;
+            _spotifyController.TrackChanged.Subscribe(args =>
+            {
+                isEventRecieved = true;
+            });
             _localApi.SendLocalStatusRequest(true, true, CancellationToken.None, 0)
                 .ReturnsForAnyArgs(Task.FromResult(new Status
                 {
@@ -154,16 +153,8 @@ namespace MiniPie.Tests.Core.Controller
                     },
                     
                 }));
-            await
-                Assert.RaisesAsync<EventArgs>(handler =>
-                {
-                    _spotifyController.TrackChanged += handler;
-                },
-                    handler =>
-                    {
-                        _spotifyController.TrackChanged -= handler;
-                    },
-                    () => _spotifyController.BackgroundChangeTrackerWork());
+            await _spotifyController.BackgroundChangeTrackerWork();
+            Assert.True(isEventRecieved);
         }
 
         [Fact]
@@ -183,6 +174,7 @@ namespace MiniPie.Tests.Core.Controller
         [Fact]
         public async Task TestPlay()
         {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
             _spotifyController.CurrentTrackInfo = new Status();
             _spotifyController.CurrentTrackInfo.playing = false;
             await _spotifyController.Play();
@@ -197,6 +189,7 @@ namespace MiniPie.Tests.Core.Controller
         [Fact]
         public async Task TestPlayPause()
         {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
             _spotifyController.CurrentTrackInfo = new Status();
             _spotifyController.CurrentTrackInfo.playing = false;
             await _spotifyController.PausePlay();
@@ -213,6 +206,7 @@ namespace MiniPie.Tests.Core.Controller
         [Fact]
         public async Task TestNextTrack()
         {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
             await _spotifyController.NextTrack();
             _nativeApi.Received(1).NextTrack();
         }
@@ -220,6 +214,7 @@ namespace MiniPie.Tests.Core.Controller
         [Fact]
         public async Task TestPreviousTrack()
         {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
             await _spotifyController.PreviousTrack();
             _nativeApi.Received(1).PreviousTrack();
         }
@@ -227,6 +222,7 @@ namespace MiniPie.Tests.Core.Controller
         [Fact]
         public async Task TestVolumeUp()
         {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
             await _spotifyController.VolumeUp();
             _nativeApi.Received(1).VolumeUp();
         }
@@ -234,6 +230,7 @@ namespace MiniPie.Tests.Core.Controller
         [Fact]
         public async Task TestVolumeDown()
         {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
             await _spotifyController.VolumeDown();
             _nativeApi.Received(1).VolumeDown();
         }
@@ -365,6 +362,54 @@ namespace MiniPie.Tests.Core.Controller
 
             await _spotifyController.RemoveFromMyMusic(trackIds);
             await _spotifyWebApi.Received(1).RemoveFromMyMusic(trackIds);
+        }
+
+        [Fact]
+        public async Task SetSpotifyVolumeTestNoAction()
+        {
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ReturnsForAnyArgs(new Status
+            {
+                volume = 2
+            });
+            Assert.Equal(2, await _spotifyController.SetSpotifyVolume(2));
+        }
+
+        [Scenario]
+        public void TestVolumeDownRequest(ISpotifyController controller, ISpotifyLocalApi localApi, double resultVolume)
+        {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ReturnsForAnyArgs(new Status { volume = 2 }, new Status { volume = 1 }, new Status { volume = 0 });
+
+            "Given spotify controller".x(() => controller = _spotifyController);
+            "and local api".x(() => localApi = _localApi);
+            "When i change volume to 0".x(async () => resultVolume = await controller.SetSpotifyVolume(0));
+            "Then the return value is 0".x(() => Assert.Equal(0, resultVolume));
+            "And VolumeDown is called 2 times".x(() => _nativeApi.ReceivedWithAnyArgs(2).VolumeDown());
+        }
+
+
+        [Scenario]
+        public void TestVolumeUpRequest(ISpotifyController controller, ISpotifyLocalApi localApi, double resultVolume)
+        {
+            _spotifyController.SpotifyProcess = Process.GetCurrentProcess();
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ReturnsForAnyArgs(new Status { volume = 0 }, new Status { volume = 1 }, new Status { volume = 2 });
+
+            "Given spotify controller".x(() => controller = _spotifyController);
+            "and local api".x(() => localApi = _localApi);
+            "When i change volume to 2".x(async () => resultVolume = await controller.SetSpotifyVolume(2));
+            "Then the return value is 2".x(() => Assert.Equal(2, resultVolume));
+            "And VolumeUp is called 2 times".x(() => _nativeApi.ReceivedWithAnyArgs(2).VolumeUp());
+        }
+
+        [Scenario]
+        public void TestVolumeFailedRequest(ISpotifyController controller, ISpotifyLocalApi localApi, double resultVolume)
+        {
+            _localApi.SendLocalStatusRequest(false, false, CancellationToken.None).ThrowsForAnyArgs<ArgumentException>();
+
+            "Given spotify controller".x(() => controller = _spotifyController);
+            "and local api".x(() => localApi = _localApi);
+            "When i change volume and it fails".x(async () => resultVolume = await controller.SetSpotifyVolume(2));
+            "Then the result is Nan".x(() => Assert.Equal(double.NaN, resultVolume));
         }
 
         public void Dispose()

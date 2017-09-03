@@ -216,5 +216,11 @@ namespace MiniPie.Core.SpotifyWeb
                 _log.FatalException("Update token failed with" + ex.Message, ex);
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            _authClient.Dispose();
+            base.Dispose(disposing);
+        }
     }
 }

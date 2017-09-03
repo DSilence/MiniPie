@@ -6,6 +6,7 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:wpf="clr-namespace:Infralution.Localization.Wpf"
              xmlns:converter="clr-namespace:MiniPie.Converter"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              wpf:ResxExtension.DefaultResxName="MiniPie.Properties.Resources"
              mc:Ignorable="d"
              Name="MiniPieMenu"
@@ -175,9 +176,24 @@
                       cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
 
         <Separator />
-        <MenuItem Header="{wpf:Resx App_MinimizeToTray}"
-                      cal:Message.Attach="[Event Click] = [Action MinimizeMiniplayer]"/>
-        <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
+        <MenuItem Header="{wpf:Resx App_MinimizeToTray}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                <cal:ActionMessage MethodName="HideElement">
+                    <cal:Parameter Value="{Binding MainWindow}"/>
+                </cal:ActionMessage>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </MenuItem>
+    <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
                   cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
-        <MenuItem Header="{wpf:Resx App_Exit}" cal:Message.Attach="[Event Click] = [Action Close]" />
+   <MenuItem Header="{wpf:Resx App_Exit}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Click">
+                <cal:ActionMessage MethodName="Close">
+                    <cal:Parameter Value="{Binding MainWindow}"/>
+                </cal:ActionMessage>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </MenuItem>
 </ContextMenu>

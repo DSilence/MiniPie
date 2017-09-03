@@ -16,27 +16,15 @@ namespace MiniPie.Core.SpotifyWeb.Models
     {
         public static string GetDescription(this GrantType token)
         {
-            Type type = token.GetType();
-            if (!type.IsEnum)
-            {
-                throw new ArgumentException("EnumerationValue must be of Enum type", "enumerationValue");
-            }
+            Type type = typeof(GrantType);
 
             //Tries to find a DescriptionAttribute for a potential friendly name
             //for the enum
             MemberInfo[] memberInfo = type.GetMember(token.ToString());
-            if (memberInfo.Length > 0)
-            {
-                var attribute = memberInfo[0].GetCustomAttribute<DescriptionAttribute>(false);
+            var attribute = memberInfo[0].GetCustomAttribute<DescriptionAttribute>(false);
 
-                if (attribute != null)
-                {
-                    //Pull out the description value
-                    return attribute.Description;
-                }
-            }
-            //If we have no description attribute, just return the ToString of the enum
-            return token.ToString();
+            //Pull out the description value
+            return attribute.Description;
         }
     }
 

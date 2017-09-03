@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using MiniPie.Core;
 using MiniPie.Core.Enums;
 
 namespace MiniPie.Converter {

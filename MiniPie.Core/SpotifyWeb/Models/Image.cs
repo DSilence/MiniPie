@@ -2,7 +2,6 @@
 
 namespace MiniPie.Core.SpotifyWeb.Models
 {
-    [Equals]
     public class Image
     {
         [JsonProperty("height")]

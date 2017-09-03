@@ -5,7 +5,7 @@ using MiniPie.Core.SpotifyWeb.Models;
 
 namespace MiniPie.Core.SpotifyWeb
 {
-    public interface ISpotifyWebApi
+    public interface ISpotifyWebApi: IDisposable
     {
         event EventHandler TokenUpdated;
 
@@ -19,6 +19,7 @@ namespace MiniPie.Core.SpotifyWeb
         Task<IList<Playlist>> GetUserPlaylists();
         Task Initialize();
         void Logout();
+        Task<IList<Models.Track>> TrackSearch(string searchString);
 
         Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
         Task AddToMyMusic(IList<string> trackIds);

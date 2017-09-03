@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace MiniPie.Core.SpotifyWeb.Models
 {
-    [Equals]
     public abstract class ModelBase
     {
         [JsonProperty("id")]

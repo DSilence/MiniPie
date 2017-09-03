@@ -9,7 +9,7 @@ using Xunit;
 
 namespace MiniPie.Tests.Core.SpotifyLocal
 {
-    public class SpotifyLocalApiTest
+    public class SpotifyLocalApiTest: IDisposable
     {
         private FakeResponseHandler _fakeResponseHandler = new FakeResponseHandler();
         private SpotifyLocalApi _localApi = new SpotifyLocalApi(Substitute.For<ILog>(), new AppContracts());
@@ -81,6 +81,11 @@ namespace MiniPie.Tests.Core.SpotifyLocal
                 });
             var result = await _localApi.GetCfid();
             Assert.Equal("e45470f550ef278832f2ae96b7af7473", result.token);
+        }
+
+        public void Dispose()
+        {
+            _localApi.Dispose();
         }
     }
 }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows;
-using System.Windows.Navigation;
+﻿using System.Windows;
 using MahApps.Metro;
-using MiniPie.Core;
-using ILog = Caliburn.Micro.ILog;
 
 namespace MiniPie {
     /// <summary>
@@ -26,8 +20,8 @@ namespace MiniPie {
             ThemeManager.ChangeAppStyle(this,
                                         ThemeManager.GetAccent("Green"),
                                         ThemeManager.GetAppTheme("BaseDark"));
-            base.OnStartup(e);
             await Bootstrapper.ConfigurationInitialize();
+            base.OnStartup(e);
         }
     }
 }

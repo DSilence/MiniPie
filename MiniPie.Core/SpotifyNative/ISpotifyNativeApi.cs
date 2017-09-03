@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace MiniPie.Core.SpotifyNative
@@ -11,5 +12,7 @@ namespace MiniPie.Core.SpotifyNative
         void VolumeDown();
         void OpenSpotify();
         Process SpotifyProcess { get; set; }
+
+        Task AttachToProcess(Func<Process, Task> processFound, Action<Process> processExited);
     }
 }
