@@ -1,31 +1,37 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xc89lwvclmexie2m?svg=true)](https://ci.appveyor.com/project/DzmitrySafarau/minipie)
 [![codecov.io](https://codecov.io/github/DSilence/MiniPie/coverage.svg?branch=develop)](https://codecov.io/github/DSilence/MiniPie?branch=develop)
-[![Slack Status](https://minipieinvite.herokuapp.com/badge.svg)](https://minipieinvite.herokuapp.com/)
-[![ZenHub] (https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)](https://zenhub.io)
+[![Beerpay](https://beerpay.io/DSilence/MiniPie/badge.svg?style=beer-square)](https://beerpay.io/DSilence/MiniPie)  [![Beerpay](https://beerpay.io/DSilence/MiniPie/make-wish.svg?style=flat-square)](https://beerpay.io/DSilence/MiniPie?focus=wish)
+
+## Support on Beerpay
+
+[![Join the chat at https://gitter.im/DSilence/MiniPie](https://badges.gitter.im/DSilence/MiniPie.svg)](https://gitter.im/DSilence/MiniPie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Hey dude! Help me out for a couple of :beers:!
 
 # MiniPie
-Spotify Miniplayer based on WinFy project (http://krauss.io/projects/Winfy). 
-NOTE: This is not a standalone client. Works only with official spotify client! You need to have official spotify client installed!
+Spotify Miniplayer based on WinFy project (http://krauss.io/projects/Winfy).  
+NOTE: This is not a standalone client. Works only with official spotify client! You need to have official spotify client installed!  
+NOTE: To access some of the features you need to login to the application. Right-click the window, select settings and hit the login button.
 
-#Features:
+# Features:
 
-##Fully functional miniplayer for Spotify
+## Fully functional miniplayer for Spotify
 Minipie is a fully functional miniplayer capable of controlling the playback, displaying the album art, etc. Note that it does require Spotify app to be running as well.
 
-##Hotkeys support
+## Hotkeys support
 Right-click the minipie icon or window and go to hotkey menu. With hotkeys, you can control your playback even when minipie is minimized.
 
-##Quickly go to spotify application window
+## Quickly go to spotify application window
 Double-click the minipie window to open spotify window.
 
-##Tray icon
+## Tray icon
 Fully featured tray icon is back! Control the playback from tray. Click the tray icon to open minipie window. Double-click the icon to hide the window (or select "minimize to tray" from context menu).
 
-##Advanced scenarios
+## Advanced scenarios
 In the options you can choose custom actions for when you lock your screen. E.g. you may pause the playback when screen is locked and unpause it when you unlock the screen again.
 
-##Share tracks like boss
+## Share tracks like boss
 In the context menu, you can create a link to currently playing track or quickly copy a track name to clipboard to share with your friends! In addition, you can drag and drop a collection of spotify songs to minipie window to enqueue them, or to song name area to copy multiple track names to clipboard. 
 
-##Control collection
+## Control collection
 Click the + button to add song to your collection. Click the minus button to remove the song from collection.
+
