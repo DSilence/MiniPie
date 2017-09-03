@@ -1,10 +1,9 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xc89lwvclmexie2m?svg=true)](https://ci.appveyor.com/project/DzmitrySafarau/minipie)
 [![codecov.io](https://codecov.io/github/DSilence/MiniPie/coverage.svg?branch=develop)](https://codecov.io/github/DSilence/MiniPie?branch=develop)
+[![Join the chat at https://gitter.im/DSilence/MiniPie](https://badges.gitter.im/DSilence/MiniPie.svg)](https://gitter.im/DSilence/MiniPie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Beerpay](https://beerpay.io/DSilence/MiniPie/badge.svg?style=beer-square)](https://beerpay.io/DSilence/MiniPie)  [![Beerpay](https://beerpay.io/DSilence/MiniPie/make-wish.svg?style=flat-square)](https://beerpay.io/DSilence/MiniPie?focus=wish)
 
 ## Support on Beerpay
-
-[![Join the chat at https://gitter.im/DSilence/MiniPie](https://badges.gitter.im/DSilence/MiniPie.svg)](https://gitter.im/DSilence/MiniPie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Hey dude! Help me out for a couple of :beers:!
 
 # MiniPie
