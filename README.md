@@ -28,3 +28,8 @@ In the context menu, you can create a link to currently playing track or quickly
 
 ## Control collection
 Click the + button to add song to your collection. Click the minus button to remove the song from collection.
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/DSilence/MiniPie/badge.svg?style=beer-square)](https://beerpay.io/DSilence/MiniPie)  [![Beerpay](https://beerpay.io/DSilence/MiniPie/make-wish.svg?style=flat-square)](https://beerpay.io/DSilence/MiniPie?focus=wish)
