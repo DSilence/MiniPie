@@ -21,6 +21,8 @@ namespace MiniPie.ViewModels {
         private readonly AutorunService _autorunService;
         private readonly JsonPersister<AppSettings> _persister;
 
+        private IDisposable _tokenUpdateSubscription;
+
         public SettingsViewModel(AppContracts contracts, 
             ICoverService coverService, ILog logger, HotKeyViewModel hotKeyViewModel, 
             ISpotifyController spotifyController, AutorunService autorunService, JsonPersister<AppSettings> persister) 
@@ -40,7 +42,7 @@ namespace MiniPie.ViewModels {
         }
 
         public bool AlwaysOnTop {
-            get { return _settings.AlwaysOnTop; }
+            get => _settings.AlwaysOnTop;
             set
             {
                 _settings.AlwaysOnTop = value; 
@@ -50,42 +52,42 @@ namespace MiniPie.ViewModels {
         }
 
         public bool StartWithWindows {
-            get { return _settings.StartWithWindows; }
+            get => _settings.StartWithWindows;
             set { _settings.StartWithWindows = value; _autorunService.ValidateAutorun();}
         }
 
         public bool HideIfSpotifyClosed
         {
-            get { return _settings.HideIfSpotifyClosed; }
-            set { _settings.HideIfSpotifyClosed = value;}
+            get => _settings.HideIfSpotifyClosed;
+            set => _settings.HideIfSpotifyClosed = value;
         }
 
         public bool DisableAnimations {
-            get { return _settings.DisableAnimations; }
-            set { _settings.DisableAnimations = value;}
+            get => _settings.DisableAnimations;
+            set => _settings.DisableAnimations = value;
         }
 
         public bool StartMinimized
         {
-            get { return _settings.StartMinimized; }
-            set { _settings.StartMinimized = value;}
+            get => _settings.StartMinimized;
+            set => _settings.StartMinimized = value;
         }
 
         public UpdatePreference UpdatePreference
         {
-            get { return _settings.UpdatePreference; }
-            set { _settings.UpdatePreference = value; }
+            get => _settings.UpdatePreference;
+            set => _settings.UpdatePreference = value;
         }
 
         public bool SingleClickHide
         {
-            get { return _settings.SingleClickHide; }
-            set { _settings.SingleClickHide = value; }
+            get => _settings.SingleClickHide;
+            set => _settings.SingleClickHide = value;
         }
 
         public Language Language
         {
-            get { return _settings.Language; }
+            get => _settings.Language;
             set
             {
                 _settings.Language = value;
@@ -100,8 +102,8 @@ namespace MiniPie.ViewModels {
 
         public LockScreenBehavior LockScreenBehavior
         {
-            get { return _settings.LockScreenBehavior; }
-            set { _settings.LockScreenBehavior = value; }
+            get => _settings.LockScreenBehavior;
+            set => _settings.LockScreenBehavior = value;
         }
 
         public ObservableCollection<Language> Languages 
@@ -112,8 +114,8 @@ namespace MiniPie.ViewModels {
         public string CacheSize { get; set; }
 
         public ApplicationSize ApplicationSize {
-            get { return _settings.ApplicationSize; }			
-            set { _settings.ApplicationSize = value;}
+            get => _settings.ApplicationSize;
+            set => _settings.ApplicationSize = value;
         }
 
         public async Task ClearCache() {
@@ -202,7 +204,7 @@ namespace MiniPie.ViewModels {
         {
             base.OnActivate();
             HotKeyViewModel.UnregisterHotKeys();
-            _spotifyController.TokenUpdated += SpotifyControllerOnTokenUpdated;
+            _tokenUpdateSubscription = _spotifyController.TokenUpdated.Subscribe(SpotifyControllerOnTokenUpdated);
             await UpdateLoggedIn();
             //TODO custom decorator would be ideal here
             PropertyChanged += SettingsViewModel_PropertyChanged;
@@ -216,7 +218,7 @@ namespace MiniPie.ViewModels {
             });
         }
 
-        private async void SpotifyControllerOnTokenUpdated(object sender, EventArgs eventArgs)
+        private async void SpotifyControllerOnTokenUpdated(object state)
         {
             await UpdateLoggedIn();
         }
@@ -226,7 +228,7 @@ namespace MiniPie.ViewModels {
         {
             base.OnDeactivate(close);
             HotKeyViewModel.RegisterHotKeys();
-            _spotifyController.TokenUpdated -= SpotifyControllerOnTokenUpdated;
+            _tokenUpdateSubscription?.Dispose();
             PropertyChanged -= SettingsViewModel_PropertyChanged;
         }
     }

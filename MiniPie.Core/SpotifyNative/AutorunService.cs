@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Deployment.Application;
 using System.IO;
 
 namespace MiniPie.Core.SpotifyNative

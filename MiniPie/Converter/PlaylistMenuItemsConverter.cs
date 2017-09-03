@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using Microsoft.Expression.Interactivity.Core;
 using MiniPie.Core.SpotifyWeb.Models;
 using MiniPie.ViewModels;
 

@@ -18,7 +18,6 @@ using DragEventArgs = System.Windows.DragEventArgs;
 using FlowDirection = System.Windows.FlowDirection;
 using Size = System.Windows.Size;
 using UserControl = System.Windows.Controls.UserControl;
-using System.Windows.Controls.Primitives;
 
 namespace MiniPie.Views
 {
@@ -28,6 +27,7 @@ namespace MiniPie.Views
     public partial class ShellView : UserControl
     {
         private readonly TaskbarIcon _notifyIcon;
+        private bool _isNotificationShown;
 
         public ShellView()
         {
@@ -53,17 +53,37 @@ namespace MiniPie.Views
             }
         }
 
-        private ShellViewModel ShellViewModel
-        {
-            get { return DataContext as ShellViewModel; }
-        }
+        private ShellViewModel ShellViewModel => DataContext as ShellViewModel;
 
         private void ShellView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (e.OldValue != null)
+            {
+                ((ShellViewModel)e.OldValue).NotifyNotLoggedIn -= OnNotifyNotLoggedIn;
+            }
+            if (e.NewValue != null)
+            {
+                ((ShellViewModel)e.NewValue).NotifyNotLoggedIn += OnNotifyNotLoggedIn;
+            }
             Application.Current.MainWindow.Closing -= MainWindowOnClosing;
             Application.Current.MainWindow.Closing += MainWindowOnClosing;
             MiniPieContextMenu.DataContext = e.NewValue;
             _notifyIcon.ContextMenu.DataContext = e.NewValue;
+        }
+
+        private void OnNotifyNotLoggedIn(object sender, string notificationMessage)
+        {
+            if (!_isNotificationShown)
+            {
+                lock (_notifyIcon)
+                {
+                    if (!_isNotificationShown)
+                    {
+                        _notifyIcon.ShowBalloonTip("MiniPie", notificationMessage, BalloonIcon.Info);
+                        _isNotificationShown = true;
+                    }
+                }
+            }
         }
 
 

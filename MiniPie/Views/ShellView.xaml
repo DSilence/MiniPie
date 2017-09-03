@@ -156,7 +156,8 @@
                     Drop="AlbumArt_OnDrop" DragEnter="ImageBorder_DragEnter" DragLeave="ImageBorder_DragLeave"
                     AllowDrop="True">
                 <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay"
-                        MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
+                        MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+                        MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
                     <Border.Background>
                         <ImageBrush Stretch="Uniform" ImageSource="{Binding CoverImage}" />
                     </Border.Background>

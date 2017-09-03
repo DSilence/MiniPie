@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Input;
-using MiniPie.Converter;
-using MiniPie.Core.SpotifyNative.HotKeyManager;
+﻿using System.Windows.Controls;
 using MiniPie.ViewModels;
 
 namespace MiniPie.Views {

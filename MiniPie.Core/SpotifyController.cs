@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using MiniPie.Core.SpotifyLocal;
@@ -17,11 +18,12 @@ namespace MiniPie.Core {
          SpotifyController uses code from https://github.com/ranveer5289/SpotifyNotifier-Windows and https://github.com/mscoolnerd/SpotifyLib
          */
 
-        public event EventHandler SpotifyExited;
-        public event EventHandler<EventArgs> TrackChanged;
-        public event EventHandler<EventArgs> TrackStatusChanged;
-        public event EventHandler SpotifyOpened;
-        public event EventHandler TokenUpdated;
+        public ISubject<object> SpotifyExited { get;} = new Subject<object>();
+        public ISubject<EventArgs> TrackChanged { get;} = new Subject<EventArgs>();
+        public ISubject<EventArgs> TrackStatusChanged { get;} = new Subject<EventArgs>();
+        public ISubject<object> SpotifyOpened { get;} = new Subject<object>();
+        public ISubject<object> TokenUpdated { get;} = new Subject<object>();
+        public ISubject<bool> LoggedInStatusChanged { get;} = new Subject<bool>();
 
         private readonly ILog _logger;
         private readonly ISpotifyLocalApi _localApi;
@@ -53,10 +55,7 @@ namespace MiniPie.Core {
             JoinBackgroundProcess();
             _spotifyWebApi.TokenUpdated += (sender, args) =>
             {
-                if (TokenUpdated != null)
-                {
-                    TokenUpdated(sender, args);
-                }
+                TokenUpdated?.OnNext(args);
             };
         }
 
@@ -101,24 +100,20 @@ namespace MiniPie.Core {
         
 
         protected virtual void OnSpotifyExited() {
-            var handler = SpotifyExited;
-            if (handler != null) handler(this, EventArgs.Empty);
+            SpotifyExited?.OnNext(EventArgs.Empty);
         }
 
         protected virtual void OnTrackChanged() {
-            var handler = TrackChanged;
-            if (handler != null) handler(this, EventArgs.Empty);
+            TrackChanged?.OnNext(EventArgs.Empty);
         }
 
         protected virtual void OnTrackTimerChanged()
         {
-            var handler = TrackStatusChanged;
-            if (handler != null) handler(this, EventArgs.Empty);
+            TrackStatusChanged?.OnNext(EventArgs.Empty);
         }
 
         protected virtual void OnSpotifyOpenend() {
-            var handler = SpotifyOpened;
-            if (handler != null) handler(this, EventArgs.Empty);
+            SpotifyOpened?.OnNext(EventArgs.Empty);
         }
 
         private CancellationTokenSource _localRequestTokenSource;
@@ -344,15 +339,15 @@ namespace MiniPie.Core {
             _spotifyNativeApi.OpenSpotify();
         }
 
-        public void AttachTrackChangedHandler(EventHandler<EventArgs> handler)
+        public void AttachTrackChangedHandler(Action<EventArgs> handler)
         {
-            TrackChanged += handler;
+            TrackChanged.Subscribe(handler, CancellationToken.None);
             OnTrackChanged();
         }
 
-        public void AttachTrackStatusChangedHandler(EventHandler<EventArgs> handler)
+        public void AttachTrackStatusChangedHandler(Action<EventArgs> handler)
         {
-            TrackStatusChanged += handler;
+            TrackStatusChanged.Subscribe(handler, CancellationToken.None);
         }
 
         public async Task<bool> IsUserLoggedIn()
@@ -369,7 +364,7 @@ namespace MiniPie.Core {
                 return false;
             }
             bool result = user != null;
-            _logger.Info(string.Format("User verifying result is:{0}", result));
+            _logger.Info($"User verifying result is:{result}");
             return result;
         }
 

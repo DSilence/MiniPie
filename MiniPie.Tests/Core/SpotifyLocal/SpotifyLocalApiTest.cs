@@ -24,7 +24,7 @@ namespace MiniPie.Tests.Core.SpotifyLocal
         [Fact]
         public async Task TestPlay()
         {
-            _fakeResponseHandler.AddFakeResponse(new Uri("https://minipie.spotilocal.com:4371/remote/play.json?uri=&oauth=&csrf="), new HttpResponseMessage
+            _fakeResponseHandler.AddFakeResponse(new Uri("http://minipie.spotilocal.com:4380/remote/play.json?uri=&oauth=&csrf="), new HttpResponseMessage
             {
                 Content = new StringContent(ValidStatus)
             });
@@ -36,7 +36,7 @@ namespace MiniPie.Tests.Core.SpotifyLocal
         [Fact]
         public async Task TestPause()
         {
-            _fakeResponseHandler.AddFakeResponse(new Uri("https://minipie.spotilocal.com:4371/remote/pause.json?pause=true&oauth=&csrf="), new HttpResponseMessage
+            _fakeResponseHandler.AddFakeResponse(new Uri("http://minipie.spotilocal.com:4380/remote/pause.json?pause=true&oauth=&csrf="), new HttpResponseMessage
             {
                 Content = new StringContent(ValidStatus)
             });
@@ -48,7 +48,7 @@ namespace MiniPie.Tests.Core.SpotifyLocal
         [Fact]
         public async Task TestResume()
         {
-            _fakeResponseHandler.AddFakeResponse(new Uri("https://minipie.spotilocal.com:4371/remote/pause.json?pause=false&oauth=&csrf="), new HttpResponseMessage
+            _fakeResponseHandler.AddFakeResponse(new Uri("http://minipie.spotilocal.com:4380/remote/pause.json?pause=false&oauth=&csrf="), new HttpResponseMessage
             {
                 Content = new StringContent(ValidStatus)
             });
@@ -61,7 +61,7 @@ namespace MiniPie.Tests.Core.SpotifyLocal
         public async Task TestQueue()
         {
             string songToQueue = "123";
-            _fakeResponseHandler.AddFakeResponse(new Uri("https://minipie.spotilocal.com:4371/remote/play.json?uri=123%3faction%3dqueue&oauth=&csrf="), new HttpResponseMessage
+            _fakeResponseHandler.AddFakeResponse(new Uri("http://minipie.spotilocal.com:4380/remote/play.json?uri=123%3faction%3dqueue&oauth=&csrf="), new HttpResponseMessage
             {
                 Content = new StringContent(ValidStatus)
             });
@@ -74,7 +74,7 @@ namespace MiniPie.Tests.Core.SpotifyLocal
         [Fact]
         public async Task TestGetCfid()
         {
-            _fakeResponseHandler.AddFakeResponse(new Uri("https://minipie.spotilocal.com:4371/simplecsrf/token.json"),
+            _fakeResponseHandler.AddFakeResponse(new Uri("http://minipie.spotilocal.com:4380/simplecsrf/token.json"),
                 new HttpResponseMessage
                 {
                     Content = new StringContent(ValidTokenResponse)

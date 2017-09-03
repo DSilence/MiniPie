@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyWeb.Models;
-using Newtonsoft.Json;
 using Xunit;
 using System.Windows;
 

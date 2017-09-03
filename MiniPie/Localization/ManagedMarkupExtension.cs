@@ -7,13 +7,10 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Markup;
 using System.Reflection;
 using System.Windows;
 using System.ComponentModel;
-using System.Globalization;
-using System.Diagnostics;
 
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Infralution.Localization.Wpf")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2007/xaml/presentation", "Infralution.Localization.Wpf")]

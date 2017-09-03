@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using Caliburn.Micro;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyLocal;

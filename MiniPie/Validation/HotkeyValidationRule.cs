@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MiniPie.Core.SpotifyNative.HotKeyManager;
-using MiniPie.ViewModels;
 
 namespace MiniPie.Validation
 {

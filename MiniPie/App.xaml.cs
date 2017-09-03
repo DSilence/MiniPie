@@ -1,11 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows;
-using System.Windows.Navigation;
+﻿using System.Windows;
 using MahApps.Metro;
-using MiniPie.Core;
-using ILog = Caliburn.Micro.ILog;
 
 namespace MiniPie {
     /// <summary>

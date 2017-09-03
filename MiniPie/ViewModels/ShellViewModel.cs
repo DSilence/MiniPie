@@ -5,9 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
 using Caliburn.Micro;
 using Microsoft.Win32;
@@ -15,6 +12,7 @@ using MiniPie.Core;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb.Models;
 using MiniPie.Manager;
+using MiniPie.Properties;
 using SimpleInjector;
 using Application = System.Windows.Application;
 using ILog = MiniPie.Core.ILog;
@@ -38,6 +36,7 @@ namespace MiniPie.ViewModels {
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
+        public event EventHandler<string> NotifyNotLoggedIn;
         private bool _isLockPaused;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
@@ -54,9 +53,9 @@ namespace MiniPie.ViewModels {
             CoverImage = NoCoverUri;
 
 #pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
-            _SpotifyController.AttachTrackChangedHandler(async (o, e) => await UpdateView().ConfigureAwait(false));
-            _SpotifyController.SpotifyOpened += async (o, e) => await SpotifyOpened().ConfigureAwait(false);
-            _SpotifyController.SpotifyExited += async (o, e) => await SpotifyExited().ConfigureAwait(false);
+            _SpotifyController.AttachTrackChangedHandler(async e => await UpdateView().ConfigureAwait(false));
+            _SpotifyController.SpotifyOpened.Subscribe(async o => await SpotifyOpened().ConfigureAwait(false));
+            _SpotifyController.SpotifyExited.Subscribe(async o => await SpotifyExited().ConfigureAwait(false));
             _SpotifyController.AttachTrackStatusChangedHandler(SpotifyControllerOnTrackStatusChanged);
 #pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
 
@@ -131,10 +130,7 @@ namespace MiniPie.ViewModels {
         public string TrackId { get; set; }
         public double Volume { get; set; }
 
-        public bool Loading
-        {
-            get { return string.IsNullOrEmpty(CurrentTrack); }
-        }
+        public bool Loading => string.IsNullOrEmpty(CurrentTrack);
 
         #endregion
 
@@ -197,10 +193,7 @@ namespace MiniPie.ViewModels {
             _clipboardManager.SetText(TrackUrl);
         }
 
-        public Window MainWindow
-        {
-            get { return Application.Current.MainWindow; }
-        }
+        public Window MainWindow => Application.Current.MainWindow;
 
         public void HandleTrayMouseDoubleClick(UIElement window)
         {
@@ -270,7 +263,7 @@ namespace MiniPie.ViewModels {
             return UpdateView();
         }
 
-        private void SpotifyControllerOnTrackStatusChanged(object sender, EventArgs eventArgs)
+        private void SpotifyControllerOnTrackStatusChanged(EventArgs eventArgs)
         {
             var status = _SpotifyController.GetStatus();
             MaxProgress = status.track.length;
@@ -278,12 +271,15 @@ namespace MiniPie.ViewModels {
             IsPlaying = status.playing;
         }
 
-        
-
         internal async Task UpdateView()
         {
             try
             {
+                var tokenPresent = _Settings.SpotifyToken != null;
+                if (!tokenPresent)
+                {
+                    NotifyNotLoggedIn?.Invoke(this, Resources.App_NotLoggedIn);
+                }
                 var status = _SpotifyController.GetStatus();
                 if (status == null)
                 {
@@ -348,7 +344,7 @@ namespace MiniPie.ViewModels {
                         OnCoverDisplayFadeIn();
                 }
 
-                var tokenPresent = _Settings.SpotifyToken != null;
+                
                 if (tokenPresent)
                 {
                     if (TrackId != null)

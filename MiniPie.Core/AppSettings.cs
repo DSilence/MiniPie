@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MiniPie.Core.Enums;
 using MiniPie.Core.SpotifyWeb;
 using Newtonsoft.Json;

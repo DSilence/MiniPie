@@ -138,6 +138,9 @@
   <data name="App_Next" xml:space="preserve">
     <value>Следующий трек</value>
   </data>
+  <data name="App_NotLoggedIn" xml:space="preserve">
+    <value>Похоже, что вы не авторизованы. Чтобы разблокировать все возможности MiniPie, кликните правой клавишей мыши но иконке в трее и выберете "Настройки" чтобы авторизоваться. </value>
+  </data>
   <data name="App_PlayPause" xml:space="preserve">
     <value>Воспроизвести/Пауза</value>
   </data>

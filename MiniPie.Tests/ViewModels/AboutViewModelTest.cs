@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using MiniPie.Core;
+﻿using MiniPie.Core;
 using MiniPie.ViewModels;
 using Xunit;
-using System.Reflection;
 
 namespace MiniPie.Tests.ViewModels
 {

@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using MiniPie.Core.SpotifyLocal;
 using MiniPie.Core.SpotifyWeb.Models;
 
 namespace MiniPie.Core {
     public interface ISpotifyController : IDisposable {
-        event EventHandler SpotifyOpened;
-        event EventHandler SpotifyExited;
-        event EventHandler TokenUpdated;
+        ISubject<object> SpotifyExited { get; }
+        ISubject<EventArgs> TrackChanged { get; }
+        ISubject<EventArgs> TrackStatusChanged { get; }
+        ISubject<object> SpotifyOpened { get; }
+        ISubject<object> TokenUpdated { get; }
+        ISubject<bool> LoggedInStatusChanged { get; }
         Task Initialize();
         bool IsSpotifyOpen();
         Status GetStatus();
@@ -20,8 +24,8 @@ namespace MiniPie.Core {
         Task VolumeUp();
         Task VolumeDown();
         void OpenSpotify();
-        void AttachTrackChangedHandler(EventHandler<EventArgs> handler);
-        void AttachTrackStatusChangedHandler(EventHandler<EventArgs> handler);
+        void AttachTrackChangedHandler(Action<EventArgs> handler);
+        void AttachTrackStatusChangedHandler(Action<EventArgs> handler);
         Task<bool> IsUserLoggedIn();
         Uri BuildLoginQuery();
         void Logout();

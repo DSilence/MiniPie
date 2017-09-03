@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Reflection;
 using System.Threading;
-using System.Windows;
 using MiniPie.Core;
 using MiniPie.Core.Enums;
-using MiniPie.ViewModels;
 using Squirrel;
 
 namespace MiniPie.Manager

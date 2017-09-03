@@ -178,6 +178,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Looks like you are not logged in. To unlock full MiniPie potential, right-click the minipie tray icon and go to &quot;Settings&quot; menu to authorize..
+        /// </summary>
+        public static string App_NotLoggedIn {
+            get {
+                return ResourceManager.GetString("App_NotLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Play/Pause.
         /// </summary>
         public static string App_PlayPause {
