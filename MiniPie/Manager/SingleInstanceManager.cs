@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Microsoft.VisualBasic.ApplicationServices;
+using MiniPie.Core;
+using Squirrel;
 using StartupEventArgs = Microsoft.VisualBasic.ApplicationServices.StartupEventArgs;
 
 namespace MiniPie.Manager
@@ -40,7 +44,7 @@ namespace MiniPie.Manager
 
         private void ProcessSquirrelStartup()
         {
-#if !DEBUG
+#if RELEASE
             using (var mgr = new Squirrel.UpdateManager(string.Empty))
             {
                 // Note, in most of these scenarios, the app exits after this method
