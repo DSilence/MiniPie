@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace MiniPie.ViewModels {
         private readonly ILog _Logger;
         private readonly Container _kernel;
         private readonly ClipboardManager _clipboardManager;
+        private readonly AppContracts _appContracts;
         private const string NoCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/MiniPie;component/Images/LogoUnknown.png";
         private const string TrackPattern = @".*\/\/open\.spotify\.com\/track\/(.*)";
@@ -40,7 +42,8 @@ namespace MiniPie.ViewModels {
         private bool _isLockPaused;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, 
-            ICoverService coverService, AppSettings settings, ILog logger, Container kernel, ClipboardManager clipboardManager) {
+            ICoverService coverService, AppSettings settings, ILog logger, Container kernel, ClipboardManager clipboardManager,
+            AppContracts appContracts) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
@@ -48,6 +51,7 @@ namespace MiniPie.ViewModels {
             _Logger = logger;
             _kernel = kernel;
             _clipboardManager = clipboardManager;
+            _appContracts = appContracts;
             ApplicationSize = _Settings.ApplicationSize;
 
             CoverImage = NoCoverUri;
@@ -140,6 +144,44 @@ namespace MiniPie.ViewModels {
 
         public void ShowAbout() {
             _WindowManager.ShowDialog(_kernel.GetInstance<AboutViewModel>());
+        }
+
+        public async Task ExportLogFile()
+        {
+            var dlg = new SaveFileDialog
+            {
+                FileName = "MiniPie",
+                DefaultExt = ".log",
+                Filter = "Text documents (.log)|*.log"
+            };
+            // Default file name
+            // Default file extension
+            // Filter files by extension
+
+// Show save file dialog box
+            bool? result = dlg.ShowDialog();
+
+// Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+                var logFileName = Path.Combine(_appContracts.SettingsLocation, _appContracts.LogFileName);
+                if (!File.Exists(logFileName))
+                {
+                    // TODO toast notification or something
+                    return;
+                }
+                using (var source =
+                    new FileStream(logFileName, FileMode.Open))
+                {
+                    using (var target = new FileStream(filename,
+                        FileMode.Create))
+                    {
+                        await source.CopyToAsync(target).ConfigureAwait(false);
+                    }
+                }
+            }
         }
 
         public async Task PlayPause()

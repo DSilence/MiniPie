@@ -279,4 +279,7 @@
   <data name="App_NotLoggedIn" xml:space="preserve">
     <value>Looks like you are not logged in. To unlock full MiniPie potential, right-click the minipie tray icon and go to "Settings" menu to authorize.</value>
   </data>
+  <data name="App_ExportLogFile" xml:space="preserve">
+    <value>Export log file</value>
+  </data>
 </root>
