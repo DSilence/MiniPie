@@ -28,7 +28,7 @@ namespace MiniPie.Tests.Converter
                     Name = "Test2"
                 }
             };
-            var model = Substitute.For<ShellViewModel>(null, Substitute.For<ISpotifyController>(), null, Substitute.For<AppSettings>(), null, null, null);
+            var model = Substitute.For<ShellViewModel>(null, Substitute.For<ISpotifyController>(), null, Substitute.For<AppSettings>(), null, null, null, new AppContracts());
             Assert.Null(_playlistConverter.Convert(new[] { playlists, null}, null, null, null));
             Assert.Null(_playlistConverter.Convert(new[] { null, model }, null, null, null));
 

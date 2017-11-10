@@ -9,9 +9,7 @@ namespace MiniPie.Core {
         public const string ClientId = "7cab801edfb04e309949c79b8e76b425";
         public const string ClientSecret = "45e1983d0ba14f2a92e6b41c93f94f98";
 
-        public string ApplicationName {
-            get { return "MiniPie"; }
-        }
+        public string ApplicationName => "MiniPie";
 
         public Version ApplicationVersion {
             get {
@@ -26,32 +24,17 @@ namespace MiniPie.Core {
             }
         }
 
-        public string SettingsFilename
-        {
-            get { return string.Format("{0}.Settings.json", ApplicationName); }
-        }
+        public string SettingsFilename => $"{ApplicationName}.Settings.json";
 
-        public string HomepageUrl {
-            get { return "http://krausshq.com"; }
-        }
+        public string LogFileName => $"{ApplicationName}.log";
 
-        public string SpotifyUrl {
-            get { return "https://www.spotify.com/"; }
-        }
+        public string HomepageUrl => "http://krausshq.com";
 
-        public string SpotifyLocalHost {
-            get { return "http://minipie.spotilocal.com:4380/"; }
-        }
+        public string SpotifyLocalHost => "http://minipie.spotilocal.com:4380/";
 
-        public string PublisherName
-        {
-            get { return "SleepyManiac"; }
-        }
+        public string PublisherName => "SleepyManiac";
 
-        public string ProductName
-        {
-            get { return "MiniPie"; }
-        }
+        public string ProductName => "MiniPie";
 
         public string SettingsLocation {
             get {

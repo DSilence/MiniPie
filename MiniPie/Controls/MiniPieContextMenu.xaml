@@ -185,6 +185,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </MenuItem>
+    <MenuItem Header="{wpf:Resx App_ExportLogFile}" cal:Message.Attach="[Event Click] = [Action ExportLogFile]"/>
     <MenuItem Header="{wpf:Resx App_AboutMiniPie}"
                   cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
    <MenuItem Header="{wpf:Resx App_Exit}">

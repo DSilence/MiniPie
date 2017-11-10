@@ -132,6 +132,9 @@
   <data name="App_Exit" xml:space="preserve">
     <value>Выйти</value>
   </data>
+  <data name="App_ExportLogFile" xml:space="preserve">
+    <value>Экспортировать файл логов</value>
+  </data>
   <data name="App_MinimizeToTray" xml:space="preserve">
     <value>В трэй</value>
   </data>

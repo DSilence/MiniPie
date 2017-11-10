@@ -160,6 +160,15 @@ namespace MiniPie.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export log file.
+        /// </summary>
+        public static string App_ExportLogFile {
+            get {
+                return ResourceManager.GetString("App_ExportLogFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Minimize to tray.
         /// </summary>
         public static string App_MinimizeToTray {

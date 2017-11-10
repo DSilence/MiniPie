@@ -31,7 +31,7 @@ namespace MiniPie.Tests.ViewModels
         public ShellViewModelTest()
         {
             _shellViewModel = new ShellViewModel(_windowManager, _spotifyController, _coverService, _settings, _log,
-                _container, _clipboardManager);
+                _container, _clipboardManager, new AppContracts());
         }
 
         [Fact]
