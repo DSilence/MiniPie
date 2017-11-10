@@ -13,10 +13,10 @@
       <sourceFolder url="file://$MODULE_DIR$/../../packages/System.Runtime.Analyzers.1.1.0/analyzers/dotnet/cs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../packages/System.Runtime.InteropServices.Analyzers.1.1.0/analyzers/dotnet/cs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../packages/System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0/analyzers/dotnet/cs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.2.0/build/_common/xunit.abstractions.dll" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.2.0/build/_common/xunit.runner.reporters.net452.dll" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.2.0/build/_common/xunit.runner.utility.net35.dll" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.2.0/build/_common/xunit.runner.visualstudio.testadapter.dll" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.3.1/build/_common/xunit.abstractions.dll" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.3.1/build/_common/xunit.runner.reporters.net452.dll" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.3.1/build/_common/xunit.runner.utility.net35.dll" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/xunit.runner.visualstudio.2.3.1/build/_common/xunit.runner.visualstudio.testadapter.dll" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../README.md" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../MiniPie.Core/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../MiniPie.Core/obj" />
