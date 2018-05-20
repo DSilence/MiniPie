@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using MiniPie.Core;
 using MiniPie.Core.SpotifyWeb;
 using NSubstitute;
@@ -210,6 +211,16 @@ namespace MiniPie.Tests.Core.SpotifyWeb
             _responseHandler.AddFakeResponse(
                 uri, new HttpResponseMessage());
             await _spotifyWebApi.RemoveFromMyMusic(trackIds);
+            _responseHandler.CheckCallCount(uri, 1);
+        }
+
+        [Fact]
+        public async Task TestVolumeChange()
+        {
+            var newVolume = 40;
+            var uri = new Uri($"https://api.spotify.com/v1/me/player/volume?volume_percent={newVolume}");
+            _responseHandler.AddFakeResponse(uri, new HttpResponseMessage());
+            await _spotifyWebApi.SetVolume(newVolume);
             _responseHandler.CheckCallCount(uri, 1);
         }
 

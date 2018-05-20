@@ -422,7 +422,7 @@ namespace MiniPie.Core {
             {
                 var newVolume = (int)(volume * 100); 
                 await _spotifyWebApi.SetVolume(newVolume);
-                return newVolume;
+                return volume;
             }
             catch(Exception e)
             {
