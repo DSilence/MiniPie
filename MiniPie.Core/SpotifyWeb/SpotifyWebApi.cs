@@ -29,6 +29,7 @@ namespace MiniPie.Core.SpotifyWeb
         private const string MyMusicDeleteFormat = MyMusicAddFormat + "?ids={0}";
         private const string TrackInfoUrl = "tracks/{0}";
         private const string TrackSearchUrl = "search?q={0}&type=track";
+        private const string SetVolumeUrl = "me/player/volume";
         #endregion
 
         public event EventHandler TokenUpdated;
@@ -159,6 +160,12 @@ namespace MiniPie.Core.SpotifyWeb
         {
             var url = string.Format(MyMusicDeleteFormat, string.Join(",", trackIds));
             return _client.DoDeleteAsync(url);
+        }
+
+        public Task SetVolume(int value)
+        {
+            var url = SetVolumeUrl + $"?volume_percent={value}";
+            return _client.DoPutAsync(url);
         }
 
         public void Dispose()

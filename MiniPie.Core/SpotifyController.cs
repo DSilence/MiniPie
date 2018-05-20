@@ -314,24 +314,18 @@ namespace MiniPie.Core {
             return Task.FromResult(false);
         }
 
-        public Task VolumeUp()
+        public async Task VolumeUp()
         {
-            if (!IsSpotifyOpen())
-            {
-                return Task.FromResult(false);
-            }
-            _spotifyNativeApi.VolumeUp();
-            return Task.FromResult(false);
+            var currentVolume = await GetVolume();
+            var targetVolume = currentVolume + 0.1;
+            await SetSpotifyVolume(targetVolume);
         }
 
-        public Task VolumeDown()
+        public async Task VolumeDown()
         {
-            if (!IsSpotifyOpen())
-            {
-                return Task.FromResult(false);
-            }
-            _spotifyNativeApi.VolumeDown();
-            return Task.FromResult(false);
+            var currentVolume = await GetVolume();
+            var targetVolume = currentVolume - 0.1;
+            await SetSpotifyVolume(targetVolume);
         }
 
         public void OpenSpotify()
@@ -426,30 +420,9 @@ namespace MiniPie.Core {
         {
             try
             {
-                var volumeCurrent = await GetVolume();
-                if (Math.Abs(volumeCurrent - volume) < 0.1)
-                {
-                    return volume;
-                }
-                if (volumeCurrent < volume)
-                {
-                    do
-                    {
-                        await VolumeUp();
-                        volumeCurrent = await GetVolume();
-                    }
-                    while (volumeCurrent < volume);
-                }
-                else
-                {
-                    do
-                    {
-                        await VolumeDown();
-                        volumeCurrent = await GetVolume();
-                    }
-                    while (volumeCurrent > volume);
-                }
-                return volumeCurrent;
+                var newVolume = (int)(volume * 100); 
+                await _spotifyWebApi.SetVolume(newVolume);
+                return newVolume;
             }
             catch(Exception e)
             {

@@ -8,8 +8,6 @@ namespace MiniPie.Core.SpotifyNative
     {
         void NextTrack();
         void PreviousTrack();
-        void VolumeUp();
-        void VolumeDown();
         void OpenSpotify();
         Process SpotifyProcess { get; set; }
 

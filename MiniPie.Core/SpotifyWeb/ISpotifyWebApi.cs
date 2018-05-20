@@ -24,5 +24,6 @@ namespace MiniPie.Core.SpotifyWeb
         Task<IList<bool>> IsTracksSaved(IList<string> trackIds);
         Task AddToMyMusic(IList<string> trackIds);
         Task RemoveFromMyMusic(IList<string> trackIds);
+        Task SetVolume(int value);
     }
 }

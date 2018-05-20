@@ -30,7 +30,7 @@ namespace MiniPie.Core {
 
         public string HomepageUrl => "http://krausshq.com";
 
-        public string SpotifyLocalHost => "http://minipie.spotilocal.com:4380/";
+        public string SpotifyLocalHost => "http://minipie.spotilocal.com:4381/";
 
         public string PublisherName => "SleepyManiac";
 

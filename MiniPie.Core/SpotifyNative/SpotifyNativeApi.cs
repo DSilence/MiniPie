@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MiniPie.Core.SpotifyNative
 {
 #pragma warning disable CA1060 // Move P/Invokes to native methods class
-    public class SpotifyNativeApi: ISpotifyNativeApi
+    public class SpotifyNativeApi: ISpotifyNativeApi, IDisposable
 #pragma warning restore CA1060 // Move P/Invokes to native methods class
     {
         public Process SpotifyProcess { get; set; }
@@ -16,12 +16,9 @@ namespace MiniPie.Core.SpotifyNative
         #region Win32Imports
 
         private const int KeyMessage = 0x319;
-        private const uint WM_COMMAND = 0x0111;
 
         private const long NexttrackKey = 0xB0000L;
         private const long PreviousKey = 0xC0000L;
-        private const long VolumeUpKey = 0x10079L;
-        private const long VolumeDownKey = 0x1007AL;
         private const int SW_RESTORE = 9;
         private const int MINIMIZED_STATE = 2;
 
@@ -82,18 +79,6 @@ namespace MiniPie.Core.SpotifyNative
                 PostMessage(SpotifyProcess.MainWindowHandle, KeyMessage, IntPtr.Zero, new IntPtr(PreviousKey));
         }
 
-        public void VolumeUp()
-        {
-            if (SpotifyProcess != null)
-                PostMessage(SpotifyProcess.MainWindowHandle, WM_COMMAND, new IntPtr(VolumeUpKey), IntPtr.Zero);
-        }
-
-        public void VolumeDown()
-        {
-            if (SpotifyProcess != null)
-                PostMessage(SpotifyProcess.MainWindowHandle, WM_COMMAND, new IntPtr(VolumeDownKey), IntPtr.Zero);
-        }
-
         public void OpenSpotify()
         {
             if (SpotifyProcess != null)
@@ -108,6 +93,11 @@ namespace MiniPie.Core.SpotifyNative
                 }
                 SetForegroundWindow(handle);
             }
+        }
+
+        public void Dispose()
+        {
+            SpotifyProcess?.Dispose();
         }
     }
 }

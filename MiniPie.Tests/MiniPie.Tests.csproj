@@ -106,10 +106,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="Xbehave.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=e4957f48888f9fe8, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbehave.Core.2.3.0-rc0001-build717\lib\net452\Xbehave.Core.dll</HintPath>
+      <HintPath>..\packages\Xbehave.Core.2.3.0\lib\net452\Xbehave.Core.dll</HintPath>
     </Reference>
     <Reference Include="Xbehave.Execution.desktop, Version=2.3.0.0, Culture=neutral, PublicKeyToken=e4957f48888f9fe8, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xbehave.Core.2.3.0-rc0001-build717\lib\net452\Xbehave.Execution.desktop.dll</HintPath>
+      <HintPath>..\packages\Xbehave.Core.2.3.0\lib\net452\Xbehave.Execution.desktop.dll</HintPath>
     </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
